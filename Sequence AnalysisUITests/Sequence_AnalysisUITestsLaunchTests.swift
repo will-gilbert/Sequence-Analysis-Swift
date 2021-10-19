@@ -16,7 +16,7 @@ class Sequence_AnalysisUITestsLaunchTests: XCTestCase {
     override func setUpWithError() throws {
         continueAfterFailure = false
     }
-
+/*
     func testLaunch() throws {
         let app = XCUIApplication()
         app.launch()
@@ -29,4 +29,5 @@ class Sequence_AnalysisUITestsLaunchTests: XCTestCase {
         attachment.lifetime = .keepAlways
         add(attachment)
     }
+*/
 }
