@@ -21,7 +21,6 @@ struct ORF_Nucleic {
     for frame in 1...3 {
     
       let frameNode = XMLElement(name: "frame")
-      frameNode.addAttribute(XMLNode.attribute(withName: "label", stringValue: "Forward (+\(frame))") as! XMLNode)
       frameNode.addAttribute(XMLNode.attribute(withName: "frame", stringValue: "+\(frame)") as! XMLNode)
       orf.addChild(frameNode)
       

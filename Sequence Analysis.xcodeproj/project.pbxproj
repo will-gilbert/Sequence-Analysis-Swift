@@ -272,10 +272,10 @@
 		6E8B7B9F271F46740040EBE2 /* Analyses */ = {
 			isa = PBXGroup;
 			children = (
-				6E8B7BA0271F46740040EBE2 /* Composition.swift */,
-				6E8B7BA1271F46740040EBE2 /* Format.swift */,
 				6E8B7BA2271F46740040EBE2 /* ORF */,
 				6E8B7BA6271F46740040EBE2 /* Pattern */,
+				6E8B7BA0271F46740040EBE2 /* Composition.swift */,
+				6E8B7BA1271F46740040EBE2 /* Format.swift */,
 				6E8B7BAA271F46740040EBE2 /* PI.swift */,
 				6E8B7BAB271F46740040EBE2 /* Publish.swift */,
 				6E8B7BAC271F46740040EBE2 /* Structure.swift */,
@@ -286,9 +286,9 @@
 		6E8B7BA2271F46740040EBE2 /* ORF */ = {
 			isa = PBXGroup;
 			children = (
+				6E8B7BA5271F46740040EBE2 /* ORFView.swift */,
 				6E8B7BA3271F46740040EBE2 /* ORF_Nucleic.swift */,
 				6E8B7BA4271F46740040EBE2 /* ORFParser.swift */,
-				6E8B7BA5271F46740040EBE2 /* ORFView.swift */,
 			);
 			path = ORF;
 			sourceTree = "<group>";
@@ -296,8 +296,8 @@
 		6E8B7BA6271F46740040EBE2 /* Pattern */ = {
 			isa = PBXGroup;
 			children = (
-				6E8B7BA7271F46740040EBE2 /* PatternParser.swift */,
 				6E8B7BA8271F46740040EBE2 /* PatternView.swift */,
+				6E8B7BA7271F46740040EBE2 /* PatternParser.swift */,
 				6E8B7BA9271F46740040EBE2 /* PatternXML.swift */,
 			);
 			path = Pattern;

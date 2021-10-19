@@ -139,10 +139,7 @@ struct PatternView: View {
               in: minScale...maxScale
             ).disabled(minScale >= maxScale)
             
-            HStack(spacing: 2) {
-              Text("Pixels per BP:")
-              Text(F.f(scale, decimal: 2))
-            }
+            Text("Pixels per BP: \(F.f(scale, decimal: 2))")
           }
           
           // The following nested 'GeometryReader' and 'mapPanelView.size' is

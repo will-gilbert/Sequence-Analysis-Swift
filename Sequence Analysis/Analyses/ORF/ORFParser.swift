@@ -11,7 +11,6 @@ class ORFParser : NSObject, XMLParserDelegate  {
   
   var defaultStyle: ElementStyle
   var elementStyles: [String : ElementStyle] = [:]
-//  var mapPanels: [[MapPanel]] = [[],[],[]]
   var mapPanels: [String : [ [String : MapPanel] ] ] = [:]
   var givPanels: [String : GIVPanel] = [:]
   var theFrame: GIVFrame
