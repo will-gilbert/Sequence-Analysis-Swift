@@ -51,7 +51,6 @@ struct FormatView: View {
       }
       Divider()
       TextView(text: $text, isEditable: false)
-        .background(Color.white)
     }
   }
   

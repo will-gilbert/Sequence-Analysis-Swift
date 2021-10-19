@@ -199,7 +199,6 @@ struct PatternView: View {
      let buffer:String? = String(data: data, encoding: .utf8)
             
      return TextView(text: buffer ?? "XML to text failed")
-        .background(Color.white)
     }
   }
 
@@ -247,7 +246,6 @@ struct PatternView: View {
       }
       
       return TextView(text: text)
-         .background(Color.white)
     }
   }
 

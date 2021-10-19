@@ -25,6 +25,7 @@ struct GIVPanelView: View {
         Text(label)
           .padding(3)
           .font(.system(size: givPanel.labelFontSize, weight: .semibold))
+          .foregroundColor(.black)
       }
       ForEach(givPanel.mapPanels, id: \.id) { mapPanel in
         MapPanelView(mapPanel, scale: scale)

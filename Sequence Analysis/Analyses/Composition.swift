@@ -20,7 +20,7 @@ struct CompositionView: View {
       let _ = Composition(sequence, text: $text)
     }
     
-    return TextView(text: $text, isEditable: false).background(Color.white)
+    return TextView(text: $text, isEditable: false)
 
   }
   

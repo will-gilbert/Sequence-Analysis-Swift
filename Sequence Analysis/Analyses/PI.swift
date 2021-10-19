@@ -32,7 +32,7 @@ struct IsoElectricView: View {
       let _ = IsoElectricReport(sequence, text: $text)
     }
     
-    return TextView(text: $text, isEditable: false).background(Color.white)
+    return TextView(text: $text, isEditable: false)
 
   }
   

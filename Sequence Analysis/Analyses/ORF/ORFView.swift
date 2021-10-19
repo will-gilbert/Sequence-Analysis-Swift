@@ -253,7 +253,6 @@ struct ORFView: View {
      let buffer:String? = String(data: data, encoding: .utf8)
             
      return TextView(text: buffer ?? "XML to text failed")
-        .background(Color.white)
     }
   }
   
@@ -301,7 +300,6 @@ struct ORFView: View {
       }
       
       return TextView(text: text)
-         .background(Color.white)
     }
   }
 
@@ -346,7 +344,6 @@ struct ORFView: View {
       }
       
       return TextView(text: text)
-         .background(Color.white)
     }
   }
 }

@@ -108,7 +108,6 @@ struct PublishView: View {
       }.frame(maxHeight: 100)
       Divider()
       TextView(text: $text, isEditable: false)
-        .background(Color.white) 
     }
   }
 
