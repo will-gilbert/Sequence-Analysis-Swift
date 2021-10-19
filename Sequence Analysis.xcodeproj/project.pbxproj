@@ -7,7 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		6E14B9D6271F4B9500546ED7 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 6E14B9D5271F4B9500546ED7 /* Preview Assets.xcassets */; };
 		6E8B7B78271F460D0040EBE2 /* Sequence_AnalysisTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E8B7B77271F460D0040EBE2 /* Sequence_AnalysisTests.swift */; };
 		6E8B7B82271F460D0040EBE2 /* Sequence_AnalysisUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E8B7B81271F460D0040EBE2 /* Sequence_AnalysisUITests.swift */; };
 		6E8B7B84271F460D0040EBE2 /* Sequence_AnalysisUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E8B7B83271F460D0040EBE2 /* Sequence_AnalysisUITestsLaunchTests.swift */; };
@@ -91,7 +90,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		6E14B9D5271F4B9500546ED7 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = "Preview Assets.xcassets"; path = "../../../../../.Trashes/501/Preview Assets.xcassets"; sourceTree = "<group>"; };
+		6E14B9D8271F4C2F00546ED7 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		6E8B7B62271F460B0040EBE2 /* Sequence Analysis.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Sequence Analysis.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		6E8B7B6E271F460D0040EBE2 /* Sequence_Analysis.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Sequence_Analysis.entitlements; sourceTree = "<group>"; };
 		6E8B7B73271F460D0040EBE2 /* Sequence AnalysisTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Sequence AnalysisTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -189,6 +188,7 @@
 		6E14B9D7271F4BBF00546ED7 /* Preview Content */ = {
 			isa = PBXGroup;
 			children = (
+				6E14B9D8271F4C2F00546ED7 /* Preview Assets.xcassets */,
 			);
 			path = "Preview Content";
 			sourceTree = "<group>";
@@ -225,7 +225,6 @@
 				6E8B7B9F271F46740040EBE2 /* Analyses */,
 				6E8B7BD7271F46750040EBE2 /* System */,
 				6E8B7BB3271F46740040EBE2 /* Resources */,
-				6E8B7B9D271F46730040EBE2 /* Preview Content */,
 				6E14B9D7271F4BBF00546ED7 /* Preview Content */,
 				6E8B7B6E271F460D0040EBE2 /* Sequence_Analysis.entitlements */,
 			);
@@ -268,15 +267,6 @@
 				6E8B7B9C271F46730040EBE2 /* WindowState.swift */,
 			);
 			path = Application;
-			sourceTree = "<group>";
-		};
-		6E8B7B9D271F46730040EBE2 /* Preview Content */ = {
-			isa = PBXGroup;
-			children = (
-				6E14B9D5271F4B9500546ED7 /* Preview Assets.xcassets */,
-			);
-			name = "Preview Content";
-			path = "../../../SA/Sequence Analysis/Sequence Analysis/Preview Content";
 			sourceTree = "<group>";
 		};
 		6E8B7B9F271F46740040EBE2 /* Analyses */ = {
@@ -528,7 +518,6 @@
 				6E8B7BF7271F46750040EBE2 /* orf2giv.xslt in Resources */,
 				6E8B7C14271F46750040EBE2 /* Info.plist in Resources */,
 				6E8B7BF8271F46750040EBE2 /* xml2json.xslt in Resources */,
-				6E14B9D6271F4B9500546ED7 /* Preview Assets.xcassets in Resources */,
 				6E8B7C13271F46750040EBE2 /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
