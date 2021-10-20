@@ -28,7 +28,8 @@ struct MainView: View {
         AnalysisView(selectedAnalysis: sequenceState.defaultAnalysis)
           .padding()
       } else {
-        EmptyView()
+        Text("Use the '+' to add a new or random sequence")
+          .font(.title)
       }
     }
     .navigationTitle(navigationTitle)

@@ -306,10 +306,10 @@
 		6E8B7BAD271F46740040EBE2 /* Window */ = {
 			isa = PBXGroup;
 			children = (
+				6E8B7BB1271F46740040EBE2 /* SequenceAnalysis.swift */,
 				6E8B7BAE271F46740040EBE2 /* AnalysisView.swift */,
 				6E8B7BAF271F46740040EBE2 /* AvailableSequencesList.swift */,
 				6E8B7BB0271F46740040EBE2 /* MainView.swift */,
-				6E8B7BB1271F46740040EBE2 /* SequenceAnalysis.swift */,
 				6E8B7BB2271F46740040EBE2 /* SequenceRow.swift */,
 			);
 			path = Window;

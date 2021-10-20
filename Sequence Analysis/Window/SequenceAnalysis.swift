@@ -80,7 +80,8 @@ struct SequenceAnalysis: View {
           }
         }
         .presentedWindowToolbarStyle(ExpandedWindowToolbarStyle())
-      EmptyView()  // TODO - allow the GIV panel to be accessed from here
+        Text("Use the '+' to add a new or random sequence")
+          .font(.title)
     }
     .frame(maxWidth: .infinity)
     .frame(maxHeight: .infinity)
