@@ -4,14 +4,6 @@
 //
 //  Created by Will Gilbert on 8/25/21.
 //
-// https://www.youtube.com/watch?v=Ahrix9JsaIU
-//
-// https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch?db=nucleotide&id=NM_000485.2&rettype=fasta
-// https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch?db=protein&id=NP_061820.1&rettype=fasta
-// rettype = {'fasta', 'genbank',}
-// >NP_061820.1 cytochrome c [Homo sapiens]
-// MGDVEKGKKIFIMKCSQCHTVEKGGKHKTGPNLHGLFGRKTGQAPGYSYTAANKNKGIIWGEDTLMEYLE
-// NPKKYIPGTKMIFVGIKKKEERADLIAYLKKATNE
 
 
 import SwiftUI

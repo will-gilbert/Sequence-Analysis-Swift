@@ -181,13 +181,15 @@ struct ORFView: View {
 //            Text(" scrollWidth: \(scrollViewWidth)")
 //          }
 
-          HStack (spacing: 15) {
-            Slider(
-              value: $scale,
-              in: minScale...maxScale
-            ).disabled(minScale >= maxScale)
-            
-            Text("Pixels per BP: \(F.f(scale, decimal: 2))")
+          if minScale < maxScale {
+            HStack (spacing: 15) {
+              Slider(
+                value: $scale,
+                in: minScale...maxScale
+              ).disabled(minScale >= maxScale)
+              
+              Text("Pixels per BP: \(F.f(scale, decimal: 2))")
+            }
           }
           
           // The following nested 'GeometryReader' and 'mapPanelView.size' is

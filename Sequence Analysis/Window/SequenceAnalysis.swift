@@ -22,7 +22,7 @@ struct SequenceAnalysis: View {
               
               //  NCBI Entrez
               Button(action: {
-                  print("Fetch an entry from the NCBI")
+                FetchFromNCBI(appState: appState).newSequence()
               }) {
                   Image(systemName: "network")
               }.help("Fetch an entry from the NCBI")
