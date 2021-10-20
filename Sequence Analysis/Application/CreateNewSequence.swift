@@ -161,7 +161,6 @@ struct CreateNewSequence {
     var body: some View {
       Text(name)
         .font(.largeTitle)
-        .foregroundColor(Color.gray)
     }
   }
 }

@@ -14,7 +14,6 @@ struct ContentView: View {
   
   var body: some View {
     return SequenceAnalysis(window: window)
-      .background(Color.background)
       .environmentObject(windowState)
       .background(WindowAccessor(window: $window))
     }
