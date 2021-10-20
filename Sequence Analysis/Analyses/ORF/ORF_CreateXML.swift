@@ -8,7 +8,7 @@
 import Foundation
 
 
-struct ORF_Nucleic {
+struct ORF_CreateXML {
 
   func createXML(_ sequence: Sequence, options: ORFOptions) -> XMLDocument {
 

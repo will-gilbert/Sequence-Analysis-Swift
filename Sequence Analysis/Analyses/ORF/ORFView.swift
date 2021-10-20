@@ -139,7 +139,7 @@ struct ORFView: View {
 
     @State var scale: Double = 1.0
 
-    let orfParser: ORFParser
+    let orfParser: ORF_XMLParser
     let extent: CGFloat
     var givFrame: GIVFrame
     
@@ -149,7 +149,7 @@ struct ORFView: View {
     init(xmlDocument: XMLDocument, sequence: Sequence) {
       self.extent = CGFloat(sequence.length)
       
-      orfParser = ORFParser(extent: sequence.length)
+      orfParser = ORF_XMLParser(extent: sequence.length)
       orfParser.parse(xmlDocument: xmlDocument)
       givFrame = orfParser.givFrame
 
@@ -361,7 +361,7 @@ private struct OpenReadingFrame {
   }
 
   mutating func createXML() -> XMLDocument {
-    return ORF_Nucleic().createXML(sequence, options: options)
+    return ORF_CreateXML().createXML(sequence, options: options)
    }
 }
 

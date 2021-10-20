@@ -7,7 +7,7 @@
 
 import Foundation
 
-class ORFParser : NSObject, XMLParserDelegate  {
+class ORF_XMLParser : NSObject, XMLParserDelegate  {
   
   var defaultStyle: ElementStyle
   var elementStyles: [String : ElementStyle] = [:]

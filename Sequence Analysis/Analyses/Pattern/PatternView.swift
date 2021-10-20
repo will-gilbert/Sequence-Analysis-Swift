@@ -91,7 +91,7 @@ struct PatternView: View {
 
     @State var scale: Double = 1.0
 
-    let patternParser: PatternParser
+    let patternParser: Pattern_XMLParser
     let extent: CGFloat
     var givFrame: GIVFrame
     
@@ -101,7 +101,7 @@ struct PatternView: View {
     init(xmlDocument: XMLDocument, sequence: Sequence) {
       self.extent = CGFloat(sequence.length)
       
-      self.patternParser = PatternParser(extent: sequence.length)
+      self.patternParser = Pattern_XMLParser(extent: sequence.length)
       self.patternParser.parse(xmlDocument: xmlDocument)
       self.givFrame = patternParser.givFrame
 
@@ -272,7 +272,7 @@ private struct Pattern {
   }
 
   mutating func createXML() -> XMLDocument {
-    return PatternXML().createXML(sequence, patterns: patterns)
+    return Pattern_CreateXML().createXML(sequence, patterns: patterns)
    }
 }
 

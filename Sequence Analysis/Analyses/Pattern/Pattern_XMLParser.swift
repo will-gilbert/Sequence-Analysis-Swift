@@ -8,7 +8,7 @@
 
 import Foundation
 
-class PatternParser: NSObject, XMLParserDelegate {
+class Pattern_XMLParser: NSObject, XMLParserDelegate {
 
   var defaultStyle: ElementStyle
   var elementStyles: [String : ElementStyle] = [:]

@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct PatternXML {
+struct Pattern_CreateXML {
 
   func createXML(_ sequence: Sequence, patterns: [String]) -> XMLDocument {
     
