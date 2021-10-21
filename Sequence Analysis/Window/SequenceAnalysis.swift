@@ -47,7 +47,8 @@ struct SequenceAnalysis: View {
               
               // Save the sequence per the format selected in "Format"
               Button(action: {
-                  print("Save using the file format chosen in 'Format'")
+                saveSequenceToFile()
+//                  print("Save using the file format chosen in 'Format'")
               }) {
                   Image(systemName: "arrow.down.doc")
               }
@@ -125,14 +126,34 @@ struct SequenceAnalysis: View {
       with: nil)
   }
   
-  func createAddMessage() -> String {
-    let imageAttachment = NSTextAttachment()
-    imageAttachment.image = NSImage(named: "trash")
+  
+  func saveSequenceToFile() {
+        
+    if let sequenceState = windowState.currentSequenceState {
+      var formatFile = FormatFile(sequence: sequenceState.sequence)
+      let text: String = formatFile.doFileFormat(sequenceState.fileFormat)
+      
+      var filename: String = sequenceState.sequence.uid
+      filename.append(".")
+      filename.append(sequenceState.fileFormat.fileType)
+      filename.append(".txt")
 
-    let fullString = NSMutableAttributedString(string: "Press the ")
-    fullString.append(NSAttributedString(attachment: imageAttachment))
-    fullString.append(NSAttributedString(string: " button"))
-    return fullString.string
+      let panel = NSSavePanel()
+      panel.nameFieldLabel = "Save sequence file as:"
+      panel.nameFieldStringValue = filename
+      panel.canCreateDirectories = true
+      panel.allowedFileTypes = ["txt"]
+      panel.begin { response in
+           if response == NSApplication.ModalResponse.OK, let fileUrl = panel.url {
+             do {
+                 try text.write(to: fileUrl, atomically: true, encoding: String.Encoding.utf8)
+             } catch {
+                 // failed to write file (bad permissions, bad filename etc.)
+             }
+           }
+       }
+    }
+      
   }
-
+  
 }

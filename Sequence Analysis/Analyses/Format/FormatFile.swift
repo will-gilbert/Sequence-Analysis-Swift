@@ -18,18 +18,31 @@ enum FileFormat: String, CaseIterable, Identifiable {
   case CODATA = "CODATA"
 
   var id: FileFormat { self }
+  
+  var fileType: String {
+    switch self {
+    case .FASTA: return "fasta"
+    case .RAW: return "raw"
+    case .GCG: return "gcg"
+    case .GENBANK: return "gbx"
+    case .EMBL: return "embl"
+    case .PIR: return "nbrf"
+    case .CODATA: return "codata"
+    }
+  }
+
 }
 
 struct FormatFile {
 
   var sequence: Sequence
-  @Binding var text: String
+  var text: String = ""
 
-  mutating func doFileFormat(_ format: FileFormat) {
+  mutating func doFileFormat(_ format: FileFormat) -> String {
 
     guard sequence.string.count > 0 else {
       self.text.append("The sequence has no contents")
-      return
+      return text
     }
     
     switch format {
@@ -41,6 +54,8 @@ struct FormatFile {
     case .PIR: doPIR()
     case .CODATA: doCODATA()
     }
+    
+    return text
     
   }
 
