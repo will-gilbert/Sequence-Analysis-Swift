@@ -24,7 +24,7 @@ enum FileFormat: String, CaseIterable, Identifiable {
     case .FASTA: return "fasta"
     case .RAW: return "raw"
     case .GCG: return "gcg"
-    case .GENBANK: return "gbx"
+    case .GENBANK: return "gb"
     case .EMBL: return "embl"
     case .PIR: return "nbrf"
     case .CODATA: return "codata"

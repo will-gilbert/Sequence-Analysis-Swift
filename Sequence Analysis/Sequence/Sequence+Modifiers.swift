@@ -56,9 +56,46 @@ extension Sequence {
     return newSequence;
   }
 
-//  static func codonToAA(codon: String) -> String? {
-//    return "X"
-//  }
+  static func guessType(_ string: String) -> SequenceType {
+
+    let strand = Array(string.uppercased())
+    let seqLength = strand.count
+
+    if seqLength == 0 { return .DNA }
+    
+    var a:Int = 0
+    var c:Int = 0
+    var g:Int = 0
+    var t:Int = 0
+    var u:Int = 0
+    var n:Int = 0
+    
+    for i in (0..<seqLength) {
+      n += 1
+      switch strand[i] {
+      case "A": a += 1
+      case "C": c += 1
+      case "G": g += 1
+      case "T": t += 1
+      case "U": u += 1
+      case "N", "-": n -= 1
+      default: break
+      }
+    }
+    
+    // In rare cases, a sequence or selection my be all N's or gaps
+    // leading to a divide by zero error.  We'll assume that its a
+    // DNA sequence or selection
+    
+    if n == 0 {return .DNA}
+        
+    if (((a + c + g + t + u) * 100) / n) > 85 {
+        return (t > u) ? .DNA : .RNA
+    } else {
+      return .PROTEIN
+    }
+    
+  }
   
   static func checksum(_ sequence: String) -> Int {
     

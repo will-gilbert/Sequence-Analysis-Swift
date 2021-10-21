@@ -38,7 +38,7 @@ struct SequenceAnalysis: View {
           
               // Read a sequence file
               Button(action: {
-                  print("Read a sequence file")
+                readSequenceFromFile()
               }) {
                   Image(systemName: "arrow.up.doc")
               }
@@ -48,7 +48,6 @@ struct SequenceAnalysis: View {
               // Save the sequence per the format selected in "Format"
               Button(action: {
                 saveSequenceToFile()
-//                  print("Save using the file format chosen in 'Format'")
               }) {
                   Image(systemName: "arrow.down.doc")
               }
@@ -136,13 +135,15 @@ struct SequenceAnalysis: View {
       var filename: String = sequenceState.sequence.uid
       filename.append(".")
       filename.append(sequenceState.fileFormat.fileType)
-      filename.append(".txt")
 
       let panel = NSSavePanel()
       panel.nameFieldLabel = "Save sequence file as:"
       panel.nameFieldStringValue = filename
       panel.canCreateDirectories = true
-      panel.allowedFileTypes = ["txt"]
+      panel.allowedFileTypes  =
+        ["fasta", "raw"," seq", "gcg", "gb", "genbank", "gbx", "embl",
+         "nbrf", "pir"]
+
       panel.begin { response in
            if response == NSApplication.ModalResponse.OK, let fileUrl = panel.url {
              do {
@@ -153,7 +154,95 @@ struct SequenceAnalysis: View {
            }
        }
     }
-      
   }
+  
+  func readSequenceFromFile() {
+    let panel = NSOpenPanel()
+    
+    panel.title = "Choose a text sequence file"
+    panel.showsResizeIndicator    = true;
+    panel.showsHiddenFiles        = false;
+    panel.allowsMultipleSelection = false;
+    panel.canChooseDirectories = false;
+    panel.allowedFileTypes  =
+      ["fasta", "raw","seq", "gcg", "gb", "genbank", "gbx", "embl",
+       "nbrf", "pir"]
+    
+    if (panel.runModal() ==  NSApplication.ModalResponse.OK) {
+      if let fileURL: URL = panel.url {
+        let extention = fileURL.pathExtension
+        
+        var contents: String?
+        do {
+            contents = try String(contentsOf: fileURL, encoding: .utf8)
+        }
+        catch {
+          return
+        }
+        
+        guard contents != nil else { return }
+
+        switch extention {
+        case "fasta", "seq": parseFasta(contents!, filename: fileURL.lastPathComponent)
+        case "raw": parseRaw(contents!, filename: fileURL.lastPathComponent)
+        case "gcg": break
+        case "gb", "genbank", "gbx": break
+        case "embl": break
+        case "nbrf", "pir": break
+        default: break
+        }
+        
+      } else {
+        return
+      }
+    }
+  }
+  
+  
+  func parseFasta(_ contents: String, filename: String) {
+    
+    // Break the file into lines
+    let lines: [String.SubSequence] = contents.split(whereSeparator: \.isNewline)
+    
+    // Get the indices of the '>' and first space
+    let line = String(lines[0])
+    let uidStart = line.index(line.startIndex, offsetBy: 1)
+    let spaceIndex = line.firstIndex(of: " ")
+    
+    // This '.seq' might be a raw file i.e not '>' at the first position
+    var uid = ""
+    var title = "File: \(filename)"
+    if let spaceIndex = spaceIndex {
+      uid = String(line[uidStart..<spaceIndex])
+      let titleStart = line.index(after: spaceIndex)
+      title = String(line[titleStart...])
+    } else {
+      parseRaw(contents, filename: filename)
+      return
+    }
+
+    // Concat the rest of the lines as the sequene strand
+    var string: String = ""
+    for (i, line) in lines.enumerated() {
+      if i == 0 { continue}
+      string.append(String(line).trimmingCharacters(in: .whitespacesAndNewlines))
+    }
+
+    // Guess the sequence type from the contents and create the sequence
+    let type = Sequence.guessType(string)
+    let sequence = Sequence(string, uid: uid, title: title, type: type)
+    let _ = appState.addSequence(sequence)
+  }
+  
+  func parseRaw(_ contents: String, filename: String) {
+    let uid = ""
+    let title = "File: \(filename)"
+    let string = contents.trimmingCharacters(in: .whitespacesAndNewlines)
+    let type = Sequence.guessType(string)
+    let sequence = Sequence(string, uid: uid, title: title, type: type)
+    let _ = appState.addSequence(sequence)
+  }
+
+  
   
 }
