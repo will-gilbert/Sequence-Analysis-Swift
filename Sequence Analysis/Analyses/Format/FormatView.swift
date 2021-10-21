@@ -8,19 +8,6 @@
 import SwiftUI
 
 
-enum FileFormat: String, CaseIterable, Identifiable {
-  case FASTA = "Fasta"
-  case RAW = "Sequence Only"
-  case GCG = "GCG"
-  case GENBANK = "GenBank and IBI"
-  case EMBL = "EMBL and SwissProt"
-  case PIR = "NBRF/PIR"
-  case CODATA = "CODATA"
-
-  var id: FileFormat { self }
-}
-
-
 struct FormatView: View {
   
   @EnvironmentObject var sequenceState: SequenceState
@@ -58,19 +45,15 @@ struct FormatView: View {
 
 private struct Format {
   
-  let sequence: Sequence
-  let format: FileFormat
-
-  @Binding var buffer: String
-  func emptyPrefix(cursor:Int) -> String {return ""}
+//  @Binding var text: String
 
   init(_ sequence: Sequence, format: FileFormat, text: Binding<String>) {
-    self.sequence = sequence
-    self.format = format
-    self._buffer = text
-    doFileFormat(format)
+    var formatFile = FormatFile(sequence: sequence, text: text)
+    formatFile.doFileFormat(format)
   }
+}
 
+/*
 
   mutating func doFileFormat(_ format: FileFormat) {
     guard sequence.string.count > 0 else { buffer.append("The sequence has no contents") ; return }
@@ -245,3 +228,4 @@ private struct Format {
   }
   
 }
+*/

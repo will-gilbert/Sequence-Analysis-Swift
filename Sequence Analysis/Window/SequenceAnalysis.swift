@@ -1,6 +1,7 @@
 
 
 import SwiftUI
+import AppKit
 
 struct SequenceAnalysis: View {
   
@@ -34,25 +35,25 @@ struct SequenceAnalysis: View {
                   Image(systemName: "plus")
               }
               .help("Add a new sequence")
-
-              // Edit the UID and/or title
-              Button(action: {
-                  print("Edit the UID and/or title")
-              }) {
-                  Image(systemName: "rectangle.and.pencil.and.ellipsis")
-              }
-              .disabled(windowState.currentSequenceState == nil)
-              .help("Edit UID or Title")
           
+              // Read a sequence file
+              Button(action: {
+                  print("Read a sequence file")
+              }) {
+                  Image(systemName: "arrow.up.doc")
+              }
+              .help("Read a sequence file from disk")
+              
+              
               // Save the sequence per the format selected in "Format"
               Button(action: {
                   print("Save using the file format chosen in 'Format'")
               }) {
-                  Image(systemName: "square.and.arrow.down")
+                  Image(systemName: "arrow.down.doc")
               }
               .disabled(windowState.currentSequenceState == nil)
               .help("Save using the file format chosen in 'Format'")
-              
+
               // Save the sequence per the format selected in "Format"
               Button(action: {
                 windowState.editorIsVisible.toggle()
@@ -62,6 +63,15 @@ struct SequenceAnalysis: View {
               .disabled(windowState.currentSequenceState == nil)
               .help("Show/Hide the sequence editor")
               
+              // Edit the UID and/or title
+              Button(action: {
+                  print("Edit the UID and/or title")
+              }) {
+                  Image(systemName: "rectangle.and.pencil.and.ellipsis")
+              }
+              .disabled(windowState.currentSequenceState == nil)
+              .help("Edit UID or Title")
+
               Spacer(minLength: 15)
               
               Button(action: {
@@ -80,8 +90,12 @@ struct SequenceAnalysis: View {
           }
         }
         .presentedWindowToolbarStyle(ExpandedWindowToolbarStyle())
-        Text("Use the '+' to add a new or random sequence")
-          .font(.title)
+      VStack {
+        Text("Use the \(Image(systemName:"plus")) button to add a new or random sequence or")
+        Text("use the \(Image(systemName:"network")) button to fetch an entry from the NCBI.")
+        Text("")
+        Text("Most buttons have a tooltip when you hover over them.")
+      }.font(.body)
     }
     .frame(maxWidth: .infinity)
     .frame(maxHeight: .infinity)
@@ -109,6 +123,16 @@ struct SequenceAnalysis: View {
     NSApp.keyWindow?.firstResponder?.tryToPerform(
       #selector(NSSplitViewController.toggleSidebar),
       with: nil)
+  }
+  
+  func createAddMessage() -> String {
+    let imageAttachment = NSTextAttachment()
+    imageAttachment.image = NSImage(named: "trash")
+
+    let fullString = NSMutableAttributedString(string: "Press the ")
+    fullString.append(NSAttributedString(attachment: imageAttachment))
+    fullString.append(NSAttributedString(string: " button"))
+    return fullString.string
   }
 
 }
