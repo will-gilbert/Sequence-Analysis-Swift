@@ -22,7 +22,7 @@ struct CreateNewSequence {
 
   }
 
-  func newSequence() {
+  func openWindow() {
     
     let window = createWindow(width: 0, height: 0)
     let contents = NewSequenceView(appState: appState, window: window)
@@ -62,13 +62,15 @@ struct CreateNewSequence {
         }
         
         Section {
+          VStack(alignment: .leading) {
             HStack {
-            Text("Unique ID")
-            TextField("\(tempUID)", text: $uid)
-          }
-          HStack {
-            Text("Title")
-            TextField("Untitled", text: $title)
+              Text("Unique ID")
+              TextField("\(tempUID)", text: $uid).frame(width: 100)
+            }
+            HStack {
+              Text("Title")
+              TextField("Untitled", text: $title)
+            }
           }
         }
 

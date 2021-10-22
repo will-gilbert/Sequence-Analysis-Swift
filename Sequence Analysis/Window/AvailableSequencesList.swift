@@ -9,11 +9,9 @@ struct AvailableSequencesList: View {
   let window: NSWindow?
   
   @State var isHovering: Bool = false
-
+  
   var body: some View {
    
-//    print(window?.isKeyWindow as Any )
-
     if let newSequenceState = appState.newSequenceState, let window = self.window {
       if window.isKeyWindow  {
       DispatchQueue.main.async {
@@ -41,8 +39,9 @@ struct AvailableSequencesList: View {
           .moveDisabled(isHovering == false)
           .contextMenu {
             Button( action: {
-              print("delete")
-              print(sequenceState.sequence.uid as Any)
+              EditUIDorTitle(sequenceState: sequenceState).openWindow()
+            }){Text("Edit UID/Title")}
+            Button( action: {
               if windowState.currentSequenceState == sequenceState {
                 windowState.currentSequenceState = nil
               }

@@ -16,7 +16,7 @@ struct FileMenu: Commands {
     CommandGroup(after: CommandGroupPlacement.newItem, addition: {
       Divider()
       Button("New Sequence")  {
-        CreateNewSequence(appState: appState).newSequence()
+        CreateNewSequence(appState: appState).openWindow()
       }
       .keyboardShortcut("n", modifiers: [.command, .option])
 

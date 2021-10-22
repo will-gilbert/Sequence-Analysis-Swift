@@ -23,14 +23,14 @@ struct SequenceAnalysis: View {
               
               //  NCBI Entrez
               Button(action: {
-                FetchFromNCBI(appState: appState).newSequence()
+                FetchFromNCBI(appState: appState).openWindow()
               }) {
                   Image(systemName: "network")
               }.help("Fetch an entry from the NCBI")
               
               // Add a sequence
               Button(action: {
-                CreateNewSequence(appState: appState).newSequence()
+                CreateNewSequence(appState: appState).openWindow()
               }) {
                   Image(systemName: "plus")
               }
@@ -42,7 +42,7 @@ struct SequenceAnalysis: View {
               }) {
                   Image(systemName: "arrow.up.doc")
               }
-              .help("Read a sequence file from disk")
+              .help("Read a sequence file in .raw, .seq, .fasta, .gcg, .nbrf, .pir format")
               
               
               // Save the sequence per the format selected in "Format"
@@ -65,7 +65,9 @@ struct SequenceAnalysis: View {
               
               // Edit the UID and/or title
               Button(action: {
-                  print("Edit the UID and/or title")
+                if let sequenceState = windowState.currentSequenceState {
+                  EditUIDorTitle(sequenceState: sequenceState).openWindow()
+                }
               }) {
                   Image(systemName: "rectangle.and.pencil.and.ellipsis")
               }
@@ -90,12 +92,7 @@ struct SequenceAnalysis: View {
           }
         }
         .presentedWindowToolbarStyle(ExpandedWindowToolbarStyle())
-      VStack {
-        Text("Use the \(Image(systemName:"plus")) button to add a new or random sequence or")
-        Text("use the \(Image(systemName:"network")) button to fetch an entry from the NCBI.")
-        Text("")
-        Text("Most buttons have a tooltip when you hover over them.")
-      }.font(.body)
+      HelpMessage()
     }
     .frame(maxWidth: .infinity)
     .frame(maxHeight: .infinity)

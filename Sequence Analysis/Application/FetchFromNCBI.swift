@@ -34,7 +34,7 @@ struct FetchFromNCBI {
 
   }
 
-  func newSequence() {
+  func openWindow() {
     
     let window = createWindow(width: 0, height: 0)
     let contents = NCBIFetchView(appState: appState, window: window)
@@ -72,10 +72,13 @@ struct FetchFromNCBI {
         Section {
             HStack {
             Text("Entrez ID")
-            TextField("NM_000485.2", text: $entrezID)
+            TextField("", text: $entrezID)
           }
-          Text("Examples: NM_000485 NP_061820 11128019")
-            .font(.footnote)
+          VStack {
+            Text("Nucleic examples: NM_000485 NP_061820")
+            Text("Protein examples: 11128019 2392216 1CA0_H")
+          }
+          .font(.footnote)
         }
 
         Section {

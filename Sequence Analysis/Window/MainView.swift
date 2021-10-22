@@ -29,14 +29,7 @@ struct MainView: View {
           .padding()
       } else {
         EmptyView()
-        VStack {
-          Text("Use the \(Image(systemName:"plus")) button to add a new or random sequence or")
-          Text("use the \(Image(systemName:"network")) button to fetch an entry from the NCBI.")
-          Text("")
-          Text("Most buttons have a tooltip when you hover over them.")
-        }
-        .font(.body)
-        .frame(width: 400)
+        HelpMessage().frame(width: 400)
       }
     }
     .navigationTitle(navigationTitle)
