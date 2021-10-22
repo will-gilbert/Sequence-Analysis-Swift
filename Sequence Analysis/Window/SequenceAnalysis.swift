@@ -164,9 +164,7 @@ struct SequenceAnalysis: View {
     panel.showsHiddenFiles        = false;
     panel.allowsMultipleSelection = false;
     panel.canChooseDirectories = false;
-    panel.allowedFileTypes  =
-      ["fasta", "raw","seq", "gcg", "gb", "genbank", "gbx", "embl",
-       "nbrf", "pir"]
+    panel.allowedFileTypes  = ["fasta", "raw","seq", "gcg", "nbrf", "pir"]  // TODO "gb", "genbank", "gbx", "embl"
     
     if (panel.runModal() ==  NSApplication.ModalResponse.OK) {
       if let fileURL: URL = panel.url {
@@ -185,10 +183,10 @@ struct SequenceAnalysis: View {
         switch extention {
         case "fasta", "seq": parseFasta(contents!, filename: fileURL.lastPathComponent)
         case "raw": parseRaw(contents!, filename: fileURL.lastPathComponent)
-        case "gcg": break
+        case "gcg": parseGCG(contents!, filename: fileURL.lastPathComponent)
         case "gb", "genbank", "gbx": break
         case "embl": break
-        case "nbrf", "pir": break
+        case "nbrf", "pir": parseNBRF(contents!)
         default: break
         }
         
@@ -222,27 +220,118 @@ struct SequenceAnalysis: View {
     }
 
     // Concat the rest of the lines as the sequene strand
-    var string: String = ""
+    var strand: String = ""
     for (i, line) in lines.enumerated() {
       if i == 0 { continue}
-      string.append(String(line).trimmingCharacters(in: .whitespacesAndNewlines))
+      strand.append(String(line))
     }
+    
+    strand = strand.trimmingCharacters(in: .whitespacesAndNewlines)
+                   .replacingOccurrences(of: " ", with: "")
+
 
     // Guess the sequence type from the contents and create the sequence
-    let type = Sequence.guessType(string)
-    let sequence = Sequence(string, uid: uid, title: title, type: type)
+    let type = Sequence.guessType(strand)
+    let sequence = Sequence(strand, uid: uid, title: title, type: type)
     let _ = appState.addSequence(sequence)
   }
   
   func parseRaw(_ contents: String, filename: String) {
     let uid = ""
     let title = "File: \(filename)"
-    let string = contents.trimmingCharacters(in: .whitespacesAndNewlines)
-    let type = Sequence.guessType(string)
-    let sequence = Sequence(string, uid: uid, title: title, type: type)
+    let strand = contents.trimmingCharacters(in: .whitespacesAndNewlines)
+                         .replacingOccurrences(of: " ", with: "")
+    let type = Sequence.guessType(strand)
+    let sequence = Sequence(strand, uid: uid, title: title, type: type)
     let _ = appState.addSequence(sequence)
   }
 
-  
+  func parseGCG(_ contents: String, filename: String) {
+    
+    var uid = ""
+    let title = "File: \(filename)"
+
+    // Break the file into lines
+    let lines: [String.SubSequence] = contents.split(whereSeparator: \.isNewline)
+    
+    // Find the magic dots '..' to find the UID
+    var lineNumber: Int = 0
+    for (i, line) in lines.enumerated() {
+      let magicDots = line.range(of: "..")
+      if magicDots == nil {
+        continue // magic dots '..' not found yet
+      } else {
+        // extract the UID; Beginning to first space
+        if let spaceIndex = line.firstIndex(of: " ") {
+          uid = String(line[line.startIndex..<spaceIndex])
+          lineNumber = i // sequence after this line to the end
+          break
+        }
+      }
+    }
+    
+    var strand: String = ""
+    for (i, line) in lines.enumerated() {
+      if i <= lineNumber { continue }
+      let prefix = line.index(line.startIndex, offsetBy: 10)
+      strand.append(String(line[prefix...]))
+    }
+    
+    strand = strand.trimmingCharacters(in: .whitespacesAndNewlines)
+                   .replacingOccurrences(of: " ", with: "")
+
+    // Guess the sequence type from the contents and create the sequence
+    let type = Sequence.guessType(strand)
+    let sequence = Sequence(strand, uid: uid, title: title, type: type)
+    let _ = appState.addSequence(sequence)
+    
+  }
+
+  func parseNBRF(_ contents: String) {
+      
+    // Break the file into lines
+    let lines: [String.SubSequence] = contents.split(whereSeparator: \.isNewline)
+    
+    // The title is the second line
+    let title = String(lines[1])
+    
+    // Get the index of the ';' and get the UID
+    let line = String(lines[0])
+    let uidStart = line.index(line.startIndex, offsetBy: 4)
+    let uid: String = String(line[uidStart...])
+
+    // Get the sequence type indicator; DNA or PROTEIN for now
+    let typeStart = line.index(line.startIndex, offsetBy: 1)
+    let semiColonIndex = line.firstIndex(of: ";")
+    var type: SequenceType = .DNA
+    if let semiColonIndex = semiColonIndex {
+      let typeMarker = line[typeStart..<semiColonIndex]
+      if typeMarker == "P1" {
+        type = .PROTEIN
+      }
+    }
+    
+    // the sequence is everything up to an '*' character
+    var strand: String = ""
+    for (i, line) in lines.enumerated() {
+      if i <= 1 { continue }
+      if let endIndex = line.firstIndex(of: "*") {
+        strand.append(String(line[line.startIndex..<endIndex]))
+        break
+      } else {
+        strand.append(String(line))
+      }
+    }
+
+    // Remove any whitespace and new lines
+    strand = strand.trimmingCharacters(in: .whitespacesAndNewlines)
+                   .replacingOccurrences(of: " ", with: "")
+
+    // Create the sequence and add it the application
+    let sequence = Sequence(strand, uid: uid, title: title, type: type)
+    let _ = appState.addSequence(sequence)
+    
+  }
+
   
 }
