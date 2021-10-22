@@ -7,6 +7,8 @@ struct AvailableSequencesList: View {
   @EnvironmentObject var windowState: WindowState
   
   let window: NSWindow?
+  
+  @State var isHovering: Bool = false
 
   var body: some View {
    
@@ -33,7 +35,26 @@ struct AvailableSequencesList: View {
             SequenceRow(sequence: sequenceState.sequence)
           }
           .tag(sequenceState)
+          .onHover { hovering in
+            isHovering = hovering
+          }
+          .moveDisabled(isHovering == false)
+          .contextMenu {
+            Button( action: {
+              print("delete")
+              print(sequenceState.sequence.uid as Any)
+              if windowState.currentSequenceState == sequenceState {
+                windowState.currentSequenceState = nil
+              }
+              appState.removeSequeneState(sequenceState)
+            }){Text("Delete")}
+          }
         }
+      } // TODO Maybe remove this until we find out why it is logging and ERROR
+      .onMove { indices, newOffset in
+        appState.sequenceStates.move(
+          fromOffsets: indices, toOffset: newOffset
+        )
       }
     }
     .navigationTitle(windowState.currentSequenceState?.sequence.description ?? "")

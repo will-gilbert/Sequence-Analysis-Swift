@@ -75,8 +75,8 @@ struct SequenceAnalysis: View {
               Spacer(minLength: 15)
               
               Button(action: {
-                if let seqeunceState = windowState.currentSequenceState {
-                  appState.removeSequeneState(seqeunceState)
+                if let sequenceState = windowState.currentSequenceState {
+                  appState.removeSequeneState(sequenceState)
                   windowState.currentSequenceState = nil
                 }
               }) {
