@@ -49,7 +49,8 @@ struct AvailableSequencesList: View {
             }){Text("Delete")}
           }
         }
-      } // TODO Maybe remove this until we find out why it is logging and ERROR
+      }
+      // TODO Maybe remove this until we find out why it is logging and ERROR
       .onMove { indices, newOffset in
         appState.sequenceStates.move(
           fromOffsets: indices, toOffset: newOffset

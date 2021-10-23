@@ -50,6 +50,7 @@ struct PatternView: View {
   
   @State var newPattern: String = ""
   @State var isEditing: Bool = false
+  @State var isHovering: Bool = false
 
   var body: some View {
     
@@ -65,27 +66,29 @@ struct PatternView: View {
         HStack(alignment: .top) {
           List(selection: $viewModel.selectedItem) {
             ForEach(viewModel.items, id: \.id) { item in
-              Button {
-                viewModel.selectedItem = item
-                isEditing = true
-                newPattern = item.pattern
-              } label: {
                 VStack(alignment: .leading) {
                   Text(item.pattern).tag(item.id)
                   Divider()
                 }
-              }.buttonStyle(PlainButtonStyle())
-              .contextMenu {
-              Button( action: {
-                if let index = viewModel.items.firstIndex(of: item) {
-                  viewModel.items.remove(at: index)
+                .onHover { hovering in
+                  isHovering = hovering
                 }
-              }){
-                Text("Delete")}
-              }
+                .moveDisabled(isHovering == false)
+                .onTapGesture {
+                  viewModel.selectedItem = item
+                  isEditing = true
+                  newPattern = item.pattern
+                }
+            }.onDelete(perform: { indexSet in
+              viewModel.items.remove(atOffsets: indexSet)
+            })
+            .onMove { indices, newOffset in
+              viewModel.items.move(
+                fromOffsets: indices, toOffset: newOffset
+              )
             }
           }
-//          .listStyle(SidebarListStyle())
+          .listStyle(DefaultListStyle())
           .frame(width: 200, height: 150)
           
           HStack{
