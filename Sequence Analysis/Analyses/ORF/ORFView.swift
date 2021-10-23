@@ -20,7 +20,7 @@ struct ORFOptions {
 struct ORFView: View {
  
   enum ORFOutput: String, CaseIterable {
-    case GRAPH = "ORF Map"
+    case GRAPH = "ORF"
     case XML = "XML"
     case JSON = "JSON"
     case GIV = "GIV XML"

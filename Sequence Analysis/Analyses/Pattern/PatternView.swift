@@ -7,10 +7,28 @@
 
 import SwiftUI
 
+
+struct PatternItem: Hashable {
+  let id = UUID()
+  var pattern: String
+  
+  init(_ pattern: String) {
+    self.pattern = pattern
+  }
+  
+  func hash(into hasher: inout Hasher) {
+      hasher.combine(id)
+  }
+  static func ==(lhs: PatternItem, rhs: PatternItem) -> Bool {
+      return lhs.id == rhs.id
+  }
+
+}
+
 struct PatternView: View {
   
   enum PatternOutput: String, CaseIterable {
-    case GRAPH = "Pattern Map"
+    case GRAPH = "Pattern"
     case XML = "XML"
     case JSON = "JSON"
     case GIV = "GIV XML"
@@ -22,11 +40,14 @@ struct PatternView: View {
   @State var patternOutput: PatternOutput = .GRAPH
   
   @State var xmlDocument: XMLDocument? = nil
+//  @State var patterns = ["ATG", "TAG|TAA|TGA", "(CG){2,}", "ATG([ACGT]{3,3})*?((TAG)|(TAA)|(TGA))"]
+  @State var patterns: [PatternItem] = []
+  @State var selectedPattern: PatternItem? = nil
+  @State var newPattern: String = ""
 
   var body: some View {
     
     // Pass in the state variables, it will be displayed when 'Pattern' is finished
-    let patterns = ["ATG", "TAG|TAA|TGA", "(CG){2,}", "ATG([ACGT]{3,3})*?((TAG)|(TAA)|(TGA))"]
     
     DispatchQueue.main.async {
       var pattern = Pattern(sequence, patterns: patterns, text: $text)
@@ -35,15 +56,44 @@ struct PatternView: View {
     
     return VStack {
       VStack {
-        
-        Text("Pattern options will go here")
-        Text("... and here...")
-        Text("... using: ATG, TAG|TAA|TGA, (CG){2,}")
+        HStack(alignment: .top) {
+          List(patterns, id: \.id, selection: $selectedPattern) { item in
+            Text(item.pattern)
+          }
+          .listStyle(SidebarListStyle())
+          .navigationTitle("Patterns")
+          .frame(width: 200, height: 150)
+          
+          HStack{
+            Text("RegEx pattern:")
+            TextField("", text: $newPattern,
+              onCommit: {
+                let string = newPattern.trimmingCharacters(in: .whitespaces)
+                if string.count > 0 {
+                  patterns.append(PatternItem(string))
+                  newPattern = ""
+                }
+              }
+            )
+            .textFieldStyle(RoundedBorderTextFieldStyle())
+            .padding()
+            .frame(width: 200)
+            Button(action: {
+              patterns.removeAll()
+            }) {
+              Text("Clear all patterns")
+            }.disabled(patterns.isEmpty)
+          }
+                                
+          Spacer()
+
+        }
         
         HStack {
           Picker("", selection: $patternOutput) {
             ForEach(PatternOutput.allCases, id: \.self) { output in
               Text(output.rawValue).tag(output)
+              Divider()
             }
           }
           .pickerStyle(SegmentedPickerStyle())
@@ -67,7 +117,7 @@ struct PatternView: View {
         }
       }
       .padding()
-      .frame(height: 100)
+      .frame(height: 200)
       
       Divider()
       
@@ -79,8 +129,9 @@ struct PatternView: View {
         case .GIV: GIVXMLView()
         }
       }
-      
     }
+    
+    
   }
 
   // G R A P H  =================================================================
@@ -264,10 +315,10 @@ struct PatternView: View {
 private struct Pattern {
   
   let sequence: Sequence
-  let patterns: [String]
+  let patterns: [PatternItem]
   @Binding var buffer: String
 
-  init(_ sequence: Sequence, patterns: [String], text: Binding<String>) {
+  init(_ sequence: Sequence, patterns: [PatternItem], text: Binding<String>) {
     self.sequence = sequence
     self.patterns = patterns
     self._buffer = text

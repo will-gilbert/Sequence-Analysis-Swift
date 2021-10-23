@@ -9,7 +9,7 @@ import Foundation
 
 struct Pattern_CreateXML {
 
-  func createXML(_ sequence: Sequence, patterns: [String]) -> XMLDocument {
+  func createXML(_ sequence: Sequence, patterns: [PatternItem]) -> XMLDocument {
     
     let root = XMLElement(name: "Pattern")
     root.addAttribute(XMLNode.attribute(withName: "sequence", stringValue: sequence.shortDescription) as! XMLNode)
@@ -18,7 +18,9 @@ struct Pattern_CreateXML {
     let xml = XMLDocument(rootElement: root)
     let strand = sequence.string.uppercased()
     
-    for pattern in patterns {
+    for patternItem in patterns {
+      
+      let pattern = patternItem.pattern
             
       do {
         let regex = try NSRegularExpression(pattern: pattern.uppercased())
