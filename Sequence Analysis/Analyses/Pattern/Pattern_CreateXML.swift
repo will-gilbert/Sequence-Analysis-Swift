@@ -16,14 +16,14 @@ struct Pattern_CreateXML {
     root.addAttribute(XMLNode.attribute(withName: "length", stringValue: String(sequence.length)) as! XMLNode)
     
     let xml = XMLDocument(rootElement: root)
-    let strand = sequence.string.uppercased()
+    let strand = sequence.string
     
     for patternItem in patterns {
       
       let pattern = patternItem.pattern
             
       do {
-        let regex = try NSRegularExpression(pattern: pattern.uppercased())
+        let regex = try NSRegularExpression(pattern: pattern)
         let results = regex.matches(in: strand, range: NSRange(strand.startIndex..., in: strand))
 
         let patternNode = XMLElement(name: "pattern")

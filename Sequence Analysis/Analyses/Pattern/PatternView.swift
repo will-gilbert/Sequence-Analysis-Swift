@@ -19,10 +19,15 @@ struct PatternItem: Hashable {
   func hash(into hasher: inout Hasher) {
       hasher.combine(id)
   }
+  
   static func ==(lhs: PatternItem, rhs: PatternItem) -> Bool {
       return lhs.id == rhs.id
   }
+}
 
+class PatternViewModel: ObservableObject {
+  @Published var items: [PatternItem] = []
+  @Published var selectedItem: PatternItem? = nil
 }
 
 struct PatternView: View {
@@ -35,33 +40,52 @@ struct PatternView: View {
   }
 
   @ObservedObject var sequence: Sequence
+  @ObservedObject var viewModel: PatternViewModel
   
   @State var text: String = ""
   @State var patternOutput: PatternOutput = .GRAPH
-  
   @State var xmlDocument: XMLDocument? = nil
-//  @State var patterns = ["ATG", "TAG|TAA|TGA", "(CG){2,}", "ATG([ACGT]{3,3})*?((TAG)|(TAA)|(TGA))"]
-  @State var patterns: [PatternItem] = []
-  @State var selectedPattern: PatternItem? = nil
+
+  // @State var patterns = ["ATG", "TAG|TAA|TGA", "(CG){2,}", "ATG([ACGT]{3,3})*?((TAG)|(TAA)|(TGA))"]
+  
   @State var newPattern: String = ""
+  @State var isEditing: Bool = false
 
   var body: some View {
     
     // Pass in the state variables, it will be displayed when 'Pattern' is finished
     
     DispatchQueue.main.async {
-      var pattern = Pattern(sequence, patterns: patterns, text: $text)
+      var pattern = Pattern(sequence, patterns: viewModel.items, text: $text)
       xmlDocument = pattern.createXML()
     }
     
     return VStack {
       VStack {
         HStack(alignment: .top) {
-          List(patterns, id: \.id, selection: $selectedPattern) { item in
-            Text(item.pattern)
+          List(selection: $viewModel.selectedItem) {
+            ForEach(viewModel.items, id: \.id) { item in
+              Button {
+                viewModel.selectedItem = item
+                isEditing = true
+                newPattern = item.pattern
+              } label: {
+                VStack(alignment: .leading) {
+                  Text(item.pattern).tag(item.id)
+                  Divider()
+                }
+              }.buttonStyle(PlainButtonStyle())
+              .contextMenu {
+              Button( action: {
+                if let index = viewModel.items.firstIndex(of: item) {
+                  viewModel.items.remove(at: index)
+                }
+              }){
+                Text("Delete")}
+              }
+            }
           }
-          .listStyle(SidebarListStyle())
-          .navigationTitle("Patterns")
+//          .listStyle(SidebarListStyle())
           .frame(width: 200, height: 150)
           
           HStack{
@@ -70,7 +94,15 @@ struct PatternView: View {
               onCommit: {
                 let string = newPattern.trimmingCharacters(in: .whitespaces)
                 if string.count > 0 {
-                  patterns.append(PatternItem(string))
+                  if isEditing {
+                    if let item = viewModel.selectedItem {
+                      if let index = viewModel.items.firstIndex(of: item) {
+                        viewModel.items[index].pattern = string
+                      }
+                    }
+                  } else {
+                    viewModel.items.append(PatternItem(string))
+                  }
                   newPattern = ""
                 }
               }
@@ -79,10 +111,11 @@ struct PatternView: View {
             .padding()
             .frame(width: 200)
             Button(action: {
-              patterns.removeAll()
+              newPattern = ""
+              viewModel.items.removeAll()
             }) {
               Text("Clear all patterns")
-            }.disabled(patterns.isEmpty)
+            }.disabled(viewModel.items.isEmpty)
           }
                                 
           Spacer()
@@ -177,13 +210,6 @@ struct PatternView: View {
         let scrollViewWidth =  extent * scale
 
         VStack(alignment: .leading) {
-//          Group {
-//            Text(" Panel Width: \(panelWidth)")
-//            Text("         min: \(minScale)")
-//            Text("         max: \(maxScale)")
-//            Text(" scrollWidth: \(scrollViewWidth)")
-//          }
-
           if minScale < maxScale {
             HStack (spacing: 15) {
               Slider(
@@ -315,7 +341,7 @@ struct PatternView: View {
 private struct Pattern {
   
   let sequence: Sequence
-  let patterns: [PatternItem]
+  var patterns: [PatternItem]
   @Binding var buffer: String
 
   init(_ sequence: Sequence, patterns: [PatternItem], text: Binding<String>) {

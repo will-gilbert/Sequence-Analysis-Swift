@@ -52,7 +52,7 @@ struct AnalysisView: View {
       case .STRUCTURE:
         StructureView(sequenceState.sequence)
       case .PATTERN:
-        PatternView(sequence: sequenceState.sequence)
+        PatternView(sequence: sequenceState.sequence, viewModel: sequenceState.patternViewModel)
       case .FORMAT:
         FormatView()
       case .PUBLISH:

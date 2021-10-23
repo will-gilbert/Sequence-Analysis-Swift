@@ -95,7 +95,7 @@ class Pattern_XMLParser: NSObject, XMLParserDelegate {
 
     let layout = TileLayout(bouyancy: .floating, hGap: 0, vGap: 2)
     mapPanels.append(MapPanel(extent: extent, layout: layout, color: "Peach"))
-    let label = "\(regex) (\(count))"
+    let label = "\(regex)   (\(count))"
     givPanels.append(GIVPanel(extent: extent, color: "Clear", label: label))
   }
 
@@ -111,28 +111,4 @@ class Pattern_XMLParser: NSObject, XMLParserDelegate {
   }
   
 }
-
-/*
- 
- 
- <Pattern sequence="5C85C Radomized using ATCG" length="200">
-     <pattern label="ATG">
-         <match label="ATG" from="61" to="63"></match>
-         <match label="ATG" from="159" to="161"></match>
-         <match label="ATG" from="163" to="165"></match>
-         <match label="ATG" from="172" to="174"></match>
-         <match label="ATG" from="198" to="200"></match>
-     </pattern>
-     <pattern label="TAG|TAA|TGA">
-         <match label="TAA" from="54" to="56"></match>
-         <match label="TAA" from="75" to="77"></match>
-         <match label="TAA" from="81" to="83"></match>
-         <match label="TAG" from="97" to="99"></match>
-         <match label="TAA" from="157" to="159"></match>
-         <match label="TGA" from="160" to="162"></match>
-     </pattern>
- </Pattern>
- 
- 
- */
 

@@ -17,6 +17,8 @@ class SequenceState: ObservableObject {
   @Published var selectedPatternGlyph: Glyph?
   @Published var fileFormat: FileFormat = FileFormat.FASTA
   
+  let patternViewModel = PatternViewModel()
+  
   var defaultAnalysis: AnalysisView.Analyses
 
   init(_ sequence: Sequence) {
