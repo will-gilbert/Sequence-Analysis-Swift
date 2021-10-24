@@ -75,8 +75,8 @@ struct FetchFromNCBI {
             TextField("", text: $entrezID)
           }
           VStack {
-            Text("Nucleic examples: NM_000485 NP_061820")
-            Text("Protein examples: 11128019 2392216 1CA0_H")
+            Text("Nucleic examples: NM_000485 NG_023438")
+            Text("Protein examples: NP_061820 2392216 1CA0_H")
           }
           .font(.footnote)
         }

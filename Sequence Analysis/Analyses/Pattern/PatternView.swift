@@ -99,7 +99,7 @@ struct PatternView: View {
               )
             }
           }
-          .listStyle(SidebarListStyle())
+          .listStyle(DefaultListStyle())
           .border(Colors.get(color: "AGA 04").base , width: 4)
           .frame(width: 200, height: 150)
           
