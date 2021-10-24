@@ -9,7 +9,9 @@ import Foundation
 
 struct Pattern_CreateXML {
 
-  func createXML(_ sequence: Sequence, patterns: [PatternItem]) -> XMLDocument {
+  func createXML(_ sequence: Sequence, viewModel: PatternViewModel) -> XMLDocument {
+    
+    viewModel.counts = Array.init(repeating: 0, count: viewModel.items.count)
     
     let root = XMLElement(name: "Pattern")
     root.addAttribute(XMLNode.attribute(withName: "sequence", stringValue: sequence.shortDescription) as! XMLNode)
@@ -18,9 +20,9 @@ struct Pattern_CreateXML {
     let xml = XMLDocument(rootElement: root)
     let strand = sequence.string
     
-    for patternItem in patterns {
+    for item in viewModel.items {
       
-      let pattern = patternItem.regex
+      let pattern = item.regex
             
       do {
         let regex = try NSRegularExpression(pattern: pattern)
@@ -30,7 +32,10 @@ struct Pattern_CreateXML {
         patternNode.addAttribute(XMLNode.attribute(withName: "regex", stringValue: pattern) as! XMLNode)
         patternNode.addAttribute(XMLNode.attribute(withName: "count", stringValue: String(results.count)) as! XMLNode)
         root.addChild(patternNode)
-          
+        
+        let index = viewModel.items.firstIndex(where: { $0.id == item.id })!
+        viewModel.counts[index] = results.count
+        
         for result in results {
 
           let matchNode = XMLElement(name: "match")

@@ -11,7 +11,6 @@ import SwiftUI
 struct PatternItem: Hashable {
   let id = UUID()
   var regex: String
-  var count = 0
   
   init(_ regex: String) {
     self.regex = regex
@@ -26,9 +25,11 @@ struct PatternItem: Hashable {
   }
 }
 
+// ViewModel
 class PatternViewModel: ObservableObject {
   @Published var items: [PatternItem] = []
   @Published var selectedItem: PatternItem? = nil
+  var counts: [Int] = []
 }
 
 struct PatternView: View {
@@ -58,17 +59,26 @@ struct PatternView: View {
     // Pass in the state variables, it will be displayed when 'Pattern' is finished
     
     DispatchQueue.main.async {
-      var pattern = Pattern(sequence, patterns: viewModel.items, text: $text)
+      var pattern = Pattern(sequence, viewModel: viewModel, text: $text)
       xmlDocument = pattern.createXML()
     }
-    
+        
     return VStack {
       VStack {
         HStack(alignment: .top) {
           List(selection: $viewModel.selectedItem) {
             ForEach(viewModel.items, id: \.id) { item in
                 VStack(alignment: .leading) {
-                  Text(item.regex).tag(item.id)
+                  HStack {
+                    Text(item.regex)
+                    // Be careful here. The list is updated before the count array is created.
+                    if let index = viewModel.items.firstIndex(where: { $0.id == item.id }) {
+                      if viewModel.counts.count > index {
+                        Spacer()
+                        Text(String(viewModel.counts[index]))
+                      }
+                    }
+                  }.tag(item.id)
                   Divider()
                 }
                 .onHover { hovering in
@@ -89,7 +99,8 @@ struct PatternView: View {
               )
             }
           }
-          .listStyle(DefaultListStyle())
+          .listStyle(SidebarListStyle())
+          .border(Colors.get(color: "AGA 04").base , width: 4)
           .frame(width: 200, height: 150)
           
           HStack{
@@ -345,17 +356,17 @@ struct PatternView: View {
 private struct Pattern {
   
   let sequence: Sequence
-  var patterns: [PatternItem]
+  let viewModel: PatternViewModel
   @Binding var buffer: String
 
-  init(_ sequence: Sequence, patterns: [PatternItem], text: Binding<String>) {
+  init(_ sequence: Sequence, viewModel: PatternViewModel, text: Binding<String>) {
     self.sequence = sequence
-    self.patterns = patterns
+    self.viewModel = viewModel
     self._buffer = text
   }
 
   mutating func createXML() -> XMLDocument {
-    return Pattern_CreateXML().createXML(sequence, patterns: patterns)
+    return Pattern_CreateXML().createXML(sequence, viewModel: viewModel)
    }
 }
 

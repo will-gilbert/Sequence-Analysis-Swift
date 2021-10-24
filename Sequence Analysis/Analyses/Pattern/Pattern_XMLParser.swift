@@ -95,7 +95,7 @@ class Pattern_XMLParser: NSObject, XMLParserDelegate {
 
     let layout = TileLayout(bouyancy: .floating, hGap: 0, vGap: 2)
     mapPanels.append(MapPanel(extent: extent, layout: layout, color: "Peach"))
-    let label = "\(regex)   (\(count))"
+    let label = "\(regex)   \(count)"
     givPanels.append(GIVPanel(extent: extent, color: "Clear", label: label))
   }
 
