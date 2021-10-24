@@ -20,7 +20,7 @@ struct Pattern_CreateXML {
     
     for patternItem in patterns {
       
-      let pattern = patternItem.pattern
+      let pattern = patternItem.regex
             
       do {
         let regex = try NSRegularExpression(pattern: pattern)

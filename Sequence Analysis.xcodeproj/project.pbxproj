@@ -398,9 +398,9 @@
 			children = (
 				6E8B7BCD271F46740040EBE2 /* GIVFrameView.swift */,
 				6E8B7BCE271F46740040EBE2 /* GIVPanelView.swift */,
-				6E8B7BCF271F46740040EBE2 /* GlyphView.swift */,
 				6E8B7BD0271F46740040EBE2 /* MapPanelView.swift */,
 				6E8B7BD1271F46740040EBE2 /* MosaicView.swift */,
+				6E8B7BCF271F46740040EBE2 /* GlyphView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";

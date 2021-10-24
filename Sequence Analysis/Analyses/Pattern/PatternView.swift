@@ -7,13 +7,14 @@
 
 import SwiftUI
 
-
+// Model
 struct PatternItem: Hashable {
   let id = UUID()
-  var pattern: String
+  var regex: String
+  var count = 0
   
-  init(_ pattern: String) {
-    self.pattern = pattern
+  init(_ regex: String) {
+    self.regex = regex
   }
   
   func hash(into hasher: inout Hasher) {
@@ -67,7 +68,7 @@ struct PatternView: View {
           List(selection: $viewModel.selectedItem) {
             ForEach(viewModel.items, id: \.id) { item in
                 VStack(alignment: .leading) {
-                  Text(item.pattern).tag(item.id)
+                  Text(item.regex).tag(item.id)
                   Divider()
                 }
                 .onHover { hovering in
@@ -77,7 +78,7 @@ struct PatternView: View {
                 .onTapGesture {
                   viewModel.selectedItem = item
                   isEditing = true
-                  newPattern = item.pattern
+                  newPattern = item.regex
                 }
             }.onDelete(perform: { indexSet in
               viewModel.items.remove(atOffsets: indexSet)
@@ -100,7 +101,7 @@ struct PatternView: View {
                   if isEditing {
                     if let item = viewModel.selectedItem {
                       if let index = viewModel.items.firstIndex(of: item) {
-                        viewModel.items[index].pattern = string
+                        viewModel.items[index].regex = string
                       }
                     }
                   } else {
