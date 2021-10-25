@@ -7,62 +7,35 @@
 
 import SwiftUI
 
-// Model
-struct PatternItem: Hashable {
-  let id = UUID()
-  var regex: String
-  
-  init(_ regex: String) {
-    self.regex = regex
-  }
-  
-  func hash(into hasher: inout Hasher) {
-      hasher.combine(id)
-  }
-  
-  static func ==(lhs: PatternItem, rhs: PatternItem) -> Bool {
-      return lhs.id == rhs.id
-  }
-}
-
-// ViewModel
-class PatternViewModel: ObservableObject {
-  @Published var items: [PatternItem] = []
-  @Published var selectedItem: PatternItem? = nil
-  var counts: [Int] = []
-  @Published var panel: PatternOutput = .GRAPH
-}
-
-enum PatternOutput: String, CaseIterable {
-  case GRAPH = "Pattern"
-  case XML = "XML"
-  case JSON = "JSON"
-  case GIV = "GIV XML"
-}
-
+// V I E W  ========================================================================
 struct PatternView: View {
   
-
+  // External classes; Injected via the initializer
   @ObservedObject var sequence: Sequence
   @ObservedObject var viewModel: PatternViewModel
   
-  @State var text: String = ""
-  //@State var patternOutput: PatternOutput = viewModel.panel
-  @State var xmlDocument: XMLDocument? = nil
+  // View state variables
+  @State var newPattern: String = ""           // TextField to enter a pattern
+  @State var isEditing: Bool = false           // Editing an existing pattern, not a new pattern
+  @State var isHovering: Bool = false          // Use to move items in the list
 
-  // @State var patterns = ["ATG", "TAG|TAA|TGA", "(CG){2,}", "ATG([ACGT]{3,3})*?((TAG)|(TAA)|(TGA))"]
-  
-  @State var newPattern: String = ""
-  @State var isEditing: Bool = false
-  @State var isHovering: Bool = false
+  // Save for reference: "ATG", "TAG|TAA|TGA", "(CG){2,}", "ATG([ACGT]{3,3})*?((TAG)|(TAA)|(TGA))"
 
   var body: some View {
     
-    // Pass in the state variables, it will be displayed when 'Pattern' is finished
-    
+    // Update the pattern XML when the view is updated; Async! Beware using 'counts'
     DispatchQueue.main.async {
-      var pattern = Pattern(sequence, viewModel: viewModel, text: $text)
-      xmlDocument = pattern.createXML()
+      var pattern = Pattern(sequence, viewModel: viewModel)
+      pattern.createXML()
+      
+      switch viewModel.panel {
+      case .XML: pattern.xmlPanel()
+      case .GIV: pattern.givxmlPanel()
+      case .JSON: pattern.jsonPanel()
+      default:
+        viewModel.text = ""
+      }
+
     }
         
     return VStack {
@@ -73,13 +46,8 @@ struct PatternView: View {
                 VStack(alignment: .leading) {
                   HStack {
                     Text(item.regex)
-                    // Be careful here. The list is updated before the count array is created.
-                    if let index = viewModel.items.firstIndex(where: { $0.id == item.id }) {
-                      if viewModel.counts.count > index {
-                        Spacer()
-                        Text(String(viewModel.counts[index]))
-                      }
-                    }
+                    Spacer()
+                    Text(String(item.count))
                   }.tag(item.id)
                   Divider()
                 }
@@ -127,21 +95,21 @@ struct PatternView: View {
             .textFieldStyle(RoundedBorderTextFieldStyle())
             .padding()
             .frame(width: 200)
+            
             Button(action: {
               newPattern = ""
               viewModel.items.removeAll()
             }) {
               Text("Clear all patterns")
             }.disabled(viewModel.items.isEmpty)
+            
           }
-                                
           Spacer()
-
         }
         
         HStack {
           Picker("", selection: $viewModel.panel) {
-            ForEach(PatternOutput.allCases, id: \.self) { output in
+            ForEach(PatternViewModel.Panel.allCases, id: \.self) { output in
               Text(output.rawValue).tag(output)
               Divider()
             }
@@ -150,20 +118,27 @@ struct PatternView: View {
           .disabled(sequence.length == 0)
           .font(.title)
           .frame(width: 400)
-          Spacer()
+          
+          Spacer().frame(width: 15)
           
           Button(action: {
-            print("Copy to Clipboard")
+            let pasteboard = NSPasteboard.general
+            pasteboard.clearContents()
+            pasteboard.setString(viewModel.text, forType: .string)
           }) {
-            Text("Copy to Clipboard")
-          }.disabled( viewModel.panel == .GRAPH)
+            Image(systemName: "arrow.right.doc.on.clipboard")
+          }
+          .disabled( viewModel.panel == .GRAPH)
+          .help("Copy to Clipboard")
             
           Button(action: {
             print("Save to File")
           }) {
-            Text("Save to File")
-          }.disabled( viewModel.panel == .GRAPH)
-          
+            Image(systemName: "square.and.arrow.down")
+          }
+          .disabled( viewModel.panel == .GRAPH)
+          .help("Save to File")
+          Spacer()
         }
       }
       .padding()
@@ -171,12 +146,10 @@ struct PatternView: View {
       
       Divider()
             
-      if (xmlDocument != nil) {
+      if (viewModel.xmlDocument != nil) {
         switch viewModel.panel {
-        case .GRAPH: GraphView(xmlDocument: xmlDocument!, sequence: sequence)
-        case .XML: XMLView(xmlDocument: xmlDocument!)
-        case .JSON: JSONView(xmlDocument: xmlDocument!)
-        case .GIV: GIVXMLView()
+        case .GRAPH: GraphView(xmlDocument: viewModel.xmlDocument!, sequence: sequence)
+        case .XML, .GIV, .JSON: TextView(text: viewModel.text)
         }
       }
     }
@@ -284,91 +257,5 @@ struct PatternView: View {
       }
     }
   }
-
-  // X M L  =====================================================================
-  
-  struct XMLView : View {
-    var xmlDocument: XMLDocument
-              
-    var body: some View {
-     let data = xmlDocument.xmlData(options: .nodePrettyPrint)
-     let buffer:String? = String(data: data, encoding: .utf8)
-            
-     return TextView(text: buffer ?? "XML to text failed")
-    }
-  }
-
-  // J S O N  ====================================================================
-  
-  struct JSONView: View {
-    let xsltfilename = "xml2json"
-    let xmlDocument: XMLDocument
-    let xslt: String?
-    var errorMsg: String? = nil
-    
-    init(xmlDocument: XMLDocument) {
-      self.xmlDocument = xmlDocument
-    
-      if let filepath = Bundle.main.path(forResource: xsltfilename, ofType: "xslt") {
-       do {
-         self.xslt = try String(contentsOfFile: filepath)
-       } catch {
-         self.xslt = nil; errorMsg = error.localizedDescription
-       }
-      } else {
-        self.xslt = nil; errorMsg = "Could not find '\(xsltfilename).xslt'"
-      }
-    }
-    
-    var body: some View {
-      var text: String = errorMsg != nil ? errorMsg! : ""
-
-      if let xslt = self.xslt {
-        do {
-          let data = try xmlDocument.object(byApplyingXSLTString: xslt, arguments: nil)
-          if let data = data as? Data {
-            if let json = try? JSONSerialization.jsonObject(with: data, options: .mutableContainers),
-               let prettyJSON = try? JSONSerialization.data(withJSONObject: json, options: .prettyPrinted) {
-                text = String(decoding: prettyJSON, as: UTF8.self)
-            } else {
-                text = "JSON data malformed"
-            }
-          }
-        } catch {
-          text = error.localizedDescription
-        }
-      } else {
-        text = "No contents read for '\(xsltfilename).xslt"
-      }
-      
-      return TextView(text: text)
-    }
-  }
-
-  // G I V   X M L  ==================================================================
-  
-  struct GIVXMLView  : View {
-    var body: some View {
-      Text("GIVXMLView")
-    }
-  }
-
-}
-
-private struct Pattern {
-  
-  let sequence: Sequence
-  let viewModel: PatternViewModel
-  @Binding var buffer: String
-
-  init(_ sequence: Sequence, viewModel: PatternViewModel, text: Binding<String>) {
-    self.sequence = sequence
-    self.viewModel = viewModel
-    self._buffer = text
-  }
-
-  mutating func createXML() -> XMLDocument {
-    return Pattern_CreateXML().createXML(sequence, viewModel: viewModel)
-   }
 }
 

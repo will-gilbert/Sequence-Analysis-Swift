@@ -9,10 +9,8 @@ import Foundation
 
 struct Pattern_CreateXML {
 
-  func createXML(_ sequence: Sequence, viewModel: PatternViewModel) -> XMLDocument {
-    
-    viewModel.counts = Array.init(repeating: 0, count: viewModel.items.count)
-    
+  func createXML(_ sequence: Sequence, viewModel: PatternViewModel) -> Void {
+        
     let root = XMLElement(name: "Pattern")
     root.addAttribute(XMLNode.attribute(withName: "sequence", stringValue: sequence.shortDescription) as! XMLNode)
     root.addAttribute(XMLNode.attribute(withName: "length", stringValue: String(sequence.length)) as! XMLNode)
@@ -33,9 +31,10 @@ struct Pattern_CreateXML {
         patternNode.addAttribute(XMLNode.attribute(withName: "count", stringValue: String(results.count)) as! XMLNode)
         root.addChild(patternNode)
         
+        // Update the pattern count in the view model
         let index = viewModel.items.firstIndex(where: { $0.id == item.id })!
-        viewModel.counts[index] = results.count
-        
+        viewModel.items[index].count = results.count
+
         for result in results {
 
           let matchNode = XMLElement(name: "match")
@@ -60,6 +59,6 @@ struct Pattern_CreateXML {
       }
     }
       
-    return xml
+    viewModel.xmlDocument =  xml
   }
 }

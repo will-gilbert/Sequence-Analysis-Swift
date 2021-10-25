@@ -20,10 +20,10 @@ struct FileMenu: Commands {
       }
       .keyboardShortcut("n", modifiers: [.command, .option])
 
-//      Button("Remove All Sequences")  {
-//        removeAllSequences()
-//      }
-//      .keyboardShortcut(.delete, modifiers: [.command, .option])
+      Button("Remove All Sequences")  {
+        removeAllSequences()
+      }
+      .keyboardShortcut(.delete, modifiers: [.command, .option])
     })
   }
   
