@@ -30,22 +30,24 @@ class PatternViewModel: ObservableObject {
   @Published var items: [PatternItem] = []
   @Published var selectedItem: PatternItem? = nil
   var counts: [Int] = []
+  @Published var panel: PatternOutput = .GRAPH
+}
+
+enum PatternOutput: String, CaseIterable {
+  case GRAPH = "Pattern"
+  case XML = "XML"
+  case JSON = "JSON"
+  case GIV = "GIV XML"
 }
 
 struct PatternView: View {
   
-  enum PatternOutput: String, CaseIterable {
-    case GRAPH = "Pattern"
-    case XML = "XML"
-    case JSON = "JSON"
-    case GIV = "GIV XML"
-  }
 
   @ObservedObject var sequence: Sequence
   @ObservedObject var viewModel: PatternViewModel
   
   @State var text: String = ""
-  @State var patternOutput: PatternOutput = .GRAPH
+  //@State var patternOutput: PatternOutput = viewModel.panel
   @State var xmlDocument: XMLDocument? = nil
 
   // @State var patterns = ["ATG", "TAG|TAA|TGA", "(CG){2,}", "ATG([ACGT]{3,3})*?((TAG)|(TAA)|(TGA))"]
@@ -138,7 +140,7 @@ struct PatternView: View {
         }
         
         HStack {
-          Picker("", selection: $patternOutput) {
+          Picker("", selection: $viewModel.panel) {
             ForEach(PatternOutput.allCases, id: \.self) { output in
               Text(output.rawValue).tag(output)
               Divider()
@@ -154,13 +156,13 @@ struct PatternView: View {
             print("Copy to Clipboard")
           }) {
             Text("Copy to Clipboard")
-          }.disabled( patternOutput == .GRAPH)
+          }.disabled( viewModel.panel == .GRAPH)
             
           Button(action: {
             print("Save to File")
           }) {
             Text("Save to File")
-          }.disabled( patternOutput == .GRAPH)
+          }.disabled( viewModel.panel == .GRAPH)
           
         }
       }
@@ -168,9 +170,9 @@ struct PatternView: View {
       .frame(height: 200)
       
       Divider()
-      
+            
       if (xmlDocument != nil) {
-        switch patternOutput {
+        switch viewModel.panel {
         case .GRAPH: GraphView(xmlDocument: xmlDocument!, sequence: sequence)
         case .XML: XMLView(xmlDocument: xmlDocument!)
         case .JSON: JSONView(xmlDocument: xmlDocument!)
