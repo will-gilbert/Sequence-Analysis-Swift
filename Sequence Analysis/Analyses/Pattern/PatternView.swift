@@ -7,7 +7,6 @@
 
 import SwiftUI
 
-// V I E W  ========================================================================
 struct PatternView: View {
   
   // External classes; Injected via the initializer
@@ -23,121 +22,45 @@ struct PatternView: View {
 
   var body: some View {
     
-    // Update the pattern XML when the view is updated; Async! Beware using 'counts'
+    // Update the pattern XML when the view is updated
     DispatchQueue.main.async {
+      
+      // Create the XML asynchronously using the View Model
       var pattern = Pattern(sequence, viewModel: viewModel)
       pattern.createXML()
       
+      // Create the text for XML, JSON and GIV panels from the XML
       switch viewModel.panel {
       case .XML: pattern.xmlPanel()
-      case .GIV: pattern.givxmlPanel()
       case .JSON: pattern.jsonPanel()
+      case .GIV: pattern.givxmlPanel()
       default:
-        viewModel.text = ""
+        viewModel.text = "Unimplemented"
       }
 
     }
-        
+    
+    // V I E W  ========================================================================
     return VStack {
-      VStack {
+      
+      // Pattern Options -------------------------------------------------
+      
+      VStack() {
+        
         HStack(alignment: .top) {
-          List(selection: $viewModel.selectedItem) {
-            ForEach(viewModel.items, id: \.id) { item in
-                VStack(alignment: .leading) {
-                  HStack {
-                    Text(item.regex)
-                    Spacer()
-                    Text(String(item.count))
-                  }.tag(item.id)
-                  Divider()
-                }
-                .onHover { hovering in
-                  isHovering = hovering
-                }
-                .moveDisabled(isHovering == false)
-                .onTapGesture {
-                  viewModel.selectedItem = item
-                  isEditing = true
-                  newPattern = item.regex
-                }
-            }.onDelete(perform: { indexSet in
-              viewModel.items.remove(atOffsets: indexSet)
-            })
-            .onMove { indices, newOffset in
-              viewModel.items.move(
-                fromOffsets: indices, toOffset: newOffset
-              )
-            }
-          }
-          .listStyle(DefaultListStyle())
-          .border(Colors.get(color: "AGA 04").base , width: 4)
-          .frame(width: 200, height: 150)
-          
+          patternList
           HStack{
-            Text("RegEx pattern:")
-            TextField("", text: $newPattern,
-              onCommit: {
-                let string = newPattern.trimmingCharacters(in: .whitespaces)
-                if string.count > 0 {
-                  if isEditing {
-                    if let item = viewModel.selectedItem {
-                      if let index = viewModel.items.firstIndex(of: item) {
-                        viewModel.items[index].regex = string
-                      }
-                    }
-                  } else {
-                    viewModel.items.append(PatternItem(string))
-                  }
-                  newPattern = ""
-                }
-              }
-            )
-            .textFieldStyle(RoundedBorderTextFieldStyle())
-            .padding()
-            .frame(width: 200)
-            
-            Button(action: {
-              newPattern = ""
-              viewModel.items.removeAll()
-            }) {
-              Text("Clear all patterns")
-            }.disabled(viewModel.items.isEmpty)
-            
-          }
+            editRegExField
+            clearAllBtn
+         }
           Spacer()
         }
         
         HStack {
-          Picker("", selection: $viewModel.panel) {
-            ForEach(PatternViewModel.Panel.allCases, id: \.self) { output in
-              Text(output.rawValue).tag(output)
-              Divider()
-            }
-          }
-          .pickerStyle(SegmentedPickerStyle())
-          .disabled(sequence.length == 0)
-          .font(.title)
-          .frame(width: 400)
-          
-          Spacer().frame(width: 15)
-          
-          Button(action: {
-            let pasteboard = NSPasteboard.general
-            pasteboard.clearContents()
-            pasteboard.setString(viewModel.text, forType: .string)
-          }) {
-            Image(systemName: "arrow.right.doc.on.clipboard")
-          }
-          .disabled( viewModel.panel == .GRAPH)
-          .help("Copy to Clipboard")
-            
-          Button(action: {
-            print("Save to File")
-          }) {
-            Image(systemName: "square.and.arrow.down")
-          }
-          .disabled( viewModel.panel == .GRAPH)
-          .help("Save to File")
+          panelPicker
+          Spacer()
+          copyToClipboardBtn
+          copyToFileBtn
           Spacer()
         }
       }
@@ -145,7 +68,9 @@ struct PatternView: View {
       .frame(height: 200)
       
       Divider()
-            
+      
+      // Graph, XML, JSON and GIV panels go below options ------------------
+      
       if (viewModel.xmlDocument != nil) {
         switch viewModel.panel {
         case .GRAPH: GraphView(xmlDocument: viewModel.xmlDocument!, sequence: sequence)
@@ -154,8 +79,114 @@ struct PatternView: View {
       }
     }
     
-    
   }
+
+  var patternList: some View {
+    List(selection: $viewModel.selectedItem) {
+      ForEach(viewModel.items, id: \.id) { item in
+          VStack(alignment: .leading) {
+            HStack {
+              Text(item.regex)
+              Spacer()
+              Text(String(item.count))
+            }.tag(item.id)
+            Divider()
+          }
+          .onHover { hovering in
+            isHovering = hovering
+          }
+          .moveDisabled(isHovering == false)
+          .onTapGesture {
+            viewModel.selectedItem = item
+            isEditing = true
+            newPattern = item.regex
+          }
+      }.onDelete(perform: { indexSet in
+        viewModel.items.remove(atOffsets: indexSet)
+      })
+      .onMove { indices, newOffset in
+        viewModel.items.move(
+          fromOffsets: indices, toOffset: newOffset
+        )
+      }
+    }
+    .listStyle(DefaultListStyle())
+    .border(Colors.get(color: "AGA 04").base , width: 4)
+    .frame(width: 200, height: 150)
+  }
+  
+  var editRegExField: some View {
+    
+    HStack {
+      Text("RegEx pattern:")
+      TextField("", text: $newPattern,
+        onCommit: {
+          let string = newPattern.trimmingCharacters(in: .whitespaces)
+          if string.count > 0 {
+            if isEditing {
+              if let item = viewModel.selectedItem {
+                if let index = viewModel.items.firstIndex(of: item) {
+                  viewModel.items[index].regex = string
+                }
+              }
+            } else {
+              viewModel.items.append(PatternItem(string))
+            }
+            newPattern = ""
+          }
+        }
+      )
+      .textFieldStyle(RoundedBorderTextFieldStyle())
+      .padding()
+      .frame(width: 200)
+    }
+  }
+
+  var clearAllBtn: some View {
+    Button(action: {
+      newPattern = ""
+      viewModel.items.removeAll()
+    }) {
+      Text("Clear all patterns")
+    }.disabled(viewModel.items.isEmpty)
+
+  }
+  
+  var panelPicker: some View {
+    Picker("", selection: $viewModel.panel) {
+      ForEach(PatternViewModel.Panel.allCases, id: \.self) { output in
+        Text(output.rawValue).tag(output)
+        Divider()
+      }
+    }
+    .pickerStyle(SegmentedPickerStyle())
+    .disabled(sequence.length == 0)
+    .font(.title)
+    .frame(width: 350)
+  }
+  
+  var copyToClipboardBtn: some View {
+    Button(action: {
+      let pasteboard = NSPasteboard.general
+      pasteboard.clearContents()
+      pasteboard.setString(viewModel.text, forType: .string)
+    }) {
+      Image(systemName: "arrow.right.doc.on.clipboard")
+    }
+    .disabled( viewModel.panel == .GRAPH)
+    .help("Copy to Clipboard")
+  }
+
+  var copyToFileBtn: some View {
+    Button(action: {
+      print("Save to File")
+    }) {
+      Image(systemName: "square.and.arrow.down")
+    }
+    .disabled( viewModel.panel == .GRAPH)
+    .help("Save to File")
+  }
+
 
   // G R A P H  =================================================================
 
