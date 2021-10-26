@@ -82,7 +82,8 @@ struct Pattern {
       viewModel.text = "XML Document is empty"
       return
     }
-    
+    viewModel.text = "{}"
+
     let xsltfilename = "xml2json"
     let xslt: String?
     var errorMsg: String? = nil

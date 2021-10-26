@@ -45,7 +45,7 @@ struct PatternView: View {
       
       // Pattern Options -------------------------------------------------
       
-      VStack() {
+      VStack(alignment: .leading) {
         
         HStack(alignment: .top) {
           patternList
@@ -58,7 +58,7 @@ struct PatternView: View {
         
         HStack {
           panelPicker
-          Spacer()
+          Spacer().frame(width: 15)
           copyToClipboardBtn
           copyToFileBtn
           Spacer()
@@ -156,13 +156,12 @@ struct PatternView: View {
     Picker("", selection: $viewModel.panel) {
       ForEach(PatternViewModel.Panel.allCases, id: \.self) { output in
         Text(output.rawValue).tag(output)
-        Divider()
+        //Divider()
       }
     }
     .pickerStyle(SegmentedPickerStyle())
     .disabled(sequence.length == 0)
     .font(.title)
-    .frame(width: 350)
   }
   
   var copyToClipboardBtn: some View {

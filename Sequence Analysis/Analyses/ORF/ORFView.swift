@@ -95,19 +95,18 @@ struct ORFView: View {
           .pickerStyle(SegmentedPickerStyle())
           .disabled(sequence.length == 0 || sequence.isProtein)
           .font(.title)
-          .frame(width: 400)
-          Spacer()
+          Spacer().frame(width: 15)
           
           Button(action: {
             print("Copy to Clipboard")
           }) {
-            Text("Copy to Clipboard")
+            Image(systemName: "arrow.right.doc.on.clipboard")
           }.disabled( orfOutput == .GRAPH || sequence.isProtein)
             
           Button(action: {
             print("Save to File")
           }) {
-            Text("Save to File")
+            Image(systemName: "square.and.arrow.down")
           }.disabled( orfOutput == .GRAPH || sequence.isProtein)
           
         }
