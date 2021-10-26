@@ -27,8 +27,8 @@ struct AnalysisView: View {
     windowState.selectedAnalysis = selectedAnalysis
     
     let disallowed: [Analyses] = (sequenceState.sequence.isNucleic) ?
-      [.STRUCTURE, .PI, .GIV] :   // Nucleic
-      [.ORF, .STRUCTURE, .GIV]    // Protein
+    [.PATTERN, .STRUCTURE, .PI, .GIV] :   // Nucleic
+    [.PATTERN, .ORF, .STRUCTURE, .GIV]    // Protein
     
     // Remove any analyses not used by this sequence type
     var filteredData: [Analyses] {
@@ -48,7 +48,7 @@ struct AnalysisView: View {
                       
       switch selectedAnalysis {
       case .ORF:
-        ORFView(sequence: sequenceState.sequence)
+        ORFView(sequence: sequenceState.sequence, viewModel: sequenceState.orfViewModel)
       case .STRUCTURE:
         StructureView(sequenceState.sequence)
       case .PATTERN:

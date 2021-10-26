@@ -16,117 +16,111 @@ struct ORFOptions {
   var internalATG: Bool = true
 }
 
+// V I E W  ========================================================================
 
 struct ORFView: View {
- 
-  enum ORFOutput: String, CaseIterable {
-    case GRAPH = "ORF"
-    case XML = "XML"
-    case JSON = "JSON"
-    case GIV = "GIV XML"
-  }
-      
+       
   @ObservedObject var sequence: Sequence
+  @ObservedObject var viewModel: ORFViewModel
   
   @State var minORFSize: Double = 17.0
   @State var startCodons: Bool = true
   @State var stopCodons: Bool = true
   @State var internalATG: Bool = true
-
-  @State var text: String = ""
-  @State var orfOutput: ORFOutput = .GRAPH
-  
-  @State var xmlDocument: XMLDocument? = nil
   
   var body: some View {
-
-    // Pass in the state variables, it will be displayed when 'ORF' is finished
-    DispatchQueue.main.async {
-      
-      var options = ORFOptions()
-      options.minORFsize = Int(minORFSize)
-      options.startCodons = startCodons
-      options.stopCodons = stopCodons
-      options.internalATG = internalATG
-      
-      var orf = OpenReadingFrame(sequence, text: $text, options: options)
-      if sequence.isNucleic {
-        xmlDocument = orf.createXML()
-      }
-    }
+    
+    updateViewModel()
     
     return VStack {
       VStack {
-        HStack {
-          VStack(alignment: .leading, spacing: 3.0) {
-              Toggle("Start codons", isOn: $startCodons)
-              Text(startCodons ? "true" : "false" ).hidden() // Swift 5.5  on macOS hack to refresh on toggle
-              Toggle("Stop codons", isOn: $stopCodons)
-              Text(stopCodons ? "true" : "false" ).hidden() // Swift 5.5  on macOS hack to refresh on toggle
-              Toggle("Internal 'ATG' as 'Met'", isOn: $internalATG)
-              Text(internalATG ? "true" : "false" ).hidden() // Swift 5.5  on macOS hack to refresh on toggle
-          }
-          Spacer()
-          Divider()
-          Spacer()
-            
-          VStack { // min ORF size
-            HStack(alignment: .center, spacing: 5.0) {
-              Text("Min ORF size in aa:")
-              Text(String(Int(minORFSize)))
-            }
-            
-            Slider(
-              value: $minORFSize,
-              in: 1...120
-            )
-
-          }.frame(width: 220)
-          Spacer()
-         }
-      
-        
-        HStack {
-          Picker("", selection: $orfOutput) {
-            ForEach(ORFOutput.allCases, id: \.self) { output in
-              Text(output.rawValue).tag(output)
-            }
-          }
-          .pickerStyle(SegmentedPickerStyle())
-          .disabled(sequence.length == 0 || sequence.isProtein)
-          .font(.title)
-          Spacer().frame(width: 15)
-          
-          Button(action: {
-            print("Copy to Clipboard")
-          }) {
-            Image(systemName: "arrow.right.doc.on.clipboard")
-          }.disabled( orfOutput == .GRAPH || sequence.isProtein)
-            
-          Button(action: {
-            print("Save to File")
-          }) {
-            Image(systemName: "square.and.arrow.down")
-          }.disabled( orfOutput == .GRAPH || sequence.isProtein)
-          
-        }
+        HStack { toggleButtons; Spacer(); Divider() ; Spacer() ; minORFSlider ; Spacer() }
+        HStack { panelPicker ; Spacer().frame(width: 15) ; copyToClipboardBtn ; copyToFileBtn }
       }
       .padding()
       .frame(height: 150)
       
       Divider()
       
-      if (xmlDocument != nil) {
-        switch orfOutput {
-        case .GRAPH: GraphView(xmlDocument: xmlDocument!, sequence: sequence)
-        case .XML: XMLView(xmlDocument: xmlDocument!)
-        case .JSON: JSONView(xmlDocument: xmlDocument!)
-        case .GIV: GIVXMLView(xmlDocument: xmlDocument!)
+      // Graph, XML, JSON and GIV panels go below options --------------------------
+      
+      if (viewModel.xmlDocument != nil) {
+        switch viewModel.panel {
+        case .GRAPH: GraphView(xmlDocument: viewModel.xmlDocument!, sequence: sequence)
+        case .XML, .JSON, .GIV: TextView(text: viewModel.text)
         }
-      } else {
-        Text("Sequence is protein, no ORF map can be created")
       }
     }
+  }
+  
+  
+  var toggleButtons: some View {
+    VStack(alignment: .leading, spacing: 3.0) {
+      Toggle("Start codons", isOn: $startCodons)
+      Toggle("Stop codons", isOn: $stopCodons)
+      Toggle("Internal 'ATG' as 'Met'", isOn: $internalATG)
+    }
+  }
+  
+  var minORFSlider: some View {
+    VStack { // min ORF size
+      HStack(alignment: .center, spacing: 5.0) {
+        Text("Min ORF size in aa:")
+        Text(String(Int(minORFSize)))
+      }
+      
+      Slider(
+        value: $minORFSize,
+        in: 1...120
+      )
+
+    }.frame(width: 220)
+  }
+  
+  var panelPicker: some View {
+    Picker("", selection: $viewModel.panel) {
+      ForEach(ORFViewModel.Panel.allCases, id: \.self) { panelName in
+        Text(panelName.rawValue).tag(panelName)
+      }
+    }
+    .pickerStyle(SegmentedPickerStyle())
+    .disabled(sequence.length == 0 || sequence.isProtein)
+    .font(.title)
+  }
+  
+  var copyToClipboardBtn: some View {
+    Button(action: {
+      let pasteboard = NSPasteboard.general
+      pasteboard.clearContents()
+      pasteboard.setString(viewModel.text, forType: .string)
+    }) {
+      Image(systemName: "arrow.right.doc.on.clipboard")
+    }
+    .disabled( viewModel.panel == .GRAPH)
+    .help("Copy to Clipboard")
+  }
+
+  var copyToFileBtn: some View {
+    Button(action: {
+      print("Save to File")
+    }) {
+      Image(systemName: "square.and.arrow.down")
+    }
+    .disabled( viewModel.panel == .GRAPH)
+    .help("Save to File")
+  }
+
+  
+  func updateViewModel() -> Void {
+    
+    // Pass in the state variables, it will be displayed when 'ORF' is finished
+    var options = ORFOptions()
+    options.minORFsize = Int(minORFSize)
+    options.startCodons = startCodons
+    options.stopCodons = stopCodons
+    options.internalATG = internalATG
+    
+    viewModel.update(sequence: sequence, options: options)
   }
 
   
@@ -173,13 +167,6 @@ struct ORFView: View {
         let scrollViewWidth =  extent * scale
 
         VStack(alignment: .leading) {
-//          Group {
-//            Text(" Panel Width: \(panelWidth)")
-//            Text("         min: \(minScale)")
-//            Text("         max: \(maxScale)")
-//            Text(" scrollWidth: \(scrollViewWidth)")
-//          }
-
           if minScale < maxScale {
             HStack (spacing: 15) {
               Slider(
@@ -244,127 +231,8 @@ struct ORFView: View {
     }
   }
   
-  // X M L  ======================================================================================================
-
-  struct XMLView: View {
-    var xmlDocument: XMLDocument
-              
-    var body: some View {
-     let data = xmlDocument.xmlData(options: .nodePrettyPrint)
-     let buffer:String? = String(data: data, encoding: .utf8)
-            
-     return TextView(text: buffer ?? "XML to text failed")
-    }
-  }
-  
-  // J S O N  ===================================================================================================
-  
-  struct JSONView: View {
-    let xsltfilename = "xml2json"
-    let xmlDocument: XMLDocument
-    let xslt: String?
-    var errorMsg: String? = nil
-    
-    init(xmlDocument: XMLDocument) {
-      self.xmlDocument = xmlDocument
-    
-      if let filepath = Bundle.main.path(forResource: xsltfilename, ofType: "xslt") {
-       do {
-         self.xslt = try String(contentsOfFile: filepath)
-       } catch {
-         self.xslt = nil; errorMsg = error.localizedDescription
-       }
-      } else {
-        self.xslt = nil; errorMsg = "Could not find '\(xsltfilename).xslt'"
-      }
-    }
-    
-    var body: some View {
-      var text: String = errorMsg != nil ? errorMsg! : ""
-
-      if let xslt = self.xslt {
-        do {
-          let data = try xmlDocument.object(byApplyingXSLTString: xslt, arguments: nil)
-          if let data = data as? Data {
-            if let json = try? JSONSerialization.jsonObject(with: data, options: .mutableContainers),
-               let prettyJSON = try? JSONSerialization.data(withJSONObject: json, options: .prettyPrinted) {
-                text = String(decoding: prettyJSON, as: UTF8.self)
-            } else {
-                text = "JSON data malformed"
-            }
-          }
-        } catch {
-          text = error.localizedDescription
-        }
-      } else {
-        text = "No contents read for '\(xsltfilename).xslt"
-      }
-      
-      return TextView(text: text)
-    }
-  }
-
-  // G I V   X M L  =============================================================================================
-
-  struct GIVXMLView: View {
-    
-    let xsltfilename = "orf2giv"
-    let xmlDocument: XMLDocument
-    let xslt: String?
-    var errorMsg: String? = nil
-    
-    init(xmlDocument: XMLDocument) {
-      self.xmlDocument = xmlDocument
-    
-      if let filepath = Bundle.main.path(forResource: xsltfilename, ofType: "xslt") {
-       do {
-         self.xslt = try String(contentsOfFile: filepath)
-       } catch {
-         self.xslt = nil; errorMsg = error.localizedDescription
-       }
-      } else {
-        self.xslt = nil; errorMsg = "Could not find '\(xsltfilename).xslt'"
-      }
-    }
-    
-    var body: some View {
-      var text: String = errorMsg != nil ? errorMsg! : ""
-
-      if let xslt = self.xslt {
-        do {
-          let data = try xmlDocument.object(byApplyingXSLTString: xslt, arguments: nil)
-          if let data = data as? XMLDocument {
-            let prettyXML = data.xmlData(options: .nodePrettyPrint)
-            text = String(data: prettyXML, encoding: .utf8) ?? "XML Transform could not be rendered (Pretty Print)"
-          }
-        } catch {
-          text = error.localizedDescription
-        }
-      } else {
-        text = "No contents read for '\(xsltfilename).xslt'"
-      }
-      
-      return TextView(text: text)
-    }
-  }
 }
 
-private struct OpenReadingFrame {
-  
-  let sequence: Sequence
-  @Binding var buffer: String
-  let options: ORFOptions
-
-  init(_ sequence: Sequence, text: Binding<String>, options: ORFOptions) {
-    self.sequence = sequence
-    self._buffer = text
-    self.options = options
-  }
-
-  mutating func createXML() -> XMLDocument {
-    return ORF_CreateXML().createXML(sequence, options: options)
-   }
-}
 
 
 

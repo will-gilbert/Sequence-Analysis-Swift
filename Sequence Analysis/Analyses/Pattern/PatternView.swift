@@ -24,7 +24,9 @@ struct PatternView: View {
     
     // Update the pattern XML when the view is updated
     DispatchQueue.main.async {
-      
+     
+      print("Pattern:  DispatchQueue.main.async")
+
       // Create the XML asynchronously using the View Model
       var pattern = Pattern(sequence, viewModel: viewModel)
       pattern.createXML()
@@ -154,9 +156,8 @@ struct PatternView: View {
   
   var panelPicker: some View {
     Picker("", selection: $viewModel.panel) {
-      ForEach(PatternViewModel.Panel.allCases, id: \.self) { output in
-        Text(output.rawValue).tag(output)
-        //Divider()
+      ForEach(PatternViewModel.Panel.allCases, id: \.self) { panelName in
+        Text(panelName.rawValue).tag(panelName)
       }
     }
     .pickerStyle(SegmentedPickerStyle())

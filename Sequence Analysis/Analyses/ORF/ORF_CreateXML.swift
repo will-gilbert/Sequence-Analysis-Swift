@@ -10,7 +10,7 @@ import Foundation
 
 struct ORF_CreateXML {
 
-  func createXML(_ sequence: Sequence, options: ORFOptions) -> XMLDocument {
+  func createXML(_ sequence: Sequence, options: ORFOptions, viewModel: ORFViewModel) -> Void {
 
     let orf = XMLElement(name: "ORF")
     orf.addAttribute(XMLNode.attribute(withName: "sequence", stringValue: sequence.shortDescription) as! XMLNode)
@@ -63,7 +63,7 @@ struct ORF_CreateXML {
         frameNode.addChild(orfNode)
       }
     }
-    return xml
+    viewModel.xmlDocument =  xml
   }
   
   func findStartCodons(_ sequence: Sequence, frame: Int) -> [Int] {
