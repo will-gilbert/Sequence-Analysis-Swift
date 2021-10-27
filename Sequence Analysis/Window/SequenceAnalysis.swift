@@ -26,16 +26,18 @@ struct SequenceAnalysis: View {
                 FetchFromNCBI(appState: appState).openWindow()
               }) {
                   Image(systemName: "network")
-              }.help("Fetch an entry from the NCBI")
-              
+              }.help("Fetch an entry from the NCBI,  ⌘-E")
+                .keyboardShortcut("e", modifiers: .command)
+
               // Add a sequence
               Button(action: {
                 CreateNewSequence(appState: appState).openWindow()
               }) {
                   Image(systemName: "plus")
               }
-              .help("Add a new sequence")
-          
+              .help("Add a new sequence,  ⌥⌘-N")
+              .keyboardShortcut("n", modifiers: [.option, .command])
+
               // Read a sequence file
               Button(action: {
                 readSequenceFromFile()
@@ -61,7 +63,8 @@ struct SequenceAnalysis: View {
                 Image(systemName: windowState.editorIsVisible ? "eye" : "eye.slash")
               }
               .disabled(windowState.currentSequenceState == nil)
-              .help("Show/Hide the sequence editor")
+              .help("Show/Hide the sequence editor, ⌘-S")
+              .keyboardShortcut("s", modifiers: .command)
               
               // Edit the UID and/or title
               Button(action: {

@@ -33,96 +33,14 @@ struct SequenceEditor: View {
   var body: some View {
     return VStack(alignment: .leading) {
       
-      HStack{
-        Button(action: {
-
-          let range = sequenceState.selection
-          let from = range!.location
-          let to  = range!.location + range!.length
-          
-          let orf = String(Array(sequenceState.sequence.string)[from...to])
-          let protein = Sequence.nucToProtein(orf)
-
-          let uid = Sequence.nextUID()
-          let title = "Translate from '\(sequenceState.sequence.uid)', \(from)-\(to)"
-          let sequence = Sequence(protein, uid: uid, title: title, type: .PROTEIN)
-          sequence.alphabet = .PROTEIN
-          
-          // Change the state in the main thread
-          DispatchQueue.main.async {
-            let newSequenceState = appState.addSequence(sequence)
-            windowState.currentSequenceState = newSequenceState
-          }
-          
-        }) {
-          Image(systemName: "goforward")
-        }
-        .font(.system(size: symbolSize, weight: symbolWeight))
-        .disabled(sequenceState.sequence.isProtein || editorHasSelection == false)
-        .help("Translate Selection")
+      HStack {
+        translateSelectionBtn
+        caseChangeBtn
+        rna2dna2rnaBtn
+        reverseComplementBtn
+        shuffleBtn
+        copySequence
         
-        Button(action: {
-          DispatchQueue.main.async {
-            if caseToggle {
-              sequenceState.sequence.string = sequenceState.sequence.string.uppercased()
-            } else {
-              sequenceState.sequence.string = sequenceState.sequence.string.lowercased()
-            }
-            caseToggle.toggle()
-            sequenceState.changed.toggle()
-          }
-        }) {
-          Text("A\u{21C6}a")
-            .font(.system(size: symbolSize, weight: symbolWeight))
-        }
-        .help("Toggle Uppercase/Lowercase")
-        
-        Button(action: {
-          DispatchQueue.main.async {
-            let sequence = sequenceState.sequence.string
-            if(sequenceState.sequence.isDNA) {
-              sequenceState.sequence.string = Sequence.DNAtoRNA(sequence)
-              sequenceState.sequence.type = .RNA
-            } else {
-              sequenceState.sequence.string = Sequence.RNAtoDNA(sequence)
-              sequenceState.sequence.type = .DNA
-            }
-            sequenceState.changed.toggle()
-          }
-        }) {
-          Text("T\u{21C6}U")
-        }
-        .disabled(sequenceState.sequence.isProtein)
-        .font(.system(size: symbolSize, weight: symbolWeight))
-        .help("DNA to/from RNA")
-
-        Button(action: {
-          let strand = Array(sequenceState.sequence.string)
-          let shuffled = strand.shuffled()
-          sequenceState.sequence.string = String(shuffled)
-          sequenceState.changed.toggle()
-        }) {
-          Image(systemName: "shuffle")
-        }
-        .font(.system(size: symbolSize, weight: symbolWeight))
-        .help("Shuffle")
-        
-        Button(action: {
-          print("Create a copy")
-          let uid = sequenceState.sequence.uid
-          let title = sequenceState.sequence.title
-          let type = sequenceState.sequence.type
-          let text = sequenceState.sequence.string
-          let newSequence = Sequence(text, uid: uid, title: title, type: type)
-          newSequence.alphabet = sequenceState.sequence.alphabet
-          let _ = appState.addSequence(newSequence)
-          
-        }) {
-          Image(systemName: "doc.on.doc")
-        }
-        .font(.system(size: symbolSize, weight: symbolWeight))
-        .help("Create a copy")
-
         Spacer()
         Text(position)
           .font(.system(size: symbolSize, weight: symbolWeight))
@@ -167,6 +85,121 @@ struct SequenceEditor: View {
         
       }
     }
+  }
+  
+  var caseChangeBtn: some View {
+    Button(action: {
+      DispatchQueue.main.async {
+        if caseToggle {
+          sequenceState.sequence.string = sequenceState.sequence.string.uppercased()
+        } else {
+          sequenceState.sequence.string = sequenceState.sequence.string.lowercased()
+        }
+        caseToggle.toggle()
+        sequenceState.changed.toggle()
+      }
+    }) {
+      Text("A\u{21C6}a")
+        .font(.system(size: symbolSize, weight: symbolWeight))
+    }
+    .help("Toggle Uppercase/Lowercase")
+  }
+  
+  var translateSelectionBtn: some View {
+    Button(action: {
+
+      let range = sequenceState.selection
+      let from = range!.location
+      let to  = range!.location + range!.length
+      
+      let orf = String(Array(sequenceState.sequence.string)[from...to])
+      let protein = Sequence.nucToProtein(orf)
+
+      let uid = Sequence.nextUID()
+      let title = "Translate from '\(sequenceState.sequence.uid)', \(from)-\(to)"
+      let sequence = Sequence(protein, uid: uid, title: title, type: .PROTEIN)
+      sequence.alphabet = .PROTEIN
+      
+      // Change the state in the main thread
+      DispatchQueue.main.async {
+        let newSequenceState = appState.addSequence(sequence)
+        windowState.currentSequenceState = newSequenceState
+      }
+      
+    }) {
+      Image(systemName: "goforward")
+    }
+    .font(.system(size: symbolSize, weight: symbolWeight))
+    .disabled(sequenceState.sequence.isProtein || editorHasSelection == false)
+    .help("Translate Selection")
+  }
+  
+  var rna2dna2rnaBtn: some View {
+    Button(action: {
+      DispatchQueue.main.async {
+        let sequence = sequenceState.sequence.string
+        if(sequenceState.sequence.isDNA) {
+          sequenceState.sequence.string = Sequence.DNAtoRNA(sequence)
+          sequenceState.sequence.type = .RNA
+        } else {
+          sequenceState.sequence.string = Sequence.RNAtoDNA(sequence)
+          sequenceState.sequence.type = .DNA
+        }
+        sequenceState.changed.toggle()
+      }
+    }) {
+      Text("T\u{21C6}U")
+    }
+    .disabled(sequenceState.sequence.isProtein)
+    .font(.system(size: symbolSize, weight: symbolWeight))
+    .help("DNA to/from RNA")
+  }
+  
+  var reverseComplementBtn: some View {
+    Button(action: {
+      DispatchQueue.main.async {
+        let sequence = sequenceState.sequence
+        sequenceState.sequence.string = Sequence.reverseComp(sequence.string, type: sequence.type)
+        sequenceState.changed.toggle()
+      }
+    }) {
+      Image(systemName: "arrow.left.arrow.right")
+    }
+    .disabled(sequenceState.sequence.isProtein)
+    .font(.system(size: symbolSize, weight: symbolWeight))
+    .help("Reverse Complement")
+  }
+  
+  var shuffleBtn: some View {
+    Button(action: {
+      let strand = Array(sequenceState.sequence.string)
+      let shuffled = strand.shuffled()
+      sequenceState.sequence.string = String(shuffled)
+      sequenceState.changed.toggle()
+    }) {
+      Image(systemName: "shuffle")
+    }
+    .font(.system(size: symbolSize, weight: symbolWeight))
+    .help("Shuffle")
+  }
+  
+  var copySequence: some View {
+    Button(action: {
+      print("Create a copy")
+      let uid = sequenceState.sequence.uid
+      let title = sequenceState.sequence.title
+      let type = sequenceState.sequence.type
+      let text = sequenceState.sequence.string
+      let newSequence = Sequence(text, uid: uid, title: title, type: type)
+      newSequence.alphabet = sequenceState.sequence.alphabet
+      let _ = appState.addSequence(newSequence)
+      
+    }) {
+      Image(systemName: "doc.on.doc")
+    }
+    .font(.system(size: symbolSize, weight: symbolWeight))
+    .help("Create a copy")
+
   }
   
 }

@@ -20,22 +20,25 @@ struct PatternView: View {
   @State private var isHovering: Bool = false          // Use to move items in the list
   @State private var selectedItem: PatternItem? = nil  // Editing an existing pattern
   
+  private var length: Int
   private var checkSum: Int
-  
+
   init(sequence: Sequence, viewModel: PatternViewModel) {
     self.sequence = sequence
     self.viewModel = viewModel
     self.checkSum = sequence.checkSum
+    self.length = sequence.length
   }
 
   // Save for reference: "ATG", "TAG|TAA|TGA", "(CG){2,}", "ATG([ACGT]{3,3})*?((TAG)|(TAA)|(TGA))"
   
   
   var body: some View {
- 
-//    print("Pattern: Redraw View")
-    if(checkSum != sequence.checkSum) {
-//      print("Pattern: Update model")
+     
+    // Hopely I will learn a better way to update the View Model in the future
+    if(length != sequence.length) { // Fast check on sequence change; Generaly used
+      updateViewModel()
+    } else if(checkSum != sequence.checkSum) { // Slower check e.g. shuffled sequence or T/U
       updateViewModel()
     }
 
@@ -55,12 +58,8 @@ struct PatternView: View {
       
       // Graph, XML, JSON and GIV panels go below the divider ------------------
       
-      
       switch viewModel.panel {
-      case .GRAPH:
-        if (viewModel.xmlDocument != nil) {
-          GraphView(xmlDocument: viewModel.xmlDocument!, sequence: viewModel.sequence)
-        }
+      case .GRAPH: GraphView(xmlDocument: viewModel.xmlDocument, sequence: viewModel.sequence)
       case .XML, .GIV, .JSON: TextView(text: viewModel.text)
       }
     }
@@ -88,11 +87,13 @@ struct PatternView: View {
           }
       }.onDelete(perform: { indexSet in
         viewModel.items.remove(atOffsets: indexSet)
+        updateViewModel()
       })
       .onMove { indices, newOffset in
         viewModel.items.move(
           fromOffsets: indices, toOffset: newOffset
         )
+        updateViewModel()
       }
     }
     .listStyle(DefaultListStyle())
@@ -192,11 +193,14 @@ struct PatternView: View {
     var height: CGFloat = 0.0
     var width: CGFloat = 0.0
 
-    init(xmlDocument: XMLDocument, sequence: Sequence) {
+    init?(xmlDocument: XMLDocument?, sequence: Sequence) {
+      
+      guard xmlDocument != nil else { return nil}
+      
       self.extent = CGFloat(sequence.length)
       
       self.patternParser = Pattern_XMLParser(extent: sequence.length)
-      self.patternParser.parse(xmlDocument: xmlDocument)
+      self.patternParser.parse(xmlDocument: xmlDocument!)
       self.givFrame = patternParser.givFrame
 
       self.height = self.givFrame.size.height
