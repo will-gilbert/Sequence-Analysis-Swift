@@ -10,81 +10,64 @@ import SwiftUI
 struct PatternView: View {
   
   // External classes; Injected via the initializer
+  //@EnvironmentObject var sequenceState: SequenceState
   @ObservedObject var sequence: Sequence
   @ObservedObject var viewModel: PatternViewModel
   
   // View state variables
-  @State var newPattern: String = ""           // TextField to enter a pattern
-  @State var isEditing: Bool = false           // Editing an existing pattern, not a new pattern
-  @State var isHovering: Bool = false          // Use to move items in the list
+  @State private var newPattern: String = ""           // TextField to enter a pattern
+  @State private var isEditing: Bool = false           // Editing an existing pattern, not a new pattern
+  @State private var isHovering: Bool = false          // Use to move items in the list
+  @State private var selectedItem: PatternItem? = nil  // Editing an existing pattern
+  
+  private var checkSum: Int
+  
+  init(sequence: Sequence, viewModel: PatternViewModel) {
+    self.sequence = sequence
+    self.viewModel = viewModel
+    self.checkSum = sequence.checkSum
+  }
 
   // Save for reference: "ATG", "TAG|TAA|TGA", "(CG){2,}", "ATG([ACGT]{3,3})*?((TAG)|(TAA)|(TGA))"
-
+  
+  
   var body: some View {
-    
-    // Update the pattern XML when the view is updated
-    DispatchQueue.main.async {
-     
-      print("Pattern:  DispatchQueue.main.async")
-
-      // Create the XML asynchronously using the View Model
-      var pattern = Pattern(sequence, viewModel: viewModel)
-      pattern.createXML()
-      
-      // Create the text for XML, JSON and GIV panels from the XML
-      switch viewModel.panel {
-      case .XML: pattern.xmlPanel()
-      case .JSON: pattern.jsonPanel()
-      case .GIV: pattern.givxmlPanel()
-      default:
-        viewModel.text = "Unimplemented"
-      }
-
+ 
+//    print("Pattern: Redraw View")
+    if(checkSum != sequence.checkSum) {
+//      print("Pattern: Update model")
+      updateViewModel()
     }
-    
+
     // V I E W  ========================================================================
     return VStack {
       
-      // Pattern Options -------------------------------------------------
+      // Pattern Options, above the divider -------------------------------------------------
       
       VStack(alignment: .leading) {
-        
-        HStack(alignment: .top) {
-          patternList
-          HStack{
-            editRegExField
-            clearAllBtn
-         }
-          Spacer()
-        }
-        
-        HStack {
-          panelPicker
-          Spacer().frame(width: 15)
-          copyToClipboardBtn
-          copyToFileBtn
-          Spacer()
-        }
+        HStack(alignment: .top) { patternList ; HStack{ editRegExField ; clearAllBtn } ; Spacer() }
+        HStack { panelPicker; Spacer().frame(width: 15) ; copyToClipboardBtn ; copyToFileBtn ; Spacer() }
       }
       .padding()
       .frame(height: 200)
       
       Divider()
       
-      // Graph, XML, JSON and GIV panels go below options ------------------
+      // Graph, XML, JSON and GIV panels go below the divider ------------------
       
-      if (viewModel.xmlDocument != nil) {
-        switch viewModel.panel {
-        case .GRAPH: GraphView(xmlDocument: viewModel.xmlDocument!, sequence: sequence)
-        case .XML, .GIV, .JSON: TextView(text: viewModel.text)
+      
+      switch viewModel.panel {
+      case .GRAPH:
+        if (viewModel.xmlDocument != nil) {
+          GraphView(xmlDocument: viewModel.xmlDocument!, sequence: viewModel.sequence)
         }
+      case .XML, .GIV, .JSON: TextView(text: viewModel.text)
       }
     }
-    
   }
 
   var patternList: some View {
-    List(selection: $viewModel.selectedItem) {
+    List(selection: $selectedItem) {
       ForEach(viewModel.items, id: \.id) { item in
           VStack(alignment: .leading) {
             HStack {
@@ -99,7 +82,7 @@ struct PatternView: View {
           }
           .moveDisabled(isHovering == false)
           .onTapGesture {
-            viewModel.selectedItem = item
+            selectedItem = item
             isEditing = true
             newPattern = item.regex
           }
@@ -126,13 +109,15 @@ struct PatternView: View {
           let string = newPattern.trimmingCharacters(in: .whitespaces)
           if string.count > 0 {
             if isEditing {
-              if let item = viewModel.selectedItem {
+              if let item = selectedItem {
                 if let index = viewModel.items.firstIndex(of: item) {
                   viewModel.items[index].regex = string
+                  updateViewModel()
+                  isEditing.toggle()
                 }
               }
             } else {
-              viewModel.items.append(PatternItem(string))
+              viewModel.addItem(pattern: string)
             }
             newPattern = ""
           }
@@ -148,6 +133,7 @@ struct PatternView: View {
     Button(action: {
       newPattern = ""
       viewModel.items.removeAll()
+      updateViewModel()
     }) {
       Text("Clear all patterns")
     }.disabled(viewModel.items.isEmpty)
@@ -161,7 +147,7 @@ struct PatternView: View {
       }
     }
     .pickerStyle(SegmentedPickerStyle())
-    .disabled(sequence.length == 0)
+    .disabled(viewModel.sequence.length == 0)
     .font(.title)
   }
   
@@ -187,6 +173,9 @@ struct PatternView: View {
     .help("Save to File")
   }
 
+  func updateViewModel() -> Void {
+    viewModel.update()
+  }
 
   // G R A P H  =================================================================
 

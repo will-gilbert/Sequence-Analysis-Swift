@@ -38,51 +38,79 @@ class PatternViewModel: ObservableObject {
     case GIV = "GIV XML"
   }
   
-  @Published var items: [PatternItem] = []         // Collection of RegEx patterns
-  @Published var selectedItem: PatternItem? = nil  // Editing an existing pattern
-  @Published var panel: Panel = .GRAPH             // Currently selected panel
-  @Published var xmlDocument: XMLDocument? = nil   // RegEx matches as XML
-  var text: String = ""                 // Text for XML, JSON & GIV XML panels
-}
-
-
-struct Pattern {
-  
   let sequence: Sequence
-  let viewModel: PatternViewModel
+  @Published var panel: Panel = .GRAPH             // Currently selected panel
+  @Published var items: [PatternItem] = []         // Collection of RegEx patterns
+  var xmlDocument: XMLDocument? = nil              // RegEx matches as XML
 
-  init(_ sequence: Sequence, viewModel: PatternViewModel) {
+  init(sequence: Sequence) {
     self.sequence = sequence
-    self.viewModel = viewModel
   }
 
-  mutating func createXML() {
-    Pattern_CreateXML().createXML(sequence, viewModel: viewModel)
+  // Create the text for XML, JSON and GIV panels from the XML
+  var text: String {
+    
+    
+    get {
+      guard items.isEmpty == false else {
+        return "No Patterns"
+      }
+
+      if xmlDocument == nil {
+        update()
+      }
+      
+      switch panel {
+      case .XML: return xmlPanel()
+      case .JSON: return jsonPanel()
+      case .GIV: return givxmlPanel()
+      default: return "Unimplemented"
+      }
+    }
   }
   
+  func addItem(pattern: String) {
+    items.append(PatternItem(pattern))
+    update()
+  }
+  
+  func addItemPattern(index: Int, pattern: String) {
+    items[index].regex = pattern
+    update()
+  }
+  
+  func update() -> Void {
+    // Update the Pattern XML when the view is updated
+    var pattern = Pattern(sequence, viewModel: self)
+    pattern.createXML()
+  }
+
   // X M L  =====================================================================
-  func xmlPanel() {
+  func xmlPanel() -> String {
     
-    guard viewModel.xmlDocument != nil else {
-      viewModel.text = "XML Document is empty"
-      return
+    guard xmlDocument != nil else {
+      return("XML Document is empty")
     }
     
-    if let xmlDocument = viewModel.xmlDocument {
+    var text: String = "XML to text failed"
+    
+    if let xmlDocument = xmlDocument {
       let data = xmlDocument.xmlData(options: .nodePrettyPrint)
-      viewModel.text = String(data: data, encoding: .utf8) ?? "XML to text failed"
+      text = (String(data: data, encoding: .utf8) ?? "XML to text failed")
     }
+    
+    return text
   }
   
   
   // J S O N  ====================================================================
-  func jsonPanel() {
+  func jsonPanel() -> String {
     
-    guard viewModel.xmlDocument != nil else {
-      viewModel.text = "XML Document is empty"
-      return
+    guard xmlDocument != nil else {
+      return("XML Document is empty")
     }
-    viewModel.text = "{}"
+    
+    var text = "{}"
 
     let xsltfilename = "xml2json"
     let xslt: String?
@@ -100,32 +128,50 @@ struct Pattern {
     }
     
     if errorMsg != nil {
-      viewModel.text = errorMsg!
-      return
+      return errorMsg!
     }
     
     if let xslt = xslt {
         do {
-          let data = try viewModel.xmlDocument!.object(byApplyingXSLTString: xslt, arguments: nil)
+          let data = try xmlDocument!.object(byApplyingXSLTString: xslt, arguments: nil)
           if let data = data as? Data {
             if let json = try? JSONSerialization.jsonObject(with: data, options: .mutableContainers),
                let prettyJSON = try? JSONSerialization.data(withJSONObject: json, options: .prettyPrinted) {
-              viewModel.text = String(decoding: prettyJSON, as: UTF8.self)
+              return(String(decoding: prettyJSON, as: UTF8.self))
             } else {
-              viewModel.text = "JSON data malformed"
+              text = "JSON data malformed"
             }
           }
         } catch {
-          viewModel.text = error.localizedDescription
+          text = error.localizedDescription
         }
       } else {
-        viewModel.text = "No contents read for '\(xsltfilename).xslt"
+        text = "No contents read for '\(xsltfilename).xslt"
       }
+      return text
   }
   
   // G I V   X M L  ==================================================================
-  func givxmlPanel() {
-    viewModel.text = "GIVXMLView"
+  func givxmlPanel() -> String {
+    return("GIVXMLView")
   }
+
+}
+
+
+struct Pattern {
+  
+  let sequence: Sequence
+  let viewModel: PatternViewModel
+
+  init(_ sequence: Sequence, viewModel: PatternViewModel) {
+    self.sequence = sequence
+    self.viewModel = viewModel
+  }
+
+  mutating func createXML() {
+    Pattern_CreateXML().createXML(sequence, viewModel: viewModel)
+  }
+  
 
 }

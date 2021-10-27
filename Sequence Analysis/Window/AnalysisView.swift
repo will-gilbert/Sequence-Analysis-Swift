@@ -19,16 +19,14 @@ struct AnalysisView: View {
 
     var id: Analyses { self }
   }
-  
-  
-  
+    
   var body: some View {
     
     windowState.selectedAnalysis = selectedAnalysis
     
     let disallowed: [Analyses] = (sequenceState.sequence.isNucleic) ?
-    [.PATTERN, .STRUCTURE, .PI, .GIV] :   // Nucleic
-    [.PATTERN, .ORF, .STRUCTURE, .GIV]    // Protein
+    [.STRUCTURE, .PI, .GIV] :   // Nucleic
+    [.ORF, .STRUCTURE, .GIV]    // Protein
     
     // Remove any analyses not used by this sequence type
     var filteredData: [Analyses] {

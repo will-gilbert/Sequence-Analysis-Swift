@@ -23,13 +23,15 @@ struct ORFView: View {
   @ObservedObject var sequence: Sequence
   @ObservedObject var viewModel: ORFViewModel
   
-  @State var minORFSize: Double = 17.0
-  @State var startCodons: Bool = true
-  @State var stopCodons: Bool = true
-  @State var internalATG: Bool = true
+  @State private var minORFSize: Double = 17.0
+  @State private var startCodons: Bool = true
+  @State private var stopCodons: Bool = true
+  @State private var internalATG: Bool = true
   
   var body: some View {
     
+    // One of the states or sequence has changed, rebuilt the view model then redraw the view
+//    print("ORF: Redraw View")
     updateViewModel()
     
     return VStack {

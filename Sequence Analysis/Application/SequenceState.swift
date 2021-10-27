@@ -18,13 +18,14 @@ class SequenceState: ObservableObject {
   @Published var fileFormat: FileFormat = FileFormat.FASTA
   
   var orfViewModel = ORFViewModel()
-  var patternViewModel = PatternViewModel()
+  var patternViewModel: PatternViewModel
 
   var defaultAnalysis: AnalysisView.Analyses
 
   init(_ sequence: Sequence) {
     self.sequence = sequence
     defaultAnalysis = sequence.isNucleic ? .ORF : .COMPOSITION
+    patternViewModel = PatternViewModel(sequence: sequence)
   }
 }
 
