@@ -50,10 +50,9 @@ class PatternViewModel: ObservableObject {
   // Create the text for XML, JSON and GIV panels from the XML
   var text: String {
     
-    
     get {
       guard items.isEmpty == false else {
-        return "No Patterns"
+        return "No Patterns listed"
       }
 
       if xmlDocument == nil {
@@ -84,7 +83,73 @@ class PatternViewModel: ObservableObject {
     var pattern = Pattern(sequence, viewModel: self)
     pattern.createXML()
   }
+  
+  func showRegExLegend() {
+    
+    let window: NSWindow =  NSWindow(
+      contentRect: CGRect(x: 0, y: 0, width: 0, height: 0),
+      styleMask: [.titled, .closable],
+      backing: .buffered,
+      defer: false
+    )
+    window.center()
+    window.title = "Regular Expressions (RegEx) in Sequences"
+    let contents = InfoWindowContent(window: window)
+    let windowController = WindowController(window: window, contents: AnyView(contents))
+    windowController.showWindow(self)
+  }
 
+  struct InfoWindowContent: View {
+   
+    var window: NSWindow
+
+    var body: some View {
+      VStack {
+        HStack{
+          Text(legend)
+            .font( .system(size: 14, weight: .regular, design: .monospaced) )
+        }
+
+        Spacer()
+        
+        // Button panel ===============================
+        Section {
+          HStack {
+            Spacer()
+
+            // O K  =--------------------------------
+            Button(action: {
+              window.close()
+            }) {
+              Text("Done")
+            }
+            .keyboardShortcut(.defaultAction)
+          }
+        }
+        // Button panel ===============================
+
+      }
+      .padding(EdgeInsets(top: 12, leading: 20, bottom: 12, trailing: 20))
+      .frame(width: 600, height: 250)
+    }
+    
+    var legend: String = """
+        Example                  : Meaning
+        -------------------------:-----------------------------------
+        ATG                      : A literal string e.g. Start codon
+        TAG|TAA|TGA              : Any one; e.g. any Stop codon
+        C{2}                     : Two 'C's
+        C{2,}                    : Two or more 'C's
+        C{2,5}                   : Two to five 'C's
+        (CG){2,}                 : Two or more 'CG' pairs
+        A.T.                     : Dot matches any character
+        ATG(.{3})*?(TAG|TAA|TGA) : An Open Reading Frame
+        """
+  }
+
+  
+  
+  
   // X M L  =====================================================================
   func xmlPanel() -> String {
     

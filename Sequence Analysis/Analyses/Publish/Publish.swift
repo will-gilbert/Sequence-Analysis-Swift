@@ -27,6 +27,8 @@ struct PublishView: View {
   
   @State var typing: Bool = false
   
+  let viewModel: PublishViewModel = PublishViewModel()
+
   let maxBlockSize = 20
 
   var body: some View {
@@ -104,9 +106,24 @@ struct PublishView: View {
         Divider()
 
         //  Publish format ---------------------------------------------
-        FormatView(format: $format)
+        VStack(alignment: .center)  {
+          HStack {
+            TextField("", text: $format)
+              .frame(width:110)
+            Text(format).hidden()   // Swift 5.5 on macOS hack to refresh on 'format' edit
+            Button(action: {
+              viewModel.showPublishLegend()
+            }) {
+              Image(systemName:"info.circle")
+            }
+            .help("Publish string tokens")
+
+          }
+        }.frame(width:250)
       }.frame(maxHeight: 100)
+      
       Divider()
+      
       TextView(text: $text, isEditable: false)
     }
   }
@@ -177,20 +194,29 @@ struct PublishView: View {
   }
 
   
-  struct FormatView: View {
-    @Binding var format: String
-    
-    var body: some View {
-      VStack(alignment: .center)  {
-        TextField("", text: $format)
-          .frame(width:110)
-        Text(format).hidden()   // Swift 5.5 on macOS hack to refresh on 'format' edit
-      }.frame(width:160)
-    }
-  }
+//  struct FormatView: View {
+//    @Binding var format: String
+//    
+//    var body: some View {
+//      VStack(alignment: .center)  {
+//        HStack {
+//          TextField("", text: $format)
+//            .frame(width:110)
+//          Text(format).hidden()   // Swift 5.5 on macOS hack to refresh on 'format' edit
+//          Button(action: {
+//            viewModel.showPublishLegend()
+//          }) {
+//            Image(systemName:"info.circle")
+//          }
+//          .help("Publish string tokens")
+//
+//        }
+//      }.frame(width:250)
+//    }
+//  }
   
   
-    
+
 }
 
 

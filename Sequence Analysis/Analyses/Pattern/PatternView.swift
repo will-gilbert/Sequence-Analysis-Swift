@@ -48,8 +48,8 @@ struct PatternView: View {
       // Pattern Options, above the divider -------------------------------------------------
       
       VStack(alignment: .leading) {
-        HStack(alignment: .top) { patternList ; HStack{ editRegExField ; clearAllBtn } ; Spacer() }
-        HStack { panelPicker; Spacer().frame(width: 15) ; copyToClipboardBtn ; copyToFileBtn ; Spacer() }
+        HStack(alignment: .top) { patternList ; HStack{ editRegExField; clearAllBtn }; Spacer() }
+        HStack { panelPicker; Spacer().frame(width: 15) ; copyToClipboardBtn } // ; copyToFileBtn ; Spacer() }
       }
       .padding()
       .frame(height: 200)
@@ -105,6 +105,7 @@ struct PatternView: View {
     
     HStack {
       Text("RegEx pattern:")
+      regExHelp
       TextField("", text: $newPattern,
         onCommit: {
           let string = newPattern.trimmingCharacters(in: .whitespaces)
@@ -139,6 +140,15 @@ struct PatternView: View {
       Text("Clear all patterns")
     }.disabled(viewModel.items.isEmpty)
 
+  }
+  
+  var regExHelp: some View {
+    Button(action: {
+      viewModel.showRegExLegend()
+    }) {
+      Image(systemName:"info.circle")
+    }
+    .help("What is a RegEx pattern?")
   }
   
   var panelPicker: some View {

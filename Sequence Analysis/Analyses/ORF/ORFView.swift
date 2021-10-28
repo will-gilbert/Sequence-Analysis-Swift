@@ -31,13 +31,13 @@ struct ORFView: View {
   var body: some View {
     
     // One of the states or sequence has changed, rebuilt the view model then redraw the view
-//    print("ORF: Redraw View")
+    print("ORF: Redraw View")
     updateViewModel()
     
     return VStack {
       VStack {
         HStack { toggleButtons; Spacer(); Divider() ; Spacer() ; minORFSlider ; Spacer() }
-        HStack { panelPicker ; Spacer().frame(width: 15) ; copyToClipboardBtn ; copyToFileBtn }
+        HStack { panelPicker ; Spacer().frame(width: 15) ; copyToClipboardBtn } //; copyToFileBtn }
       }
       .padding()
       .frame(height: 150)

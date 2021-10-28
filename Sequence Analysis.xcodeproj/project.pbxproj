@@ -74,6 +74,7 @@
 		6E8B7C1A271F47AD0040EBE2 /* SequenceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E8B7C19271F47AD0040EBE2 /* SequenceTests.swift */; };
 		6E8E58612720578800EE6C7C /* FetchFromNCBI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E8E58602720578800EE6C7C /* FetchFromNCBI.swift */; };
 		6EDD38A527233A6C0004AA8D /* EditUIDorTitle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6EDD38A427233A6C0004AA8D /* EditUIDorTitle.swift */; };
+		6EE18D3C272B1CAF00447C26 /* Publish+MVVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6EE18D3B272B1CAF00447C26 /* Publish+MVVM.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -166,6 +167,7 @@
 		6E8B7C19271F47AD0040EBE2 /* SequenceTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SequenceTests.swift; sourceTree = "<group>"; };
 		6E8E58602720578800EE6C7C /* FetchFromNCBI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FetchFromNCBI.swift; sourceTree = "<group>"; };
 		6EDD38A427233A6C0004AA8D /* EditUIDorTitle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditUIDorTitle.swift; sourceTree = "<group>"; };
+		6EE18D3B272B1CAF00447C26 /* Publish+MVVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Publish+MVVM.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -293,9 +295,9 @@
 				6E8B7BA2271F46740040EBE2 /* ORF */,
 				6E8B7BA6271F46740040EBE2 /* Pattern */,
 				6E36632E2721AB130095100D /* Format */,
+				6EE18D3A272B1C5F00447C26 /* Publish */,
 				6E8B7BA0271F46740040EBE2 /* Composition.swift */,
 				6E8B7BAA271F46740040EBE2 /* PI.swift */,
-				6E8B7BAB271F46740040EBE2 /* Publish.swift */,
 				6E8B7BAC271F46740040EBE2 /* Structure.swift */,
 			);
 			path = Analyses;
@@ -429,6 +431,15 @@
 				6E8B7BD9271F46750040EBE2 /* Info.plist */,
 			);
 			path = System;
+			sourceTree = "<group>";
+		};
+		6EE18D3A272B1C5F00447C26 /* Publish */ = {
+			isa = PBXGroup;
+			children = (
+				6E8B7BAB271F46740040EBE2 /* Publish.swift */,
+				6EE18D3B272B1CAF00447C26 /* Publish+MVVM.swift */,
+			);
+			path = Publish;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -584,6 +595,7 @@
 				6E8B7C03271F46750040EBE2 /* GIVPanel.swift in Sources */,
 				6E8B7BED271F46750040EBE2 /* PatternView.swift in Sources */,
 				6E8B7BE2271F46750040EBE2 /* SequenceState.swift in Sources */,
+				6EE18D3C272B1CAF00447C26 /* Publish+MVVM.swift in Sources */,
 				6E8B7BE0271F46750040EBE2 /* SequenceAnalysisApp.swift in Sources */,
 				6E8B7BFC271F46750040EBE2 /* SequenceEditorView.swift in Sources */,
 				6E8B7C10271F46750040EBE2 /* Sequence+Modifiers.swift in Sources */,

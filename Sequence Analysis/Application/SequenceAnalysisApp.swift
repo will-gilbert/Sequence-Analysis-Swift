@@ -28,8 +28,6 @@ struct SequenceAnalysisApp: App {
       SequenceMenu(appState: appState)
     }
     
-
-    
     Settings {
       VStack {
         Text("Sequence Analysis Preferences will go here")
