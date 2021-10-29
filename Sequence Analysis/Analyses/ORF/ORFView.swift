@@ -31,7 +31,7 @@ struct ORFView: View {
   var body: some View {
     
     // One of the states or sequence has changed, rebuilt the view model then redraw the view
-    print("ORF: Redraw View")
+    //print("ORF: Redraw View")
     updateViewModel()
     
     return VStack {
@@ -59,17 +59,22 @@ struct ORFView: View {
   var toggleButtons: some View {
     VStack(alignment: .leading, spacing: 3.0) {
       Toggle("Start codons", isOn: $startCodons)
+        .foregroundColor(Colors.get(color: "Navy").base)
       Toggle("Stop codons", isOn: $stopCodons)
+        .foregroundColor(Colors.get(color: "Magenta").base)
       Toggle("Internal 'ATG' as 'Met'", isOn: $internalATG)
+        .foregroundColor(Colors.get(color: "Navy").base)
+
     }
   }
   
   var minORFSlider: some View {
     VStack { // min ORF size
       HStack(alignment: .center, spacing: 5.0) {
-        Text("Min ORF size in aa:")
+        Text("Minimum ORF size in aa:")
         Text(String(Int(minORFSize)))
       }
+      .foregroundColor(Colors.get(color: "Green").base)
       
       Slider(
         value: $minORFSize,
@@ -164,7 +169,7 @@ struct ORFView: View {
         GeometryReader { geometry in
      
         let panelWidth = geometry.size.width
-        var minScale = panelWidth/extent
+        var minScale = (panelWidth/extent < 1.0) ? 1.0 : panelWidth/extent
         let maxScale = log2(extent)
         let scrollViewWidth =  extent * scale
 
@@ -222,7 +227,8 @@ struct ORFView: View {
           }
 
         }.onAppear {
-          minScale = geometry.size.width/Double(extent)
+          let windowWidth = geometry.size.width
+          minScale = (windowWidth/Double(extent)) < 1.0 ? 1.0 : windowWidth/Double(extent)
           scale = minScale
         }.onChange(of: geometry.frame(in: .global).width) { value in
           minScale = value/Double(extent)

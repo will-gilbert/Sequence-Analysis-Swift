@@ -21,17 +21,15 @@ struct GlyphView: View {
     let bar = glyph.bar
     let barWidth = bar.size.width * scale
     let barHeight = bar.size.height
-    let x = bar.origin.x * scale
     let y = bar.origin.y
 
     // Border should be drawin inside of the bar
     let inset = glyph.bar.border/2
-    let xInset = bar.origin.x + inset
     let yInset = bar.origin.y + inset
-    let upperLeft = CGPoint(x: xInset, y: yInset)
-    let upperRight = CGPoint(x: xInset + barWidth, y: yInset)
-    let lowerRight = CGPoint(x: xInset + barWidth, y: yInset + barHeight)
-    let lowerLeft = CGPoint(x: xInset, y: yInset + barHeight)
+    let upperLeft = CGPoint(x: inset, y: yInset)
+    let upperRight = CGPoint(x: inset + barWidth, y: yInset)
+    let lowerRight = CGPoint(x: inset + barWidth, y: yInset + barHeight)
+    let lowerLeft = CGPoint(x: inset, y: yInset + barHeight)
  
     var labelIsVisible: Bool = true
     
@@ -62,11 +60,11 @@ struct GlyphView: View {
       
       // Bar
       Path() { path in
-        path.move(to: CGPoint(x: x , y: y))
-        path.addLine(to: CGPoint(x: x + barWidth, y: y))
-        path.addLine(to: CGPoint(x: x + barWidth, y: y + barHeight))
-        path.addLine(to: CGPoint(x: x, y: y + barHeight))
-        path.addLine(to: CGPoint(x: x, y: y))
+        path.move(to: CGPoint(x: 0.0 , y: y))
+        path.addLine(to: CGPoint(x: 0.0 + barWidth, y: y))
+        path.addLine(to: CGPoint(x: 0.0 + barWidth, y: y + barHeight))
+        path.addLine(to: CGPoint(x: 0.0, y: y + barHeight))
+        path.addLine(to: CGPoint(x: 0.0, y: y))
       }
       .fill(glyph.bar.color.base)
       
@@ -116,15 +114,19 @@ struct GlyphView: View {
       }
 
 //      print("")
-//      print("    Name: \(glyph.label?.string ?? "Untitled")")
-//      print("  Origin: x: \(F.f(glyph.origin.x * scale)), y:\(glyph.origin.y)")
-//      print("    Size: width: \(F.f(glyph.size.width *  scale)), height: \(glyph.size.height)")
-//      print("Lbl size: width: \(F.f(glyph.label?.size.width ?? 0.0)), height: \(F.f(glyph.label?.size.height ?? 0.0))")
-//      print("Bar size: width: \(F.f(barWidth, decimal: 1)), height: \(F.f(barHeight))")
-//      print("   Color: \(glyph.bar.color.base)")
-//      print(" Element: \(glyph.element.start)-\(glyph.element.stop), length: \(glyph.element.stop - glyph.element.start + 1)")
-//      print("    Type: \(glyph.style.name)")
-//      print("   Label: \(glyph.label!.position.rawValue.capitalized)")
+//      print("      Name: \(glyph.label?.string ?? "Untitled")")
+//      print("    Origin: x: \(Int(glyph.origin.x)), y:\(Int(glyph.origin.y))")
+//      print("Glyph Size: width: \(F.f(glyph.size.width *  scale))px, height: \(F.f(glyph.size.height))px")
+//      if let label = glyph.label {
+//        if label.position != .kLabelHidden {
+//          print("  Lbl size: width: \(F.f(glyph.label?.size.width ?? 0.0))px, height: \(F.f(glyph.label?.size.height ?? 0.0))px")
+//        }
+//      }
+//      print("  Bar size: width: \(F.f(barWidth, decimal: 1))px, height: \(F.f(barHeight))px")
+//      print("     Color: \(glyph.bar.color.base)")
+//      print("   Element: \(glyph.element.start)-\(glyph.element.stop), length: \(glyph.element.stop - glyph.element.start + 1)")
+//      print("      Type: \(glyph.style.name)")
+//      print("     Label: \(glyph.label!.position.rawValue.capitalized)")
     }
   }
 }

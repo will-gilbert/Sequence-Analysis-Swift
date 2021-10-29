@@ -229,7 +229,7 @@ struct PatternView: View {
         GeometryReader { geometry in
      
         let panelWidth = geometry.size.width
-        var minScale = panelWidth/extent
+        var minScale = (panelWidth/extent < 1.0) ? 1.0 : panelWidth/extent
         let maxScale = log2(extent)
         let scrollViewWidth =  extent * scale
 
@@ -281,7 +281,8 @@ struct PatternView: View {
           }
 
         }.onAppear {
-          minScale = geometry.size.width/Double(extent)
+          let windowWidth = geometry.size.width
+          minScale = (windowWidth/Double(extent)) < 1.0 ? 1.0 : windowWidth/Double(extent)
           scale = minScale
         }.onChange(of: geometry.frame(in: .global).width) { value in
           minScale = value/Double(extent)
