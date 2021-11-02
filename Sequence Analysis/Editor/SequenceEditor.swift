@@ -116,7 +116,7 @@ struct SequenceEditor: View {
       let protein = Sequence.nucToProtein(orf)
 
       let uid = Sequence.nextUID()
-      let title = "Translate from '\(sequenceState.sequence.uid)', \(from)-\(to)"
+      let title = "Translate from '\(sequenceState.sequence.uid)', \(from + 1)-\(to)"
       let sequence = Sequence(protein, uid: uid, title: title, type: .PROTEIN)
       sequence.alphabet = .PROTEIN
       
