@@ -9,6 +9,7 @@ import SwiftUI
 
 struct GlyphView: View {
   
+  @EnvironmentObject var appState: AppState
   @EnvironmentObject var windowState: WindowState
   @EnvironmentObject var sequenceState: SequenceState
 
@@ -103,7 +104,28 @@ struct GlyphView: View {
       // Path(CGRect(x: 0, y: 0, width: glyph.size.width, height: glyph.size.height)).stroke(Color.red)
     }
     .frame(width: glyph.size.width * scale, height: glyph.size.height, alignment: .center)
-    .onTapGesture {
+    .gesture( TapGesture(count: 2).onEnded {
+      print("Double Click")
+      
+      let range = NSRange(location: glyph.element.start-1, length: glyph.element.stop - glyph.element.start + 1)
+      let from = range.location
+      let to  = range.location + range.length
+      
+      let orf = String(Array(sequenceState.sequence.string)[from...to])
+      let protein = Sequence.nucToProtein(orf)
+
+      let uid = Sequence.nextUID()
+      let title = "Translate from '\(sequenceState.sequence.uid)', \(from + 1)-\(to)"
+      let sequence = Sequence(protein, uid: uid, title: title, type: .PROTEIN)
+      sequence.alphabet = .PROTEIN
+      
+      // Change the state in the main thread
+      DispatchQueue.main.async {
+        let newSequenceState = appState.addSequence(sequence)
+        windowState.currentSequenceState = newSequenceState
+      }
+    })
+    .simultaneousGesture(TapGesture().onEnded {
       
       DispatchQueue.main.async {
         if windowState.selectedAnalysis == .ORF {
@@ -114,7 +136,7 @@ struct GlyphView: View {
         
         sequenceState.selection = NSRange(location: glyph.element.start-1, length: glyph.element.stop - glyph.element.start + 1)
       }
-
+      
 //      print("")
 //      print("    Name: \(glyph.label?.string ?? "Untitled")")
 //      print("  Origin: x: \(F.f(glyph.origin.x * scale)), y:\(glyph.origin.y)")
@@ -125,7 +147,7 @@ struct GlyphView: View {
 //      print(" Element: \(glyph.element.start)-\(glyph.element.stop), length: \(glyph.element.stop - glyph.element.start + 1)")
 //      print("    Type: \(glyph.style.name)")
 //      print("   Label: \(glyph.label!.position.rawValue.capitalized)")
-    }
+    })
   }
 }
 
