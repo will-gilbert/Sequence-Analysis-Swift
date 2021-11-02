@@ -10,14 +10,16 @@ import SwiftUI
 struct GIVFrame {
 
   let extent: CGFloat
+  let hasRuler: Bool
   var size: CGSize = CGSize(width: 0, height: 0)
     
   var givPanels: Array<GIVPanel> = []
 
-  init(extent: Int) {
+  init(extent: Int, hasRuler: Bool = true) {
     self.extent = CGFloat(extent)
+    self.hasRuler = hasRuler
   }
-    
+      
   mutating func addGIVPanel(_ givPanel: GIVPanel) -> Void {
     size.width = givPanel.size.width
     size.height += givPanel.size.height
