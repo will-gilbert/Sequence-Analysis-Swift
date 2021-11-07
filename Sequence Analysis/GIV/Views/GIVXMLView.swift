@@ -9,7 +9,7 @@ import Foundation
 import SwiftUI
 
 
-struct XMLView: View {
+struct GIVXMLView: View {
 
   @State var scale: Double = 1.0
 
