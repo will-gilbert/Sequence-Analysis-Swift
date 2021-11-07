@@ -44,9 +44,9 @@ class ORF_XMLParser : NSObject, XMLParserDelegate  {
   init(extent: Int) {
         
     // Create three forward frame glyph panels
-    givPanels["+1"] = GIVPanel(extent: extent, color: "Clear", label: "Forward Frame +1")
-    givPanels["+2"] = GIVPanel(extent: extent, color: "Clear", label: "Forward Frame +2")
-    givPanels["+3"] = GIVPanel(extent: extent, color: "Clear", label: "Forward Frame +3")
+    givPanels["+1"] = GIVPanel(extent: extent, color: "None", label: "Frame +1")
+    givPanels["+2"] = GIVPanel(extent: extent, color: "None", label: "Frame +2")
+    givPanels["+3"] = GIVPanel(extent: extent, color: "None", label: "Frame +3")
 
     defaultStyle = ElementStyle()
     defaultStyle.lblPosition = "Hidden"
@@ -58,14 +58,14 @@ class ORF_XMLParser : NSObject, XMLParserDelegate  {
 
     
     let startStoplayout = TileLayout(bouyancy: .floating, hGap: 0, vGap: 2)
-    mapPanels["+1"]!.append(["codon" : MapPanel(extent: extent, layout: startStoplayout, color: "Peach")]) // start & stop
-    mapPanels["+2"]!.append(["codon" : MapPanel(extent: extent, layout: startStoplayout, color: "Peach")]) // start & stop
-    mapPanels["+3"]!.append(["codon" : MapPanel(extent: extent, layout: startStoplayout, color: "Peach")]) // start & stop
+    mapPanels["+1"]!.append(["codon" : MapPanel(extent: extent, layout: startStoplayout, color: "None")]) // start & stop
+    mapPanels["+2"]!.append(["codon" : MapPanel(extent: extent, layout: startStoplayout, color: "None")]) // start & stop
+    mapPanels["+3"]!.append(["codon" : MapPanel(extent: extent, layout: startStoplayout, color: "None")]) // start & stop
 
     let orfLayout = TileLayout(bouyancy: .floating, hGap: 2, vGap: 2)
-    mapPanels["+1"]!.append(["orf" : MapPanel(extent: extent, layout: orfLayout, color: "Peach")]) // ORF
-    mapPanels["+2"]!.append(["orf" : MapPanel(extent: extent, layout: orfLayout, color: "Peach")]) // ORF
-    mapPanels["+3"]!.append(["orf" : MapPanel(extent: extent, layout: orfLayout, color: "Peach")]) // ORF
+    mapPanels["+1"]!.append(["orf" : MapPanel(extent: extent, layout: orfLayout, color: "None")]) // ORF
+    mapPanels["+2"]!.append(["orf" : MapPanel(extent: extent, layout: orfLayout, color: "None")]) // ORF
+    mapPanels["+3"]!.append(["orf" : MapPanel(extent: extent, layout: orfLayout, color: "None")]) // ORF
     
     theFrame = GIVFrame(extent: extent)
   }

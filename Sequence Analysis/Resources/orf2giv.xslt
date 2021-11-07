@@ -14,7 +14,7 @@
 
     <xsl:element name="giv-frame">
       <xsl:attribute name="name">
-        <xsl:text>ORF Analysis</xsl:text>
+        <xsl:value-of select="@sequence"/>
       </xsl:attribute>
       
       <xsl:attribute name="extent">
@@ -37,10 +37,12 @@
   <xsl:template match="frame">
 
     <xsl:element name="giv-panel">
-      <xsl:attribute name="label"><xsl:value-of select="@label"/></xsl:attribute>
+      <xsl:attribute name="label"><xsl:text>Frame </xsl:text><xsl:value-of select="@frame"/></xsl:attribute>
+      <xsl:attribute name="bkg-color">None</xsl:attribute>
 
       <!--  Map panel for Start and Stop codons  -->
       <xsl:element name="map-panel">
+        <xsl:attribute name="bkg-color">None</xsl:attribute>
          <xsl:attribute name="buoyancy">Floating</xsl:attribute>
          <xsl:attribute name="h-gap">0</xsl:attribute>
          <xsl:attribute name="v-gap">2</xsl:attribute>
