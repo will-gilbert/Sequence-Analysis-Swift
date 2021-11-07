@@ -7,14 +7,14 @@
 
 import SwiftUI
 
-enum Bouyancy: String {
+enum Buoyancy: String {
   case sinking = "Sinking"
   case floating = "Floating"
   case stackUp = "StackUp"
   case stackDown = "StackDown"
 }
 
-extension Bouyancy {
+extension Buoyancy {
   var description: String {
     return self.rawValue
   }
@@ -22,7 +22,7 @@ extension Bouyancy {
 
 struct TileLayout {
   
-  var bouyancy: Bouyancy = .floating
+  var buoyancy: Buoyancy = .floating
   var hGap: CGFloat = 3
   var vGap: CGFloat = 3
 
@@ -35,7 +35,7 @@ struct TileLayout {
     let sortedTiles = tiles.sorted { $0.origin.x < $1.origin.x }
 
     var bounds = CGSize.zero
-    switch bouyancy {
+    switch buoyancy {
     
       case .floating:
         bounds = packTiles(tiles: sortedTiles)

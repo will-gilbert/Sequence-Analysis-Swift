@@ -95,7 +95,7 @@ struct FullDemoData {
   
   init(extent: Int) {
 
-    let layout = TileLayout(bouyancy: .floating, hGap: 3, vGap: 3)
+    let layout = TileLayout(buoyancy: .floating, hGap: 3, vGap: 3)
     mapPanel = MapPanel(extent: extent, layout: layout, color: "Peach")
 
     var tiles = Array<Tile>()
@@ -161,7 +161,7 @@ struct FullDemoData {
 
 
     // Yellow Mosaic
-    let yellowMosaic = Mosaic(bouyancy: "StackUp", color: "Yellow")
+    let yellowMosaic = Mosaic(buoyancy: "StackUp", color: "Yellow")
     yellowMosaic.addTile(Glyph(element: Element(label: "100", start: 200, stop: 250), style: styles["C"] ?? style))
     yellowMosaic.addTile(Glyph(element: Element(label: "190", start: 190, stop: 230), style: styles["O"] ?? style))
     yellowMosaic.addTile(Glyph(element: Element(label: "220", start: 220, stop: 266), style: styles["C"] ?? style))
@@ -176,7 +176,7 @@ struct FullDemoData {
     greenMosaic.addTile(yellowMosaic)
 
     // Gray Mosaic
-    let grayMosaic = Mosaic(bouyancy: "Floating", color: "AGA 01")
+    let grayMosaic = Mosaic(buoyancy: "Floating", color: "AGA 01")
     grayMosaic.addTile(Glyph(element: Element(label: "50",  start:  50, stop: 175), style: styles["C"] ?? style))
     grayMosaic.addTile(Glyph(element: Element(label: "140", start: 140, stop: 181), style: styles["XXX"] ?? style))
     grayMosaic.addTile(Glyph(element: Element(label: "170", start: 170, stop: 216), style: styles["O"] ?? style))
@@ -197,7 +197,7 @@ struct TestMixedHeights: View {
   var body: some View {
     let extent: Int = 120
 
-    let layout = TileLayout(bouyancy: .stackDown, hGap: 2, vGap: 2)
+    let layout = TileLayout(buoyancy: .stackDown, hGap: 2, vGap: 2)
     var mapPanel = MapPanel(extent: extent, layout: layout, color: "Peach")
 
     var glyphs = Array<Glyph>()
@@ -231,7 +231,7 @@ struct TestMixedRightEdge: View {
   var body: some View {
     let extent: Int = 120
 
-    let layout = TileLayout(bouyancy: .stackDown, hGap: 2, vGap: 2)
+    let layout = TileLayout(buoyancy: .stackDown, hGap: 2, vGap: 2)
     var mapPanel = MapPanel(extent: extent, layout: layout, color: "Peach")
 
     var glyphs = Array<Glyph>()
@@ -276,7 +276,7 @@ struct TestThinGlyphs: View {
     style.barHeight = 100
     glyphs.append(Glyph(element: Element(label: "3", start: 90, stop: 93), style: style))
 
-    let layout = TileLayout(bouyancy: .floating, hGap: 2, vGap: 2)
+    let layout = TileLayout(buoyancy: .floating, hGap: 2, vGap: 2)
     var mapPanel = MapPanel(extent: extent, layout: layout, color: "Peach")
     mapPanel.addTiles( glyphs)
     let fitToWidth: CGFloat = CGFloat(extent) * scale

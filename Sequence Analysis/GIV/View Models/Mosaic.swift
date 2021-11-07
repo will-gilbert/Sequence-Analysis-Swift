@@ -17,22 +17,22 @@ class Mosaic: Tile  {
   var tiles: [Tile] = []
   
   init() {
-    self.layout = TileLayout(bouyancy: .floating)
+    self.layout = TileLayout(buoyancy: .floating)
     super.init(origin: CGPoint.zero, size: CGSize.zero)
   }
   
-  init(bouyancy: String, color: String, vGap: Int = 3, hGap: Int = 3) {
-    switch bouyancy.lowercased() {
+  init(buoyancy: String, color: String, vGap: Int = 3, hGap: Int = 3) {
+    switch buoyancy.lowercased() {
     case "sinking":
-      self.layout = TileLayout(bouyancy: .sinking, hGap: CGFloat(hGap), vGap: CGFloat(vGap))
+      self.layout = TileLayout(buoyancy: .sinking, hGap: CGFloat(hGap), vGap: CGFloat(vGap))
     case "floating":
-      self.layout = TileLayout(bouyancy: .floating , hGap: CGFloat(hGap), vGap: CGFloat(vGap))
+      self.layout = TileLayout(buoyancy: .floating , hGap: CGFloat(hGap), vGap: CGFloat(vGap))
     case "stackup":
-      self.layout = TileLayout(bouyancy: .stackUp, hGap: CGFloat(hGap), vGap: CGFloat(vGap))
+      self.layout = TileLayout(buoyancy: .stackUp, hGap: CGFloat(hGap), vGap: CGFloat(vGap))
     case "stackdown":
-      self.layout = TileLayout(bouyancy: .stackDown, hGap: CGFloat(hGap), vGap: CGFloat(vGap))
+      self.layout = TileLayout(buoyancy: .stackDown, hGap: CGFloat(hGap), vGap: CGFloat(vGap))
     default:
-      self.layout = TileLayout(bouyancy: .sinking, hGap: CGFloat(hGap), vGap: CGFloat(vGap))
+      self.layout = TileLayout(buoyancy: .sinking, hGap: CGFloat(hGap), vGap: CGFloat(vGap))
     }
     
     self.color = Colors.get(color: color).base
@@ -42,7 +42,7 @@ class Mosaic: Tile  {
   
   init(tiles: [Tile]) {
     self.tiles = tiles
-    self.layout = TileLayout(bouyancy: .floating)
+    self.layout = TileLayout(buoyancy: .floating)
     super.init(origin: CGPoint.zero, size: CGSize.zero)
   }
   

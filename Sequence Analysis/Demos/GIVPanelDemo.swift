@@ -92,7 +92,7 @@ struct GIVPanelData {
     
     for i in 1...3 {
       var givPanel = GIVPanel(extent: extent, color: "Clear", label: "GIV Panel \(i)")
-      let layout = TileLayout(bouyancy: .floating, hGap: 2, vGap: 2)
+      let layout = TileLayout(buoyancy: .floating, hGap: 2, vGap: 2)
 
       for _ in 0...3 {
         let color = colors[Int.random(in:0..<colors.count)]

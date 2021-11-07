@@ -57,12 +57,12 @@ class ORF_XMLParser : NSObject, XMLParserDelegate  {
     mapPanels["+3"] = []
 
     
-    let startStoplayout = TileLayout(bouyancy: .floating, hGap: 0, vGap: 2)
+    let startStoplayout = TileLayout(buoyancy: .floating, hGap: 0, vGap: 2)
     mapPanels["+1"]!.append(["codon" : MapPanel(extent: extent, layout: startStoplayout, color: "None")]) // start & stop
     mapPanels["+2"]!.append(["codon" : MapPanel(extent: extent, layout: startStoplayout, color: "None")]) // start & stop
     mapPanels["+3"]!.append(["codon" : MapPanel(extent: extent, layout: startStoplayout, color: "None")]) // start & stop
 
-    let orfLayout = TileLayout(bouyancy: .floating, hGap: 2, vGap: 2)
+    let orfLayout = TileLayout(buoyancy: .floating, hGap: 2, vGap: 2)
     mapPanels["+1"]!.append(["orf" : MapPanel(extent: extent, layout: orfLayout, color: "None")]) // ORF
     mapPanels["+2"]!.append(["orf" : MapPanel(extent: extent, layout: orfLayout, color: "None")]) // ORF
     mapPanels["+3"]!.append(["orf" : MapPanel(extent: extent, layout: orfLayout, color: "None")]) // ORF

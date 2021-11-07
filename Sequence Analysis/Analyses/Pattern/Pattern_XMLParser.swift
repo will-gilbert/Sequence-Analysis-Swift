@@ -43,7 +43,7 @@ class Pattern_XMLParser: NSObject, XMLParserDelegate {
     defaultStyle.barHeight = 16
     defaultStyle.lblSize = 10
 
-//    let layout = TileLayout(bouyancy: .floating, hGap: 0, vGap: 2)
+//    let layout = TileLayout(buoyancy: .floating, hGap: 0, vGap: 2)
 //    mapPanel = MapPanel(extent: extent, layout: layout, color: "Peach")
 //    givPanel = GIVPanel(extent: extent, color: "Clear")
     theFrame = GIVFrame(extent: extent)
@@ -93,7 +93,7 @@ class Pattern_XMLParser: NSObject, XMLParserDelegate {
     let regex = attributes["regex"] ?? ""
     let count = Int(attributes["count"] ?? "0") ?? 0
 
-    let layout = TileLayout(bouyancy: .floating, hGap: 0, vGap: 2)
+    let layout = TileLayout(buoyancy: .floating, hGap: 0, vGap: 2)
     mapPanels.append(MapPanel(extent: extent, layout: layout, color: "Peach"))
     let label = "\(regex)   \(count)"
     givPanels.append(GIVPanel(extent: extent, color: "Clear", label: label))
