@@ -1,0 +1,33 @@
+
+<!--                                                   -->
+<!-- Will Gilbert, Informagen, Inc.                    -->
+<!-- 7-Nov-2021                                        -->
+<!--                                                   -->
+
+
+<!-- XML root; Name for thiscollection of genetic entities   -->
+<!ELEMENT ORF frame*>
+<!ATTLIST ORF
+      sequence       CDATA #IMPLIED
+>
+
+<!ELEMENT frame (start-codon | stop-codon | orf)*>
+<!ATTLIST frame
+      frame      CDATA (+1 | +2 | +3)
+>
+
+<!ELEMENT start-codon
+     codon      CDATA #IMPLIED
+     at         CDATA #REQUIRED
+>
+
+<!ELEMENT stop-codon
+     codon      CDATA #IMPLIED
+     at         CDATA #REQUIRED
+>
+
+<!ELEMENT orf
+     from       CDATA #REQUIRED
+     to         CDATA #REQUIRED
+>
+

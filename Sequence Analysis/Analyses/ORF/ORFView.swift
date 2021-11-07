@@ -48,8 +48,12 @@ struct ORFView: View {
       
       if (viewModel.xmlDocument != nil) {
         switch viewModel.panel {
-        case .GRAPH: GraphView(xmlDocument: viewModel.xmlDocument!, sequence: sequence)
-        case .XML, .JSON, .GIV: TextView(text: viewModel.text)
+        case .GRAPH: GraphView(givFrame: viewModel.givFrame!, sequence: sequence)
+        case .XML, .JSON: TextView(text: viewModel.text)
+        case .GIV:
+          TextEditor(text: $viewModel.givXML)
+            .padding(5)
+            .font(.body)
         }
       }
     }
@@ -139,32 +143,27 @@ struct ORFView: View {
 
     @State var scale: Double = 1.0
 
-    let orfParser: ORF_XMLParser
+    let givFrame: GIVFrame
     let extent: CGFloat
-    var givFrame: GIVFrame
     
     var height: CGFloat = 0.0
     var width: CGFloat = 0.0
 
-    init(xmlDocument: XMLDocument, sequence: Sequence) {
+    init(givFrame: GIVFrame, sequence: Sequence) {
+      self.givFrame = givFrame
       self.extent = CGFloat(sequence.length)
-      
-      orfParser = ORF_XMLParser(extent: sequence.length)
-      orfParser.parse(xmlDocument: xmlDocument)
-      givFrame = orfParser.givFrame
-
       height = givFrame.size.height
       width = givFrame.size.width
+
     }
         
     var body: some View {
       
       // Protect against divide by zero
       if extent.isZero {
-        return AnyView(EmptyView())
+          return AnyView(EmptyView())
       } else {
-      
-                  
+
       return AnyView(
         GeometryReader { geometry in
      

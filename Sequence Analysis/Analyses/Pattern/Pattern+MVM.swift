@@ -218,7 +218,7 @@ class PatternViewModel: ObservableObject {
   
   // G I V   X M L  ==================================================================
   func givxmlPanel() -> String {
-    return("GIVXMLView")
+    return("GIVXML View not implemented")
   }
 
 }

@@ -1,125 +1,22 @@
 //
-//  XMLView.swift
-//  SA-GIV (iOS)
+//  GIVViewModel.swift
+//  Sequence Analysis
 //
-//  Created by Will Gilbert on 11/3/21.
+//  Created by Will Gilbert on 11/7/21.
 //
 
 import Foundation
 import SwiftUI
-
-
-struct GIVXMLView: View {
-
-  @State var scale: Double = 1.0
-
-  let viewModel: GIVViewModel = GIVViewModel()
-  var givFrame: GIVFrame?
-  var extent: Int?
-  var errorMsg: String?
-
-  init() {
-    let parser = GIV_XMLParser()
-    
-    if let xmlDocument = viewModel.getGIVDocument() {
-      parser.parse(xmlDocument)
-      givFrame = parser.givFrame
-      extent = parser.extent
-      errorMsg = parser.errorMsg
-    } else if viewModel.errorMsg != nil {
-        givFrame = nil
-        extent = nil
-        errorMsg = viewModel.errorMsg
-    }
-    
-  }
-  
-  var body: some View {
-    
-    let extent: CGFloat = givFrame?.extent ?? CGFloat(0)
-    let height: CGFloat = givFrame?.size.height ?? CGFloat(0)
-    let fitToWidth: CGFloat = extent * scale
-
-    // Was there an error message from the Parser
-    if let errorMsg = self.errorMsg {
-      return AnyView (
-        VStack {
-          Text(errorMsg)
-        }.frame(width: 500, height: 100, alignment: .center)
-      )
-    }
-      
-    if givFrame == nil {
-      return AnyView (
-        VStack {
-          Text("A GIV diagram could not be generated")
-        }.frame(width: 500, height: 100, alignment: .center)
-      )
-    }
-
-    
-    return AnyView (
-      GeometryReader { geometry in
-   
-        let windowWidth = geometry.size.width
-        var minScale: Double = (windowWidth/Double(extent)) < 1.0 ? 1.0 : windowWidth/Double(extent)
-
-        VStack(alignment: .leading) {
-          
-          VStack(alignment: .center) {
-            Text("GIV Frame Zooming")
-              .font(.title)
-            Text(String("    Window: \(F.f(windowWidth, decimal: 0)) pixels"))
-            Text(String("     Scale: \(F.f(scale, decimal: 3)) pixel/bp"))
-            Text(String("    Extent: \(F.f(extent, decimal: 0)) bp"))
-            Text(String("View Width: \(F.f(extent * scale, decimal: 0)) pixels"))
-            Slider(
-              value: $scale,
-              in: minScale...10.0
-            )
-          }
-          
-          // SCROLLVIEW ----------------------------------------------------------
-          GeometryReader { g in
-            ScrollView( [.vertical, .horizontal], showsIndicators: true) {
-             
-              VStack(spacing: 0) {
-                GIVFrameView(givFrame!, scale: scale)
-              }.frame(width: fitToWidth, height: height)
-              
-              // Hacky way to force the GIV Panels to the top
-              if g.size.height > height {
-                Spacer()
-                .frame(height: g.size.height - height)
-              }
-
-            }
-          }
-          // SCROLLVIEW ----------------------------------------------------------
-          
-        }.onAppear {
-          let windowWidth = geometry.size.width
-          minScale = (windowWidth/Double(extent)) < 1.0 ? 1.0 : windowWidth/Double(extent)
-          scale = minScale
-        }.onChange(of: geometry.frame(in: .global).width) { value in
-          minScale = value/Double(extent)
-          scale = scale > minScale ? scale : minScale
-        }
-      }
-    )
-  }
-
-}
 
 class GIVViewModel {
   
   var errorMsg: String?
   
   func getGIVDocument() -> XMLDocument? {
-    
+
     let givfilename = "ORF2.giv"
     let xmlString: String?
-        
+
     if let filepath = Bundle.main.path(forResource: givfilename, ofType: "xml") {
      do {
        xmlString = try String(contentsOfFile: filepath)
@@ -131,12 +28,12 @@ class GIVViewModel {
       errorMsg = "Could not find '\(givfilename).xml' resource"
       return nil
     }
-    
+
     if let xmlString = xmlString {
       do {
-        
+
         let xmlDocument = try XMLDocument(xmlString: xmlString, options: [.documentValidate])
-        
+
         do {
           let dtdFilepath = Bundle.main.path(forResource: "giv", ofType: "dtd")
           let dtdString = try String(contentsOfFile: dtdFilepath!)
@@ -149,14 +46,14 @@ class GIVViewModel {
           return nil
 
         }
-        
+
         do {
           try xmlDocument.validate()
         } catch {
           errorMsg = "Could not validate GIV XML: \(error.localizedDescription)"
           return nil
         }
-                
+
         return xmlDocument
       } catch {
         errorMsg = "Could not create or validate XML Docment: \(error.localizedDescription)"
@@ -166,7 +63,7 @@ class GIVViewModel {
       return nil
     }
   }
-  
+
 }
 
 
@@ -478,3 +375,4 @@ class GIV_XMLParser : NSObject, XMLParserDelegate {
 
   
 }
+

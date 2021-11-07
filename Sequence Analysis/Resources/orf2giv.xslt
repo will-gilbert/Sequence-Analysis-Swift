@@ -43,9 +43,9 @@
       <!--  Map panel for Start and Stop codons  -->
       <xsl:element name="map-panel">
         <xsl:attribute name="bkg-color">None</xsl:attribute>
-         <xsl:attribute name="buoyancy">Floating</xsl:attribute>
-         <xsl:attribute name="h-gap">0</xsl:attribute>
-         <xsl:attribute name="v-gap">2</xsl:attribute>
+        <xsl:attribute name="buoyancy">Floating</xsl:attribute>
+        <xsl:attribute name="h-gap">0</xsl:attribute>
+        <xsl:attribute name="v-gap">2</xsl:attribute>
 
         <xsl:element name="style-for-type">
           <xsl:attribute name="bar-color">Navy</xsl:attribute>
@@ -72,9 +72,10 @@
       <!--  Map panel for ORFs    -->
 
       <xsl:element name="map-panel">
-         <xsl:attribute name="buoyancy">Floating</xsl:attribute>
-         <xsl:attribute name="h-gap">0</xsl:attribute>
-         <xsl:attribute name="v-gap">2</xsl:attribute>
+        <xsl:attribute name="bkg-color">None</xsl:attribute>
+        <xsl:attribute name="buoyancy">Floating</xsl:attribute>
+        <xsl:attribute name="h-gap">0</xsl:attribute>
+        <xsl:attribute name="v-gap">2</xsl:attribute>
 
         <!-- Element style for this map panel -->
 
