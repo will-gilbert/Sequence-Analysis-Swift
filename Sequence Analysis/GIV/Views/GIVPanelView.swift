@@ -18,22 +18,33 @@ struct GIVPanelView: View {
   }
 
   public var body: some View {
-    VStack(alignment: .leading, spacing: 0) {
+    
+    let extent = givPanel.extent
+    let height = givPanel.size.height
+    let fontSize = givPanel.labelFontSize
+    
+    return VStack(alignment: .leading) {
       
       // Optional show a label for this GIV Panel
       if let label = givPanel.label {
         Text(label)
-          .padding(3)
-          .font(.system(size: givPanel.labelFontSize, weight: .semibold))
-          .frame(width: 500, height: givPanel.labelFontSize, alignment: .leading)
-          .foregroundColor(.black)
+          .padding(.top, fontSize)
+          .padding(.leading, 3)
+          .font(.system(size: fontSize, weight: .semibold))
+          .frame(width: 500, height: fontSize * 1.5, alignment: .leading)
       }
+
+      
       ForEach(givPanel.mapPanels, id: \.id) { mapPanel in
         MapPanelView(mapPanel, scale: scale)
       }
-    }.frame(width: givPanel.stopExtent, height: givPanel.size.height)
-      .background(givPanel.color)
+      
+
     }
+    .background(givPanel.color)
+    .padding(.top, 5)
+    .frame(width: extent * scale, height: height, alignment: .leading)
+  }
 }
 
 

@@ -31,5 +31,13 @@ struct MosaicView: View {
     // Draw the mosaic and its color as the ZStack frame
     .frame(width: mosaic.size.width * scale, height: mosaic.size.height, alignment: .topLeading)
     .background(mosaic.color)
+    .onTapGesture {
+      if let label = mosaic.label {
+        print("Tapped on Mosaic: \(label)")
+      } else {
+        print("Tapped on Mosaic: no label")
+      }
+    }
+
   }
 }

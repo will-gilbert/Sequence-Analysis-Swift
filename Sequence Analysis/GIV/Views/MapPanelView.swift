@@ -18,6 +18,9 @@ struct MapPanelView: View {
   }
     
   public var body: some View {
+    
+    let extent = mapPanel.extent
+    let height = mapPanel.size.height
 
     return ZStack(alignment: .topLeading) {
       ForEach(mapPanel.tiles, id: \.self) { tile in
@@ -32,7 +35,7 @@ struct MapPanelView: View {
           
         }
       }
-    .frame(width: mapPanel.stopExtent * scale, height: mapPanel.size.height, alignment: .topLeading)
+    .frame(width: extent * scale, height: height, alignment: .topLeading)
     .background(mapPanel.color)
     }
 }

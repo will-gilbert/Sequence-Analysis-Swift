@@ -18,17 +18,29 @@ struct GIVFrameView: View {
   }
 
   public var body: some View {
-    VStack(alignment: .leading, spacing: 0) {
+    let extent = givFrame.extent
+    let height = givFrame.size.height
+    let frgColor = givFrame.frgColor
+    let bkgColor = givFrame.bkgColor
+//    let offsetLeft: CGFloat = (extent * (1.0 - scale))/2  // This works, but why?
+
+    return VStack(alignment: .leading, spacing: 0) {
       
       if givFrame.hasRuler {
-        GIVRulerView(extent: givFrame.extent, scale: scale)
+        GIVRulerView(extent: extent, scale: scale, frgColor: frgColor)
       }
       
       ForEach(givFrame.givPanels, id: \.id) { givPanel in
         GIVPanelView(givPanel, scale: scale)
       }
       
-    }.frame(width: givFrame.extent, height: givFrame.size.height, alignment: .topLeading)
+      ForEach(givFrame.mapPanels, id: \.id) { mapPanel in
+        MapPanelView(mapPanel, scale: scale)
+      }
+      
+    }
+    .background(Colors.get(color: bkgColor).base)
+    .frame(width: extent * scale, height: height, alignment: .topLeading)
   }
 }
 
@@ -36,7 +48,7 @@ struct GIVRulerView: View {
   
   let extent: CGFloat
   let scale: CGFloat
-  
+  let frgColor: String
   
   var body: some View {
    
@@ -45,7 +57,7 @@ struct GIVRulerView: View {
 
     let tickExtent: Int = Int(extent/ticksAt)
     let labelExtent: Int = Int(extent/labelsAt)
-    let offsetLeft: CGFloat = (extent * (1.0 - scale))/2  // This works, but why?
+    let color: Color = Colors.get(color: frgColor).base
     
     return ZStack {
     
@@ -54,7 +66,7 @@ struct GIVRulerView: View {
         path.move(to: CGPoint(x: 0.0 , y: 25))
         path.addLine(to: CGPoint(x: extent * scale, y: 25))
       }
-      .stroke(Color.black)
+      .stroke(color)
 
       // Tick marks
       ForEach(1..<tickExtent){ i in
@@ -63,7 +75,7 @@ struct GIVRulerView: View {
           path.move(to: CGPoint(x: x, y: 15))
           path.addLine(to: CGPoint(x: x, y:25))
         }
-        .stroke(Color.black)
+        .stroke(color)
       }
       
       // Tick Labels
@@ -71,18 +83,14 @@ struct GIVRulerView: View {
         let x = CGFloat(CGFloat(i) * labelsAt) * scale
 
         Text("\(i*100)")
-          .foregroundColor(.black)
+          .foregroundColor(color)
           .background(Color.clear)
           .font(.system(size: 10))
           .position(x: x, y: 5.0)
       }
 
     }
-    .offset(x: offsetLeft, y: 0)
-    .frame(width: extent, height: 25, alignment: .topLeading)
-    .background(Colors.get(color: "None").base)
-
-
+    .frame(width: extent * scale, height: 30, alignment: .leading)
   }
         
 }

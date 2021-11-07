@@ -7,24 +7,31 @@
 
 import SwiftUI
 
-enum Buoyancy: String {
-  case sinking = "Sinking"
-  case floating = "Floating"
-  case stackUp = "StackUp"
-  case stackDown = "StackDown"
-}
-
-extension Buoyancy {
-  var description: String {
-    return self.rawValue
-  }
-}
-
 struct TileLayout {
   
   var buoyancy: Buoyancy = .floating
   var hGap: CGFloat = 3
   var vGap: CGFloat = 3
+  
+  
+  init() {
+    self.buoyancy = .floating
+    self.hGap = 3
+    self.vGap = 3
+  }
+  
+  init(buoyancy: String, hGap: CGFloat = 3, vGap: CGFloat = 3) {
+    self.buoyancy = Buoyancy.fromString(buoyancy)
+    self.hGap = hGap
+    self.vGap = vGap
+  }
+
+  init(buoyancy: Buoyancy, hGap: CGFloat = 3, vGap: CGFloat = 3) {
+    self.buoyancy = buoyancy
+    self.hGap = hGap
+    self.vGap = vGap
+  }
+
 
   func retile(tiles: [Tile]) -> CGSize {
 
@@ -103,7 +110,7 @@ struct TileLayout {
       //   Compare against every tile along the left to right edge.
       //   Initialize 'top' coordinate to the vertical gap
 
-      let aTile = Tile(origin: CGPoint(x: tile.origin.x, y: vGap), size: tile.size)      
+      let aTile = Tile(origin: CGPoint(x: tile.origin.x, y: vGap), size: tile.size)
       
       for i in 0..<edgeTiles.count {
         

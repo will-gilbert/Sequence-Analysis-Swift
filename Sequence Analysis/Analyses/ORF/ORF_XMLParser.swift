@@ -67,7 +67,7 @@ class ORF_XMLParser : NSObject, XMLParserDelegate  {
     mapPanels["+2"]!.append(["orf" : MapPanel(extent: extent, layout: orfLayout, color: "None")]) // ORF
     mapPanels["+3"]!.append(["orf" : MapPanel(extent: extent, layout: orfLayout, color: "None")]) // ORF
     
-    theFrame = GIVFrame(extent: extent)
+    theFrame = GIVFrame(extent: extent, hasRuler: true, bkgColor: "Peach", frgColor: "Black" )
   }
     
 

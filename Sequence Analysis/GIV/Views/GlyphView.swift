@@ -55,15 +55,15 @@ struct GlyphView: View {
         labelIsVisible = false
       }
     }
-        
+    
     
     return ZStack(alignment: .topLeading ) {
       
       // Bar
       Path() { path in
         path.move(to: CGPoint(x: 0.0 , y: y))
-        path.addLine(to: CGPoint(x: 0.0 + barWidth, y: y))
-        path.addLine(to: CGPoint(x: 0.0 + barWidth, y: y + barHeight))
+        path.addLine(to: CGPoint(x: barWidth, y: y))
+        path.addLine(to: CGPoint(x: barWidth, y: y + barHeight))
         path.addLine(to: CGPoint(x: 0.0, y: y + barHeight))
         path.addLine(to: CGPoint(x: 0.0, y: y))
       }
@@ -99,7 +99,7 @@ struct GlyphView: View {
       }
       
       // Tile hightlight -- TODO
-      // Path(CGRect(x: 0, y: 0, width: glyph.size.width, height: glyph.size.height)).stroke(Color.red)
+//      Path(CGRect(x: 0, y: 0, width: glyph.size.width, height: glyph.size.height)).stroke(Color.red)
     }
     .frame(width: glyph.size.width * scale, height: glyph.size.height, alignment: .center)
     .gesture( TapGesture(count: 2).onEnded {

@@ -23,7 +23,7 @@ struct GIVPanelDemo: View {
     givPanelData = GIVPanelData(extent: extent)
     givFrame = givPanelData.givFrame
     
-    height = givFrame.size.height
+    height = givFrame.size.height + (givFrame.hasRuler ? 30 : 0)
     width = givFrame.size.width
   }
 
@@ -33,17 +33,18 @@ struct GIVPanelDemo: View {
     
     return GeometryReader { geometry in
    
-      var minScale: Double = geometry.size.width/Double(extent)
-      
+      let windowWidth = geometry.size.width
+      var minScale: Double = (windowWidth/Double(extent)) < 1.0 ? 1.0 : windowWidth/Double(extent)
+
       VStack(alignment: .leading) {
         
         VStack(alignment: .center) {
           Text("GIV Frame Zooming")
             .font(.title)
-          Text(String("Window: \(F.f(geometry.size.width, decimal: 0))"))
-          Text(String("Scale: \(F.f(scale, decimal: 0))"))
-          Text(String("Extent: \(F.f(extent, decimal: 0))"))
-          Text(String("FitToWidth: \(F.f(extent * scale, decimal: 0))"))
+          Text(String("    Window: \(F.f(windowWidth, decimal: 0)) pixels"))
+          Text(String("     Scale: \(F.f(scale, decimal: 3)) pixel/bp"))
+          Text(String("    Extent: \(F.f(extent, decimal: 0)) bp"))
+          Text(String("View Width: \(F.f(extent * scale, decimal: 0)) pixels"))
           Slider(
             value: $scale,
             in: minScale...10.0
@@ -65,12 +66,12 @@ struct GIVPanelDemo: View {
             }
 
           }
-          .background(Colors.get(color: "Peach").base )
         }
         // SCROLLVIEW ----------------------------------------------------------
         
       }.onAppear {
-        minScale = geometry.size.width/Double(extent)
+        let windowWidth = geometry.size.width
+        minScale = (windowWidth/Double(extent)) < 1.0 ? 1.0 : windowWidth/Double(extent)
         scale = minScale
       }.onChange(of: geometry.frame(in: .global).width) { value in
         minScale = value/Double(extent)
@@ -113,7 +114,7 @@ struct GIVPanelData {
     let start = Int.random(in: 1...(extent - 20))
     let length = Int.random(in: 5...20 )
 
-    return Glyph(element: Element(label: "1", start: start, stop: start + length))
+    return Glyph(element: Element(label: String(start), start: start, stop: start + length))
   }
 
 

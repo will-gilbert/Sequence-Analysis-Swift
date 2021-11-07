@@ -11,8 +11,7 @@ struct GIVPanel {
 
   let id = UUID()
 
-  let startExtent: CGFloat = 0
-  let stopExtent: CGFloat
+  let extent: CGFloat
   let color: Color
   var label: String?
   var size: CGSize = CGSize(width: 0, height: 0)
@@ -22,13 +21,13 @@ struct GIVPanel {
   var mapPanels: Array<MapPanel> = []
 
   init(extent: Int, color: String = "AGA 01") {
-    self.stopExtent = CGFloat(extent)
+    self.extent = CGFloat(extent)
     self.color = Colors.get(color: color).base
     self.label = nil
   }
   
-  init(extent: Int, color: String = "AGA 01", label: String = "") {
-    self.stopExtent = CGFloat(extent)
+  init(extent: Int, color: String = "AGA 01", label: String?) {
+    self.extent = CGFloat(extent)
     self.color = Colors.get(color: color).base
     self.label = label
   }
@@ -39,7 +38,7 @@ struct GIVPanel {
 
     // Add some extra height for the label
     if let _ = label {
-      size.height += labelFontSize * 1.5
+      size.height += (labelFontSize * 2) + 3
     }
 
     self.mapPanels.append(mapPanel)

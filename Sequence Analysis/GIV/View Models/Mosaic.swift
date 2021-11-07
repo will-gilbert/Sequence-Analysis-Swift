@@ -9,32 +9,22 @@ import SwiftUI
 
 class Mosaic: Tile  {
   
-  var label: String = ""
+  var label: String?
   var color: Color = Colors.get(color: "Peach").base
   var padding: CGFloat = 5
   
   var layout: TileLayout
   var tiles: [Tile] = []
+  var retiled: Bool = false
   
   init() {
     self.layout = TileLayout(buoyancy: .floating)
     super.init(origin: CGPoint.zero, size: CGSize.zero)
   }
   
-  init(buoyancy: String, color: String, vGap: Int = 3, hGap: Int = 3) {
-    switch buoyancy.lowercased() {
-    case "sinking":
-      self.layout = TileLayout(buoyancy: .sinking, hGap: CGFloat(hGap), vGap: CGFloat(vGap))
-    case "floating":
-      self.layout = TileLayout(buoyancy: .floating , hGap: CGFloat(hGap), vGap: CGFloat(vGap))
-    case "stackup":
-      self.layout = TileLayout(buoyancy: .stackUp, hGap: CGFloat(hGap), vGap: CGFloat(vGap))
-    case "stackdown":
-      self.layout = TileLayout(buoyancy: .stackDown, hGap: CGFloat(hGap), vGap: CGFloat(vGap))
-    default:
-      self.layout = TileLayout(buoyancy: .sinking, hGap: CGFloat(hGap), vGap: CGFloat(vGap))
-    }
-    
+  init(label: String?, buoyancy: String, color: String, vGap: Int = 3, hGap: Int = 3) {
+    self.label = label
+    self.layout = TileLayout(buoyancy: Buoyancy.fromString(buoyancy), hGap: CGFloat(hGap), vGap: CGFloat(vGap))
     self.color = Colors.get(color: color).base
     
     super.init(origin: CGPoint.zero, size: CGSize.zero)
@@ -62,6 +52,9 @@ class Mosaic: Tile  {
     
     // No tiles
     guard tiles.count > 0 else { return }
+
+    // Only retile a mosaic tiles once
+    guard retiled == false else {return}
     
     // Recursive: Retile any 'Mosaic' tiles within this 'Mosaic'
     //  This is done to establish the size of any child mosaics
@@ -74,6 +67,8 @@ class Mosaic: Tile  {
     // Retile the tiles (mosaics and glyphs) in this mosaic;
     //   Afterwards, get its height and width, add padding around this mosaic
     let size = layout.retile(tiles: tiles)
+    retiled = true
+
     self.size.height = size.height + padding * 2
     self.size.width = size.width + padding * 2
 
@@ -86,7 +81,7 @@ class Mosaic: Tile  {
       self.origin.y = min(self.origin.y, tile.origin.y)  // Top most tile's 'y'
     }
     
-    // Adjust all contained tiles for the mosaic orgin and any padding
+    // Adjust all contained tiles for the mosaic origin and any padding
     for tile in tiles {
       tile.origin.x -= self.origin.x - padding
       tile.origin.y -= self.origin.y - padding

@@ -11,8 +11,7 @@ struct MapPanel {
   
   let id = UUID()
 
-  let startExtent: CGFloat = 0
-  let stopExtent: CGFloat
+  let extent: CGFloat
   var tiles: Array<Tile> = []
   let layout: TileLayout
   var size: CGSize = CGSize(width: 0, height: 0)
@@ -20,7 +19,7 @@ struct MapPanel {
   var scale: CGFloat = 1.0
 
   init(extent: Int, layout: TileLayout = TileLayout(), color: String = "AGA 01") {
-    self.stopExtent = CGFloat(extent)
+    self.extent = CGFloat(extent)
     self.layout = layout
     self.color = Colors.get(color: color).base
   }
@@ -51,6 +50,6 @@ struct MapPanel {
   
   mutating func setPanelWidth(_ width: CGFloat) -> Void {
     // Zoom in/out the sequence length to the panel width
-    scale = width/(stopExtent - startExtent)
+    scale = width/extent
   }
 }

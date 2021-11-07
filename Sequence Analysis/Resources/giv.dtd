@@ -1,0 +1,65 @@
+
+<!--                                                   -->
+<!-- William Gilbert, Informagen, Inc.                 -->
+<!-- 25-Dec-1999                                       -->
+<!-- Revised for macOS Swift, Oct 2021                 -->
+<!--                                                   -->
+
+<!ENTITY % Boolean "(true|false)">
+<!ENTITY % Buoyancy "(Floating | Sinking | TopDown | BottomUp | StackDown | StackUp)">
+
+<!-- XML root; Name for thiscollection of genetic entities   -->
+<!ELEMENT giv-frame (giv-panel | map-panel)*>
+<!ATTLIST giv-frame 
+      name CDATA #IMPLIED
+      extent         CDATA #REQUIRED
+      frg-color      CDATA "Black"
+      bkg-color      CDATA "AGA 01"
+      ruler          %Boolean; "true"
+>
+
+<!-- A collection of panels with a label -->
+<!ELEMENT giv-panel (map-panel)+>
+<!ATTLIST giv-panel
+      label         CDATA #IMPLIED
+      bkg-color     CDATA "None"
+>
+
+<!-- Map containing tile; Groups of mosaics and element glyphs  -->
+<!ELEMENT map-panel (style-for-type*, (group | element)*)>
+<!ATTLIST map-panel
+      label         CDATA ""
+      bkg-color     CDATA "None"
+      buoyancy      %Buoyancy; "Floating"
+      h-gap         CDATA "3"
+      v-gap         CDATA "3"
+>
+
+<!-- Style for the glyphs by 'type' in this panel ================  -->
+<!ELEMENT style-for-type (#PCDATA)>
+<!ATTLIST style-for-type
+      bar-color     CDATA "Green"
+      bar-height    CDATA "20"
+      lbl-position  (Below | Inside | Above) "Inside"
+      font-size     CDATA "10"
+>
+
+<!-- Mosaic can contain mosaics can glyphs ================ -->
+<!ELEMENT group (group | element)*>
+<!ATTLIST group
+      label         CDATA #IMPLIED
+      bkg-color     CDATA "None"
+      buoyancy      %Buoyancy; "Floating"
+      h-gap         CDATA "3"
+      v-gap         CDATA "3"
+>
+
+<!-- Genomic element; Styled as a Glyph ===================== -->
+<!ELEMENT element EMPTY>
+<!ATTLIST element
+      label   CDATA #IMPLIED
+      type    CDATA "default"
+      from    CDATA #REQUIRED
+      to      CDATA #REQUIRED
+>
+
