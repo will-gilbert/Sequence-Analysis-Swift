@@ -38,7 +38,6 @@
 
     <xsl:element name="giv-panel">
       <xsl:attribute name="label"><xsl:text>Frame </xsl:text><xsl:value-of select="@frame"/></xsl:attribute>
-      <xsl:attribute name="bkg-color">None</xsl:attribute>
 
       <!--  Map panel for Start and Stop codons  -->
       <xsl:element name="map-panel">

@@ -10,7 +10,6 @@ import SwiftUI
 struct PatternView: View {
   
   // External classes; Injected via the initializer
-  //@EnvironmentObject var sequenceState: SequenceState
   @ObservedObject var sequence: Sequence
   @ObservedObject var viewModel: PatternViewModel
   
@@ -29,16 +28,15 @@ struct PatternView: View {
     self.checkSum = sequence.checkSum
     self.length = sequence.length
   }
-
-  // Save for reference: "ATG", "TAG|TAA|TGA", "(CG){2,}", "ATG([ACGT]{3,3})*?((TAG)|(TAA)|(TGA))"
-  
-  
+    
   var body: some View {
      
     // Hopely I will learn a better way to update the View Model in the future
     if(length != sequence.length) { // Fast check on sequence change; Generaly used
+      viewModel.sequence = sequence
       updateViewModel()
     } else if(checkSum != sequence.checkSum) { // Slower check e.g. shuffled sequence or T/U
+      viewModel.sequence = sequence
       updateViewModel()
     }
 
@@ -58,9 +56,13 @@ struct PatternView: View {
       
       // Graph, XML, JSON and GIV panels go below the divider ------------------
       
-      switch viewModel.panel {
-      case .GRAPH: GraphView(xmlDocument: viewModel.xmlDocument, sequence: viewModel.sequence)
-      case .XML, .GIV, .JSON: TextView(text: viewModel.text)
+      if (viewModel.xmlDocument != nil) {
+        switch viewModel.panel {
+        case .GRAPH: GraphView(givFrame: viewModel.givFrame!, sequence: viewModel.sequence)
+        case .XML, .JSON: TextView(text: viewModel.text)
+        case .GIV:
+          TextView(text: viewModel.givXML)
+        }
       }
     }
   }
@@ -188,7 +190,7 @@ struct PatternView: View {
     viewModel.update()
   }
 
-  // G R A P H  =================================================================
+  // P A T T E R N   G R A P H  =============================================================
 
   struct GraphView : View {
     
@@ -196,23 +198,16 @@ struct PatternView: View {
 
     @State var scale: Double = 1.0
 
-    let patternParser: Pattern_XMLParser
+//    let patternParser: Pattern_XMLParser
+    let givFrame: GIVFrame
     let extent: CGFloat
-    var givFrame: GIVFrame
     
     var height: CGFloat = 0.0
     var width: CGFloat = 0.0
 
-    init?(xmlDocument: XMLDocument?, sequence: Sequence) {
-      
-      guard xmlDocument != nil else { return nil}
-      
+    init?(givFrame: GIVFrame, sequence: Sequence) {
+      self.givFrame = givFrame
       self.extent = CGFloat(sequence.length)
-      
-      self.patternParser = Pattern_XMLParser(extent: sequence.length)
-      self.patternParser.parse(xmlDocument: xmlDocument!)
-      self.givFrame = patternParser.givFrame
-
       self.height = self.givFrame.size.height
       self.width = self.givFrame.size.width
     }

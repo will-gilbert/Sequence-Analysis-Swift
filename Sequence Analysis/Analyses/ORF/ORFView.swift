@@ -133,7 +133,7 @@ struct ORFView: View {
   }
 
   
-  // O R F   M A P  ==============================================================================================
+  // O R F   G R A P H  ======================================================================
 
   struct GraphView: View {
  
@@ -152,7 +152,6 @@ struct ORFView: View {
       self.extent = CGFloat(sequence.length)
       height = givFrame.size.height
       width = givFrame.size.width
-
     }
         
     var body: some View {

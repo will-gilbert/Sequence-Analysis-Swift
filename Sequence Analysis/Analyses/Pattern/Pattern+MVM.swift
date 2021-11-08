@@ -38,10 +38,17 @@ class PatternViewModel: ObservableObject {
     case GIV = "GIV XML"
   }
   
-  let sequence: Sequence
   @Published var panel: Panel = .GRAPH             // Currently selected panel
   @Published var items: [PatternItem] = []         // Collection of RegEx patterns
-  var xmlDocument: XMLDocument? = nil              // RegEx matches as XML
+
+  var sequence: Sequence
+  
+  var xmlDocument: XMLDocument? = nil   // Start, stop and ORF as XML
+  var errorMsg: String? = nil           // When things go wrong
+  
+  var givXMLDocument: XMLDocument? = nil // GIV XMLDocument used in Graph panel
+  var givXML: String = ""                // GIV XMLDocument as pretty print string
+  var givFrame: GIVFrame?                // GIV frame rendered in the Graph panel
 
   init(sequence: Sequence) {
     self.sequence = sequence
@@ -68,6 +75,73 @@ class PatternViewModel: ObservableObject {
     }
   }
   
+  func update() -> Void {
+    
+    // Update the Pattern XML when the view is updated
+    //var pattern = Pattern(sequence, viewModel: self)
+    //    Pattern_CreateXML().createXML(sequence, viewModel: viewModel)
+
+    createXML()
+    validateXML()
+    transformXML()
+    createGIVFrame()
+  }
+
+  func createXML() -> Void {
+        
+    let root = XMLElement(name: "PATTERN")
+    root.addAttribute(XMLNode.attribute(withName: "sequence", stringValue: sequence.shortDescription) as! XMLNode)
+    root.addAttribute(XMLNode.attribute(withName: "length", stringValue: String(sequence.length)) as! XMLNode)
+    
+    let xml = XMLDocument(rootElement: root)
+    let strand = sequence.string
+    
+    for item in self.items {
+      
+      let pattern = item.regex
+            
+      do {
+        let regex = try NSRegularExpression(pattern: pattern)
+        let results = regex.matches(in: strand, range: NSRange(strand.startIndex..., in: strand))
+
+        let patternNode = XMLElement(name: "pattern")
+        patternNode.addAttribute(XMLNode.attribute(withName: "regex", stringValue: pattern) as! XMLNode)
+        patternNode.addAttribute(XMLNode.attribute(withName: "count", stringValue: String(results.count)) as! XMLNode)
+        root.addChild(patternNode)
+        
+        // Update the pattern count in the view model
+        let index = self.items.firstIndex(where: { $0.id == item.id })!
+        self.items[index].count = results.count
+
+        for result in results {
+
+          let matchNode = XMLElement(name: "match")
+          let range = Range(result.range, in: strand)
+          let label = String(strand[range!]).truncated(limit: 15, position: .middle)
+          let from: Int = result.range.location
+          let to: Int = from + result.range.length - 1
+          
+          // Convert to one-based sequence numbering
+          matchNode.addAttribute(XMLNode.attribute(withName: "label", stringValue: label ) as! XMLNode)
+          matchNode.addAttribute(XMLNode.attribute(withName: "from", stringValue: String(from + 1)) as! XMLNode)
+          matchNode.addAttribute(XMLNode.attribute(withName: "to", stringValue: String(to + 1)) as! XMLNode)
+          patternNode.addChild(matchNode)
+        }
+        
+      } catch {
+        let patternNode = XMLElement(name: "pattern")
+        let exception = "'\(pattern) is not a valid expression; RE: RegEx for help"
+        patternNode.addAttribute(XMLNode.attribute(withName: "error", stringValue: exception) as! XMLNode)
+        root.addChild(patternNode)
+        continue
+      }
+    }
+      
+    self.xmlDocument =  xml
+  }
+
+  
+  
   func addItem(pattern: String) {
     items.append(PatternItem(pattern))
     update()
@@ -78,11 +152,6 @@ class PatternViewModel: ObservableObject {
     update()
   }
   
-  func update() -> Void {
-    // Update the Pattern XML when the view is updated
-    var pattern = Pattern(sequence, viewModel: self)
-    pattern.createXML()
-  }
   
   func showRegExLegend() {
     
@@ -221,22 +290,87 @@ class PatternViewModel: ObservableObject {
     return("GIVXML View not implemented")
   }
 
-}
+  func validateXML() {
+    
+    guard self.xmlDocument != nil else {
+      self.errorMsg = "Pattern XMLDocument is empty or was not created"
+      return
+    }
+    
+    do {
+      let dtdFilepath = Bundle.main.path(forResource: "pattern", ofType: "dtd")
+      let dtdString = try String(contentsOfFile: dtdFilepath!)
+      let dtd = try XMLDTD(data: dtdString.data(using: .utf8)!)
+      dtd.name = "PATTERN"
+      self.xmlDocument!.dtd = dtd
+    } catch {
+      self.errorMsg = "Could not load the 'pattern.dtd' resource: \(error.localizedDescription)"
+      return
+    }
 
+    do {
+      try self.xmlDocument!.validate()
+    } catch {
+      self.errorMsg = "Could not validate Pattern XML: \(error.localizedDescription)"
+      return
+    }
 
-struct Pattern {
+  }
   
-  let sequence: Sequence
-  let viewModel: PatternViewModel
+  func transformXML() {
+    
+    guard self.xmlDocument != nil else {
+      self.errorMsg = "Pattern XMLDocument is empty or was not created"
+      return
+    }
+    
+    let xsltfilename = "pattern2giv"
+    let xslt: String?
+    
+    if let filepath = Bundle.main.path(forResource: xsltfilename, ofType: "xslt") {
+     do {
+       xslt = try String(contentsOfFile: filepath)
+     } catch {
+       xslt = nil
+       self.errorMsg = "Could not load '\(xsltfilename).xslt': \(error.localizedDescription)"
+       return
+     }
+    } else {
+      xslt = nil;
+      self.errorMsg = "Could not find '\(xsltfilename).xslt'"
+      return
+    }
 
-  init(_ sequence: Sequence, viewModel: PatternViewModel) {
-    self.sequence = sequence
-    self.viewModel = viewModel
+    if let xslt = xslt {
+      do {
+        
+        let data = try self.xmlDocument!.object(byApplyingXSLTString: xslt, arguments: nil)
+        self.givXMLDocument = data as? XMLDocument
+        
+        if let data = self.givXMLDocument {
+          let prettyXML = data.xmlData(options: .nodePrettyPrint)
+          self.givXML = String(data: prettyXML, encoding: .utf8) ?? "'\(xsltfilename).xslt' XSL transform could not be rendered (Pretty Print)"
+        }
+      } catch {
+        self.errorMsg = error.localizedDescription
+      }
+    } else {
+      self.errorMsg = "No contents created from '\(xsltfilename).xslt'"
+    }
+    
   }
 
-  mutating func createXML() {
-    Pattern_CreateXML().createXML(sequence, viewModel: viewModel)
+  func createGIVFrame() {
+   
+    guard self.givXMLDocument != nil else {
+      self.errorMsg = "GIV XMLDocument is empty or was not created"
+      return
+    }
+
+    let parser = GIV_XMLParser()
+    parser.parse(self.givXMLDocument!)
+    self.givFrame = parser.givFrame
   }
-  
 
 }
+

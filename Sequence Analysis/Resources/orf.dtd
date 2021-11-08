@@ -5,10 +5,10 @@
 <!--                                                   -->
 
 
-<!-- XML root; Name for thiscollection of genetic entities   -->
-<!ELEMENT ORF frame*>
+<!ELEMENT ORF (frame)*>
 <!ATTLIST ORF
-      sequence       CDATA #IMPLIED
+      sequence   CDATA #IMPLIED
+      length     CDATA #REQUIRED
 >
 
 <!ELEMENT frame (start-codon | stop-codon | orf)*>

@@ -11,7 +11,7 @@
 <!-- XML root; Name for thiscollection of genetic entities   -->
 <!ELEMENT giv-frame (giv-panel | map-panel)*>
 <!ATTLIST giv-frame 
-      name CDATA #IMPLIED
+      name           CDATA #IMPLIED
       extent         CDATA #REQUIRED
       frg-color      CDATA "Black"
       bkg-color      CDATA "AGA 01"

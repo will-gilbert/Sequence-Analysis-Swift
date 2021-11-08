@@ -198,6 +198,34 @@ class ORFViewModel: ObservableObject {
   }
 
   
+  func validateXML() {
+
+    guard self.xmlDocument != nil else {
+      self.errorMsg = "ORF XMLDocument is empty or was not created"
+      return
+    }
+    
+    do {
+      let dtdFilepath = Bundle.main.path(forResource: "orf", ofType: "dtd")
+      let dtdString = try String(contentsOfFile: dtdFilepath!)
+      let dtd = try XMLDTD(data: dtdString.data(using: .utf8)!)
+      dtd.name = "ORF"
+      self.xmlDocument!.dtd = dtd
+    } catch {
+      self.errorMsg = "Could not load the 'orf.dtd' resource: \(error.localizedDescription)"
+      print(self.errorMsg as Any)
+      return
+    }
+
+    do {
+      try self.xmlDocument!.validate()
+    } catch {
+      self.errorMsg = "Could not validate ORF XML: \(error.localizedDescription)"
+      return
+    }
+
+  }
+  
   func transforXML() {
     
     guard self.xmlDocument != nil else {
@@ -241,33 +269,6 @@ class ORFViewModel: ObservableObject {
     
   }
 
-  func validateXML() {
-
-    guard self.xmlDocument != nil else {
-      self.errorMsg = "ORF XMLDocument is empty or was not created"
-      return
-    }
-    
-    do {
-      let dtdFilepath = Bundle.main.path(forResource: "orf", ofType: "dtd")
-      let dtdString = try String(contentsOfFile: dtdFilepath!)
-      let dtd = try XMLDTD(data: dtdString.data(using: .utf8)!)
-      dtd.name = "ORF"
-      //print(dtd as Any)
-      self.xmlDocument!.dtd = dtd
-    } catch {
-      self.errorMsg = "Could not load the 'orf.dtd' resource: \(error.localizedDescription)"
-      return
-    }
-
-    do {
-      try self.xmlDocument!.validate()
-    } catch {
-      self.errorMsg = "Could not validate ORF XML: \(error.localizedDescription)"
-      return
-    }
-
-  }
   
   func createGIVFrame() {
    
@@ -277,12 +278,8 @@ class ORFViewModel: ObservableObject {
     }
 
     let parser = GIV_XMLParser()
-
     parser.parse(self.givXMLDocument!)
     self.givFrame = parser.givFrame
-//      extent = parser.extent
-//      errorMsg = parser.errorMsg
-
   }
   
   

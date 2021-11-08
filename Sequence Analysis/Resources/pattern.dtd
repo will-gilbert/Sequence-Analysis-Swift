@@ -1,0 +1,24 @@
+<!--                                                   -->
+<!-- Will Gilbert, Informagen, Inc.                    -->
+<!-- 8-Nov-2021                                        -->
+<!--                                                   -->
+
+<!ELEMENT PATTERN (pattern)*>
+<!ATTLIST PATTERN
+     sequence  CDATA #IMPLIED
+     length    CDATA #REQUIRED
+>
+
+<!ELEMENT pattern (match)*>
+<!ATTLIST pattern
+     regex     CDATA #REQUIRED
+     count     CDATA #REQUIRED
+>
+
+<!ELEMENT match>
+<!ATTLIST match
+     label      CDATA #REQUIRED
+     from       CDATA #REQUIRED
+     to         CDATA #REQUIRED
+>
+
