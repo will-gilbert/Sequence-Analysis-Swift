@@ -342,10 +342,10 @@
 		6E8B7BB3271F46740040EBE2 /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				6ECC813627386BF500BE3943 /* orf.dtd */,
 				6EDB881227381ECD0077592A /* giv.dtd */,
 				6E8B7BB4271F46740040EBE2 /* orf2giv.xslt */,
 				6E8B7BB5271F46740040EBE2 /* xml2json.xslt */,
-				6ECC813627386BF500BE3943 /* orf.dtd */,
 			);
 			path = Resources;
 			sourceTree = "<group>";
@@ -803,7 +803,7 @@
 				CODE_SIGN_IDENTITY = "-";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 211109;
 				DEVELOPMENT_ASSET_PATHS = "\"Sequence Analysis/Preview Content\"";
 				DEVELOPMENT_TEAM = UNGG566GL9;
 				ENABLE_HARDENED_RUNTIME = YES;
@@ -833,7 +833,7 @@
 				CODE_SIGN_IDENTITY = "-";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 211109;
 				DEVELOPMENT_ASSET_PATHS = "\"Sequence Analysis/Preview Content\"";
 				DEVELOPMENT_TEAM = UNGG566GL9;
 				ENABLE_HARDENED_RUNTIME = YES;

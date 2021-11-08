@@ -10,7 +10,7 @@ import SwiftUI
 class Mosaic: Tile  {
   
   var label: String?
-  var color: Color = Colors.get(color: "Peach").base
+  var color: Color = Colors.get(color: "none").base
   var padding: CGFloat = 5
   
   var layout: TileLayout

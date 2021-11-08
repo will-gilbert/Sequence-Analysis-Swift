@@ -18,7 +18,7 @@ struct MapPanel {
   let color: Color
   var scale: CGFloat = 1.0
 
-  init(extent: Int, layout: TileLayout = TileLayout(), color: String = "AGA 01") {
+  init(extent: Int, layout: TileLayout = TileLayout(), color: String = "none") {
     self.extent = CGFloat(extent)
     self.layout = layout
     self.color = Colors.get(color: color).base

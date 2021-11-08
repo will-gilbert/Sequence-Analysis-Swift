@@ -125,7 +125,7 @@ class GIV_XMLParser : NSObject, XMLParserDelegate {
   // Start XML Element
   func parser(_ parser: XMLParser, didStartElement elementName: String, namespaceURI: String?, qualifiedName qName: String?, attributes attributeDict: [String : String] = [:]) {
 
-    print("\(self.depthIndent)\(elementName)")
+    //print("\(self.depthIndent)\(elementName)")
     self.depth += 1
     
     if errorMsg != nil { return }
@@ -188,7 +188,7 @@ class GIV_XMLParser : NSObject, XMLParserDelegate {
     }
     
     let frgColor: String = attributes["frg-color"] ?? "Black"
-    let bkgColor: String = attributes["bkg-color"] ?? "AGA 01"
+    let bkgColor: String = attributes["bkg-color"] ?? "None"
 
     if let extent = self.extent {
       self.givFrame = GIVFrame(extent: extent, hasRuler: hasRuler, bkgColor: bkgColor, frgColor: frgColor)
@@ -231,7 +231,7 @@ class GIV_XMLParser : NSObject, XMLParserDelegate {
   
   private func startMapPanel(_ attributes: [String : String]) -> Void {
    
-    let bkgColor: String = attributes["bkg-color"] ?? "AGA 01"
+    let bkgColor: String = attributes["bkg-color"] ?? "None"
     let buoyancyString: String = attributes["buoyancy"] ?? "Floating"
     let hGap: CGFloat = CGFloat(Int(attributes["h-gap"] ?? "3") ?? 3)
     let vGap: CGFloat = CGFloat(Int(attributes["v-gap"] ?? "3") ?? 3)

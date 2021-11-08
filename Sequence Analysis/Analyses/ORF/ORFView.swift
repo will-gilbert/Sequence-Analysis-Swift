@@ -51,9 +51,7 @@ struct ORFView: View {
         case .GRAPH: GraphView(givFrame: viewModel.givFrame!, sequence: sequence)
         case .XML, .JSON: TextView(text: viewModel.text)
         case .GIV:
-          TextEditor(text: $viewModel.givXML)
-            .padding(5)
-            .font(.body)
+          TextView(text: viewModel.givXML)
         }
       }
     }

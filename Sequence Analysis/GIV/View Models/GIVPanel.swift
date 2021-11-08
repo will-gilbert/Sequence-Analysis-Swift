@@ -20,13 +20,13 @@ struct GIVPanel {
   
   var mapPanels: Array<MapPanel> = []
 
-  init(extent: Int, color: String = "AGA 01") {
+  init(extent: Int, color: String = "none") {
     self.extent = CGFloat(extent)
     self.color = Colors.get(color: color).base
     self.label = nil
   }
   
-  init(extent: Int, color: String = "AGA 01", label: String?) {
+  init(extent: Int, color: String = "none", label: String?) {
     self.extent = CGFloat(extent)
     self.color = Colors.get(color: color).base
     self.label = label
