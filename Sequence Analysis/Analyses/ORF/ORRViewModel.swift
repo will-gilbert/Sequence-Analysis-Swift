@@ -8,6 +8,7 @@
 import SwiftUI
 
 // V I E W M O D E L  ==============================================================
+
 class ORFViewModel: ObservableObject {
   
   // Panel types
@@ -20,49 +21,45 @@ class ORFViewModel: ObservableObject {
 
   @Published var panel: Panel = .GRAPH  // Currently selected panel
   
+  var sequence: Sequence?
+  var options: ORFOptions?
+
+  
   var xmlDocument: XMLDocument? = nil   // Start, stop and ORF as XML
-  var errorMsg: String? = nil
+  var errorMsg: String? = nil           // When things go wrong
   var text: String = ""                 // Text contents for XML & JSON panels
   
-  var givXMLDocument: XMLDocument? = nil
-  var givXML: String = ""
-  var givFrame: GIVFrame?
+  var givXMLDocument: XMLDocument? = nil // GIV XMLDocument used in Graph panel
+  var givXML: String = ""                // GIV XMLDocument as pretty print string
+  var givFrame: GIVFrame?                // GIV frame rendered in the Graph panel
 
   func update(sequence: Sequence, options: ORFOptions) -> Void {
         
-    var orf = OpenReadingFrame(sequence, options: options, viewModel: self)
-    
+    self.sequence = sequence
+    self.options = options
+
     if sequence.isNucleic {
-      orf.createXML()
-      orf.validateXML()
-      orf.transforXML()
-      orf.createGIVFrame()
+      createXML()
+      validateXML()
+      transforXML()
+      createGIVFrame()
     }
 
     // Create the text for XML, JSON and GIV panels from the XML
     switch panel {
-    case .XML: orf.xmlPanel()
-    case .JSON: orf.jsonPanel()
+    case .XML: xmlPanel()
+    case .JSON: jsonPanel()
     default: break
     }
 
   }
   
-}
 
-struct OpenReadingFrame {
-  
-  let sequence: Sequence
-  let options: ORFOptions
-  let viewModel: ORFViewModel
-
-  init(_ sequence: Sequence, options: ORFOptions, viewModel: ORFViewModel) {
-    self.sequence = sequence
-    self.options = options
-    self.viewModel = viewModel
-  }
-
-  mutating func createXML()  {
+  func createXML()  {
+    
+    // Unwrap the optional class members
+    guard let sequence = self.sequence else { return }
+    guard let options = self.options else { return }
 
     let orf = XMLElement(name: "ORF")
     orf.addAttribute(XMLNode.attribute(withName: "sequence", stringValue: sequence.shortDescription) as! XMLNode)
@@ -115,7 +112,7 @@ struct OpenReadingFrame {
         frameNode.addChild(orfNode)
       }
     }
-    viewModel.xmlDocument =  xml
+    self.xmlDocument =  xml
   }
   
   func findStartCodons(_ sequence: Sequence, frame: Int) -> [Int] {
@@ -201,10 +198,10 @@ struct OpenReadingFrame {
   }
 
   
-  mutating func transforXML() {
+  func transforXML() {
     
-    guard viewModel.xmlDocument != nil else {
-      viewModel.errorMsg = "ORF XMLDocument is empty or was not created"
+    guard self.xmlDocument != nil else {
+      self.errorMsg = "ORF XMLDocument is empty or was not created"
       return
     }
     
@@ -216,38 +213,38 @@ struct OpenReadingFrame {
        xslt = try String(contentsOfFile: filepath)
      } catch {
        xslt = nil
-       viewModel.errorMsg = "Could not load '\(xsltfilename).xslt': \(error.localizedDescription)"
+       self.errorMsg = "Could not load '\(xsltfilename).xslt': \(error.localizedDescription)"
        return
      }
     } else {
       xslt = nil;
-      viewModel.errorMsg = "Could not find '\(xsltfilename).xslt'"
+      self.errorMsg = "Could not find '\(xsltfilename).xslt'"
       return
     }
 
     if let xslt = xslt {
       do {
         
-        let data = try viewModel.xmlDocument!.object(byApplyingXSLTString: xslt, arguments: nil)
-        viewModel.givXMLDocument = data as? XMLDocument
+        let data = try self.xmlDocument!.object(byApplyingXSLTString: xslt, arguments: nil)
+        self.givXMLDocument = data as? XMLDocument
         
-        if let data = viewModel.givXMLDocument {
+        if let data = self.givXMLDocument {
           let prettyXML = data.xmlData(options: .nodePrettyPrint)
-          viewModel.givXML = String(data: prettyXML, encoding: .utf8) ?? "'\(xsltfilename).xslt' XSL transform could not be rendered (Pretty Print)"
+          self.givXML = String(data: prettyXML, encoding: .utf8) ?? "'\(xsltfilename).xslt' XSL transform could not be rendered (Pretty Print)"
         }
       } catch {
-        viewModel.text = error.localizedDescription
+        self.text = error.localizedDescription
       }
     } else {
-      viewModel.text = "No contents created from '\(xsltfilename).xslt'"
+      self.text = "No contents created from '\(xsltfilename).xslt'"
     }
     
   }
 
-  mutating func validateXML() {
+  func validateXML() {
 
-    guard viewModel.xmlDocument != nil else {
-      viewModel.errorMsg = "ORF XMLDocument is empty or was not created"
+    guard self.xmlDocument != nil else {
+      self.errorMsg = "ORF XMLDocument is empty or was not created"
       return
     }
     
@@ -257,32 +254,32 @@ struct OpenReadingFrame {
       let dtd = try XMLDTD(data: dtdString.data(using: .utf8)!)
       dtd.name = "ORF"
       //print(dtd as Any)
-      viewModel.xmlDocument!.dtd = dtd
+      self.xmlDocument!.dtd = dtd
     } catch {
-      viewModel.errorMsg = "Could not load the 'orf.dtd' resource: \(error.localizedDescription)"
+      self.errorMsg = "Could not load the 'orf.dtd' resource: \(error.localizedDescription)"
       return
     }
 
     do {
-      try viewModel.xmlDocument!.validate()
+      try self.xmlDocument!.validate()
     } catch {
-      viewModel.errorMsg = "Could not validate ORF XML: \(error.localizedDescription)"
+      self.errorMsg = "Could not validate ORF XML: \(error.localizedDescription)"
       return
     }
 
   }
   
-  mutating func createGIVFrame() {
+  func createGIVFrame() {
    
-    guard viewModel.givXMLDocument != nil else {
-      viewModel.errorMsg = "GIV XMLDocument is empty or was not created"
+    guard self.givXMLDocument != nil else {
+      self.errorMsg = "GIV XMLDocument is empty or was not created"
       return
     }
 
     let parser = GIV_XMLParser()
 
-    parser.parse(viewModel.givXMLDocument!)
-    viewModel.givFrame = parser.givFrame
+    parser.parse(self.givXMLDocument!)
+    self.givFrame = parser.givFrame
 //      extent = parser.extent
 //      errorMsg = parser.errorMsg
 
@@ -293,14 +290,14 @@ struct OpenReadingFrame {
   // X M L  =====================================================================
   func xmlPanel() {
     
-    guard viewModel.xmlDocument != nil else {
-      viewModel.text = "XML Document is empty"
+    guard self.xmlDocument != nil else {
+      self.text = "XML Document is empty"
       return
     }
     
-    if let xmlDocument = viewModel.xmlDocument {
+    if let xmlDocument = self.xmlDocument {
       let data = xmlDocument.xmlData(options: .nodePrettyPrint)
-      viewModel.text = String(data: data, encoding: .utf8) ?? "XML to text failed"
+      self.text = String(data: data, encoding: .utf8) ?? "XML to text failed"
     }
   }
 
@@ -308,11 +305,11 @@ struct OpenReadingFrame {
   // J S O N  ====================================================================
   func jsonPanel() {
     
-    guard viewModel.xmlDocument != nil else {
-      viewModel.text = "XML Document is empty"
+    guard self.xmlDocument != nil else {
+      self.text = "XML Document is empty"
       return
     }
-    viewModel.text = "{}"
+    self.text = "{}"
 
     let xsltfilename = "xml2json"
     let xslt: String?
@@ -330,77 +327,28 @@ struct OpenReadingFrame {
     }
     
     if errorMsg != nil {
-      viewModel.text = errorMsg!
+      self.text = errorMsg!
       return
     }
     
     if let xslt = xslt {
         do {
-          let data = try viewModel.xmlDocument!.object(byApplyingXSLTString: xslt, arguments: nil)
+          let data = try self.xmlDocument!.object(byApplyingXSLTString: xslt, arguments: nil)
           if let data = data as? Data {
             if let json = try? JSONSerialization.jsonObject(with: data, options: .mutableContainers),
                let prettyJSON = try? JSONSerialization.data(withJSONObject: json, options: .prettyPrinted) {
-              viewModel.text = String(decoding: prettyJSON, as: UTF8.self)
+              self.text = String(decoding: prettyJSON, as: UTF8.self)
             } else {
-              viewModel.text = "JSON data malformed"
+              self.text = "JSON data malformed"
             }
           }
         } catch {
-          viewModel.text = error.localizedDescription
+          self.text = error.localizedDescription
         }
       } else {
-        viewModel.text = "No contents read for '\(xsltfilename).xslt"
+        self.text = "No contents read for '\(xsltfilename).xslt"
       }
   }
-  
-  // G I V   X M L  =============================================================================================
-/*
-  func givxmlPanel() {
-
-    guard viewModel.xmlDocument != nil else {
-      viewModel.text = "XML Document is empty"
-      return
-    }
-
-    let xsltfilename = "orf2giv"
-    let xslt: String?
-    var errorMsg: String? = nil
     
-    
-    if let filepath = Bundle.main.path(forResource: xsltfilename, ofType: "xslt") {
-     do {
-       xslt = try String(contentsOfFile: filepath)
-     } catch {
-       xslt = nil; errorMsg = error.localizedDescription
-     }
-    } else {
-      xslt = nil;
-      errorMsg = "Could not find '\(xsltfilename).xslt'"
-    }
-    
-    if errorMsg != nil {
-      viewModel.text = errorMsg!
-      return
-    }
-
-    viewModel.text = errorMsg != nil ? errorMsg! : ""
-
-    if let xslt = xslt {
-      do {
-        let data = try viewModel.xmlDocument!.object(byApplyingXSLTString: xslt, arguments: nil)
-        if let data = data as? XMLDocument {
-          let prettyXML = data.xmlData(options: .nodePrettyPrint)
-          viewModel.givXML = String(data: prettyXML, encoding: .utf8) ?? "XML Transform could not be rendered (Pretty Print)"
-        }
-      } catch {
-        viewModel.text = error.localizedDescription
-      }
-    } else {
-      viewModel.text = "No contents read for '\(xsltfilename).xslt'"
-    }
-    
-  }
-*/
-  
 }
 

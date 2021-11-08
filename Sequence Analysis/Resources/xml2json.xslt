@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 
-<!-- https://www.bjelic.net/2012/08/01/coding/convert-xml-to-json-using-xslt/ -->
+<!-- https://github.com/bojanbjelic/xml2json/ -->
 
 <xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
   <xsl:output method="text" encoding="utf-8"/>
