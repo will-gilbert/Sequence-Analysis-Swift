@@ -1,5 +1,5 @@
 //
-//  GIVViewModel.swift
+//  GIVXMLParser.swift
 //  Sequence Analysis
 //
 //  Created by Will Gilbert on 11/7/21.
@@ -7,65 +7,6 @@
 
 import Foundation
 import SwiftUI
-
-class GIVViewModel {
-  
-  var errorMsg: String?
-  
-  func getGIVDocument() -> XMLDocument? {
-
-    let givfilename = "ORF2.giv"
-    let xmlString: String?
-
-    if let filepath = Bundle.main.path(forResource: givfilename, ofType: "xml") {
-     do {
-       xmlString = try String(contentsOfFile: filepath)
-     } catch {
-       xmlString = nil; print(error.localizedDescription)
-     }
-    } else {
-      xmlString = nil;
-      errorMsg = "Could not find '\(givfilename).xml' resource"
-      return nil
-    }
-
-    if let xmlString = xmlString {
-      do {
-
-        let xmlDocument = try XMLDocument(xmlString: xmlString, options: [.documentValidate])
-
-        do {
-          let dtdFilepath = Bundle.main.path(forResource: "giv", ofType: "dtd")
-          let dtdString = try String(contentsOfFile: dtdFilepath!)
-          let dtd = try XMLDTD(data: dtdString.data(using: .utf8)!)
-          dtd.name = "giv-frame"
-          //print(dtd as Any)
-          xmlDocument.dtd = dtd
-        } catch {
-          errorMsg = "Could not load the 'giv.dtd' resource: \(error.localizedDescription)"
-          return nil
-
-        }
-
-        do {
-          try xmlDocument.validate()
-        } catch {
-          errorMsg = "Could not validate GIV XML: \(error.localizedDescription)"
-          return nil
-        }
-
-        return xmlDocument
-      } catch {
-        errorMsg = "Could not create or validate XML Docment: \(error.localizedDescription)"
-        return nil
-      }
-    } else {
-      return nil
-    }
-  }
-
-}
-
 
 struct Stack<Element> {
   fileprivate var array: [Element] = []
@@ -91,7 +32,7 @@ struct Stack<Element> {
   }
 }
 
-class GIV_XMLParser : NSObject, XMLParserDelegate {
+class GIVXMLParser : NSObject, XMLParserDelegate {
       
   let defaultStyle: ElementStyle = ElementStyle()
   var elementStyles: [String : ElementStyle] = [:]

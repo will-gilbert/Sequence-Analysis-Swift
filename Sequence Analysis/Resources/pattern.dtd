@@ -15,9 +15,9 @@
      count     CDATA #REQUIRED
 >
 
-<!ELEMENT match>
+<!ELEMENT match EMPTY>
 <!ATTLIST match
-     label      CDATA #REQUIRED
+     label      CDATA #IMPLIED
      from       CDATA #REQUIRED
      to         CDATA #REQUIRED
 >

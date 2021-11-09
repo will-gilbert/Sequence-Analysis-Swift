@@ -27,16 +27,21 @@ class ORFViewModel: ObservableObject {
   
   var xmlDocument: XMLDocument? = nil   // Start, stop and ORF as XML
   var errorMsg: String? = nil           // When things go wrong
-  var text: String = ""                 // Text contents for XML & JSON panels
+  var text: String?                     // Text contents for XML & JSON panels
   
   var givXMLDocument: XMLDocument? = nil // GIV XMLDocument used in Graph panel
-  var givXML: String = ""                // GIV XMLDocument as pretty print string
+  var givXML: String?                    // GIV XMLDocument as pretty print string
   var givFrame: GIVFrame?                // GIV frame rendered in the Graph panel
 
   func update(sequence: Sequence, options: ORFOptions) -> Void {
         
     self.sequence = sequence
     self.options = options
+    
+    self.xmlDocument = nil
+    self.errorMsg = nil
+    self.givXMLDocument = nil
+    self.givFrame = nil
 
     if sequence.isNucleic {
       createXML()
@@ -54,7 +59,7 @@ class ORFViewModel: ObservableObject {
 
   }
   
-
+  // MARK: C R E A T E  X M L
   func createXML()  {
     
     // Unwrap the optional class members
@@ -70,7 +75,7 @@ class ORFViewModel: ObservableObject {
     for frame in 1...3 {
     
       let frameNode = XMLElement(name: "frame")
-      frameNode.addAttribute(XMLNode.attribute(withName: "frame", stringValue: "+\(frame)") as! XMLNode)
+      frameNode.addAttribute(XMLNode.attribute(withName: "frame", stringValue: "\(frame)") as! XMLNode)
       orf.addChild(frameNode)
       
       // Start codons
@@ -197,8 +202,13 @@ class ORFViewModel: ObservableObject {
     return stop
   }
 
+  // MARK: V A L I D A T E
   
   func validateXML() {
+    
+    guard self.errorMsg == nil else {
+      return
+    }
 
     guard self.xmlDocument != nil else {
       self.errorMsg = "ORF XMLDocument is empty or was not created"
@@ -213,7 +223,7 @@ class ORFViewModel: ObservableObject {
       self.xmlDocument!.dtd = dtd
     } catch {
       self.errorMsg = "Could not load the 'orf.dtd' resource: \(error.localizedDescription)"
-      print(self.errorMsg as Any)
+      self.xmlDocument = nil
       return
     }
 
@@ -221,18 +231,25 @@ class ORFViewModel: ObservableObject {
       try self.xmlDocument!.validate()
     } catch {
       self.errorMsg = "Could not validate ORF XML: \(error.localizedDescription)"
+      self.xmlDocument = nil
       return
     }
 
   }
   
+  // MARK: T R A N S F O R M
+  
   func transforXML() {
+    
+    guard self.errorMsg == nil else {
+      return
+    }
     
     guard self.xmlDocument != nil else {
       self.errorMsg = "ORF XMLDocument is empty or was not created"
       return
     }
-    
+
     let xsltfilename = "orf2giv"
     let xslt: String?
     
@@ -256,39 +273,70 @@ class ORFViewModel: ObservableObject {
         let data = try self.xmlDocument!.object(byApplyingXSLTString: xslt, arguments: nil)
         self.givXMLDocument = data as? XMLDocument
         
+        // Validate GIV XMLDocument
+        
+        do {
+          let dtdFilepath = Bundle.main.path(forResource: "giv", ofType: "dtd")
+          let dtdString = try String(contentsOfFile: dtdFilepath!)
+          let dtd = try XMLDTD(data: dtdString.data(using: .utf8)!)
+          dtd.name = "giv-frame"
+          self.givXMLDocument!.dtd = dtd
+        } catch {
+          self.errorMsg = "Could not load the 'giv.dtd' resource: \(error.localizedDescription)"
+          self.givXMLDocument = nil
+          return
+        }
+
+        do {
+          try self.givXMLDocument!.validate()
+        } catch {
+          self.errorMsg = "Could not validate GIV XML: \(error.localizedDescription)"
+          self.givXMLDocument = nil
+          return
+        }
+        
         if let data = self.givXMLDocument {
           let prettyXML = data.xmlData(options: .nodePrettyPrint)
           self.givXML = String(data: prettyXML, encoding: .utf8) ?? "'\(xsltfilename).xslt' XSL transform could not be rendered (Pretty Print)"
         }
       } catch {
-        self.text = error.localizedDescription
+        self.errorMsg = error.localizedDescription
       }
     } else {
-      self.text = "No contents created from '\(xsltfilename).xslt'"
+      self.errorMsg = "No contents created from '\(xsltfilename).xslt'"
     }
     
   }
 
+  // MARK: G I V  F R A M E
   
   func createGIVFrame() {
    
+    guard self.errorMsg == nil else {
+      return
+    }
+
     guard self.givXMLDocument != nil else {
       self.errorMsg = "GIV XMLDocument is empty or was not created"
       return
     }
 
-    let parser = GIV_XMLParser()
+    let parser = GIVXMLParser()
     parser.parse(self.givXMLDocument!)
     self.givFrame = parser.givFrame
   }
   
   
   
-  // X M L  =====================================================================
+  // MARK: X M L  P A N E L
   func xmlPanel() {
     
+    guard self.errorMsg == nil else {
+      return
+    }
+
     guard self.xmlDocument != nil else {
-      self.text = "XML Document is empty"
+      self.errorMsg = "XML Document was not created or is empty"
       return
     }
     
@@ -299,18 +347,21 @@ class ORFViewModel: ObservableObject {
   }
 
   
-  // J S O N  ====================================================================
+  // MARK: J S O N  P A N E L
   func jsonPanel() {
     
+    guard self.errorMsg == nil else {
+      return
+    }
+
     guard self.xmlDocument != nil else {
-      self.text = "XML Document is empty"
+      self.errorMsg = "XML Document is empty"
       return
     }
     self.text = "{}"
 
     let xsltfilename = "xml2json"
     let xslt: String?
-    var errorMsg: String? = nil
         
     if let filepath = Bundle.main.path(forResource: xsltfilename, ofType: "xslt") {
      do {
@@ -320,12 +371,8 @@ class ORFViewModel: ObservableObject {
      }
     } else {
       xslt = nil;
-      errorMsg = "Could not find '\(xsltfilename).xslt'"
-    }
-    
-    if errorMsg != nil {
-      self.text = errorMsg!
-      return
+      self.errorMsg = "Could not find '\(xsltfilename).xslt'"
+      self.text = nil
     }
     
     if let xslt = xslt {
@@ -340,10 +387,10 @@ class ORFViewModel: ObservableObject {
             }
           }
         } catch {
-          self.text = error.localizedDescription
+          self.errorMsg = error.localizedDescription
         }
       } else {
-        self.text = "No contents read for '\(xsltfilename).xslt"
+        self.errorMsg = "No contents read for '\(xsltfilename).xslt"
       }
   }
     

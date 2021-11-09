@@ -31,8 +31,11 @@
   <xsl:template match="pattern">
 
     <xsl:element name="giv-panel">
-      <xsl:attribute name="label"><xsl:value-of select="@regex"/></xsl:attribute>
-      <xsl:attribute name="count"><xsl:value-of select="@count"/></xsl:attribute>
+      <xsl:attribute name="label">
+        <xsl:value-of select="@regex"/>
+        <xsl:text>  </xsl:text>
+        <xsl:value-of select="@count"/>
+      </xsl:attribute>
 
       <xsl:element name="map-panel">
         <xsl:attribute name="buoyancy">Floating</xsl:attribute>

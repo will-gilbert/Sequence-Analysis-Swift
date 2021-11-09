@@ -8,7 +8,6 @@
 import Foundation
 import SwiftUI
 
-
 struct ORFOptions {
   var minORFsize: Int = 30
   var startCodons: Bool = true
@@ -46,12 +45,24 @@ struct ORFView: View {
       
       // Graph, XML, JSON and GIV panels go below options --------------------------
       
-      if (viewModel.xmlDocument != nil) {
-        switch viewModel.panel {
-        case .GRAPH: GraphView(givFrame: viewModel.givFrame!, sequence: sequence)
-        case .XML, .JSON: TextView(text: viewModel.text)
-        case .GIV:
-          TextView(text: viewModel.givXML)
+      switch viewModel.panel {
+      case .GRAPH:
+        if let givFrame = viewModel.givFrame {
+          GraphView(givFrame: givFrame, sequence: sequence)
+        } else if let errorMsg = viewModel.errorMsg {
+          TextView(text: errorMsg)
+        }
+      case .XML, .JSON:
+        if let text = viewModel.text {
+          TextView(text: text)
+        } else if let errorMsg = viewModel.errorMsg {
+          TextView(text: errorMsg)
+        }
+      case .GIV:
+        if let givXML = viewModel.givXML {
+          TextView(text: givXML)
+        } else if let errorMsg = viewModel.errorMsg {
+          TextView(text: errorMsg)
         }
       }
     }
@@ -101,11 +112,11 @@ struct ORFView: View {
     Button(action: {
       let pasteboard = NSPasteboard.general
       pasteboard.clearContents()
-      pasteboard.setString(viewModel.text, forType: .string)
+      pasteboard.setString(viewModel.text ?? "", forType: .string)
     }) {
       Image(systemName: "arrow.right.doc.on.clipboard")
     }
-    .disabled( viewModel.panel == .GRAPH)
+    .disabled( viewModel.panel == .GRAPH || viewModel.text == nil)
     .help("Copy to Clipboard")
   }
 

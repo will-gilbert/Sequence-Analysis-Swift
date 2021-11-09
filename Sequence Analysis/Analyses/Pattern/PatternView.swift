@@ -56,17 +56,25 @@ struct PatternView: View {
       
       // Graph, XML, JSON and GIV panels go below the divider ------------------
       
-      if (viewModel.xmlDocument != nil) {
-        switch viewModel.panel {
-        case .GRAPH: GraphView(givFrame: viewModel.givFrame!, sequence: viewModel.sequence)
-        case .XML, .JSON: TextView(text: viewModel.text)
-        case .GIV:
-          TextView(text: viewModel.givXML)
+      switch viewModel.panel {
+      case .GRAPH:
+        if let givFrame = viewModel.givFrame {
+          GraphView(givFrame: givFrame, sequence: sequence)
+        } else if let errorMsg = viewModel.errorMsg {
+          TextView(text: errorMsg)
+        } else if let text = viewModel.text {
+          TextView(text: text)
+        }
+      case .XML, .JSON, .GIV:
+        if let text = viewModel.text {
+          TextView(text: text)
+        } else if let errorMsg = viewModel.errorMsg {
+          TextView(text: errorMsg)
         }
       }
     }
   }
-
+  
   var patternList: some View {
     List(selection: $selectedItem) {
       ForEach(viewModel.items, id: \.id) { item in
@@ -168,7 +176,7 @@ struct PatternView: View {
     Button(action: {
       let pasteboard = NSPasteboard.general
       pasteboard.clearContents()
-      pasteboard.setString(viewModel.text, forType: .string)
+      pasteboard.setString(viewModel.text ?? "", forType: .string)
     }) {
       Image(systemName: "arrow.right.doc.on.clipboard")
     }
@@ -198,12 +206,10 @@ struct PatternView: View {
 
     @State var scale: Double = 1.0
 
-//    let patternParser: Pattern_XMLParser
     let givFrame: GIVFrame
     let extent: CGFloat
-    
-    var height: CGFloat = 0.0
-    var width: CGFloat = 0.0
+    let height: CGFloat
+    let width: CGFloat
 
     init?(givFrame: GIVFrame, sequence: Sequence) {
       self.givFrame = givFrame

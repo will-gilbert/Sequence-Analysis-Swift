@@ -7,27 +7,30 @@
 
 <!ELEMENT ORF (frame)*>
 <!ATTLIST ORF
-      sequence   CDATA #IMPLIED
-      length     CDATA #REQUIRED
+     sequence   CDATA #IMPLIED
+     length     CDATA #REQUIRED
 >
 
 <!ELEMENT frame (start-codon | stop-codon | orf)*>
 <!ATTLIST frame
-      frame      CDATA (+1 | +2 | +3)
+    frame ( 1 | 2 | 3 | -1 | -2 | -3 ) #REQUIRED
 >
 
-<!ELEMENT start-codon
-     codon      CDATA #IMPLIED
-     at         CDATA #REQUIRED
+<!ELEMENT start-codon EMPTY>
+<!ATTLIST start-codon
+     codon CDATA #IMPLIED
+     at    CDATA #REQUIRED
 >
 
-<!ELEMENT stop-codon
-     codon      CDATA #IMPLIED
-     at         CDATA #REQUIRED
+<!ELEMENT stop-codon EMPTY>
+<!ATTLIST stop-codon
+     codon CDATA #IMPLIED
+     at    CDATA #REQUIRED
 >
 
-<!ELEMENT orf
-     from       CDATA #REQUIRED
-     to         CDATA #REQUIRED
+<!ELEMENT orf EMPTY>
+<!ATTLIST orf
+     from CDATA #REQUIRED
+     to   CDATA #REQUIRED
 >
 
