@@ -19,6 +19,7 @@ class SequenceState: ObservableObject {
   
   var orfViewModel = ORFViewModel()
   var patternViewModel: PatternViewModel
+  var givViewModel = GIVViewModel()
 
   var defaultAnalysis: AnalysisView.Analyses
 

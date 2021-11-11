@@ -110,25 +110,35 @@ struct ORFView: View {
   
   var copyToClipboardBtn: some View {
     Button(action: {
-      let pasteboard = NSPasteboard.general
-      pasteboard.clearContents()
-      pasteboard.setString(viewModel.text ?? "", forType: .string)
+      
+      var string: String? = nil
+      switch viewModel.panel {
+      case .XML, .JSON: string = viewModel.text
+      case .GIV: string = viewModel.givXML
+      case .GRAPH: break
+      }
+      
+      if let string = string {
+        let pasteboard = NSPasteboard.general
+        pasteboard.clearContents()
+        pasteboard.setString(string, forType: .string)
+      }
     }) {
       Image(systemName: "arrow.right.doc.on.clipboard")
     }
-    .disabled( viewModel.panel == .GRAPH || viewModel.text == nil)
+    .disabled( viewModel.panel == .GRAPH || (viewModel.text == nil && viewModel.givXML == nil))
     .help("Copy to Clipboard")
   }
 
-  var copyToFileBtn: some View {
-    Button(action: {
-      print("Save to File")
-    }) {
-      Image(systemName: "square.and.arrow.down")
-    }
-    .disabled( viewModel.panel == .GRAPH)
-    .help("Save to File")
-  }
+//  var copyToFileBtn: some View {
+//    Button(action: {
+//      print("Save to File")
+//    }) {
+//      Image(systemName: "square.and.arrow.down")
+//    }
+//    .disabled( viewModel.panel == .GRAPH)
+//    .help("Save to File")
+//  }
 
   
   func updateViewModel() -> Void {

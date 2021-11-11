@@ -25,8 +25,8 @@ struct AnalysisView: View {
     windowState.selectedAnalysis = selectedAnalysis
     
     let disallowed: [Analyses] = (sequenceState.sequence.isNucleic) ?
-    [.STRUCTURE, .PI, .GIV] :   // Nucleic
-    [.ORF, .STRUCTURE, .GIV]    // Protein
+    [.STRUCTURE, .PI] :   // Nucleic
+    [.ORF, .STRUCTURE]    // Protein
     
     // Remove any analyses not used by this sequence type
     var filteredData: [Analyses] {
@@ -60,7 +60,7 @@ struct AnalysisView: View {
       case .PI:
         IsoElectricView(sequence: sequenceState.sequence)
       case .GIV:
-        EmptyView()
+        GIVView(viewModel: sequenceState.givViewModel)
       }
       Spacer()
     }
