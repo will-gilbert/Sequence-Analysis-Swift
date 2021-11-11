@@ -299,25 +299,25 @@ class PatternViewModel: ObservableObject {
         self.givXMLDocument = data as? XMLDocument
         
         // Validate GIV XMLDocument
-        do {
-          let dtdFilepath = Bundle.main.path(forResource: "giv", ofType: "dtd")
-          let dtdString = try String(contentsOfFile: dtdFilepath!)
-          let dtd = try XMLDTD(data: dtdString.data(using: .utf8)!)
-          dtd.name = "giv-frame"
-          self.givXMLDocument!.dtd = dtd
-        } catch {
-          self.errorMsg = "Could not load the 'giv.dtd' resource: \(error.localizedDescription)"
-          self.xmlDocument = nil
-          return
-        }
-
-        do {
-          try self.givXMLDocument!.validate()
-        } catch {
-          self.errorMsg = "Could not validate GIV XML: \(error.localizedDescription)"
-          self.xmlDocument = nil
-          return
-        }
+//        do {
+//          let dtdFilepath = Bundle.main.path(forResource: "giv", ofType: "dtd")
+//          let dtdString = try String(contentsOfFile: dtdFilepath!)
+//          let dtd = try XMLDTD(data: dtdString.data(using: .utf8)!)
+//          dtd.name = "giv-frame"
+//          self.givXMLDocument!.dtd = dtd
+//        } catch {
+//          self.errorMsg = "Could not load the 'giv.dtd' resource: \(error.localizedDescription)"
+//          self.xmlDocument = nil
+//          return
+//        }
+//
+//        do {
+//          try self.givXMLDocument!.validate()
+//        } catch {
+//          self.errorMsg = "Could not validate GIV XML: \(error.localizedDescription)"
+//          self.xmlDocument = nil
+//          return
+//        }
 
         if let data = self.givXMLDocument {
           let prettyXML = data.xmlData(options: .nodePrettyPrint)

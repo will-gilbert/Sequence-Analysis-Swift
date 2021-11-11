@@ -46,11 +46,11 @@ struct AnalysisView: View {
                       
       switch selectedAnalysis {
       case .ORF:
-        ORFView(sequence: sequenceState.sequence, viewModel: sequenceState.orfViewModel)
+        ORFView(sequenceState: sequenceState)
       case .STRUCTURE:
         StructureView(sequenceState.sequence)
       case .PATTERN:
-        PatternView(sequence: sequenceState.sequence, viewModel: sequenceState.patternViewModel)
+        PatternView(sequenceState: sequenceState)
       case .FORMAT:
         FormatView()
       case .PUBLISH:

@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import SwiftUI
 
 // V I E W M O D E L  ==============================================================
 
@@ -13,18 +14,66 @@ class GIVViewModel: ObservableObject {
   
   // Panel types
   enum Panel: String, CaseIterable {
-    case GIV = "GIV XML"
     case GRAPH = "GIV"
+    case GIV = "GIV XML"
+    case DTD = "XML DTD"
+    case COLORS = "GIV Colors"
   }
 
-  @Published var panel: Panel = .GIV  // Currently selected panel
+  @Published var panel: Panel = .GRAPH  // Currently selected panel
   @Published var givXML: String = ""  // GIV XMLDocument as pretty print string
 
   var errorMsg: String? = nil           // When things go wrong
   var givXMLDocument: XMLDocument? = nil // GIV XMLDocument used in Graph panel
   var givFrame: GIVFrame?                // GIV frame rendered in the Graph panel
   var extent: CGFloat?
+  
+  var dtdText: String? {
+    get {
+      do {
+        let dtdFilepath = Bundle.main.path(forResource: "giv", ofType: "dtd")
+        return try String(contentsOfFile: dtdFilepath!)
+      } catch {
+        return "Could not load the 'giv.dtd' resource: \(error.localizedDescription)"
+      }
+    }
+  }
 
+  var colorsView: some View {
+    get {
+      var names = Colors.getNames().sorted()
+      
+      names = names.map {name in
+        name.contains("aga") ? name.uppercased() : name.capitalized(with:  NSLocale.current)
+      }
+      
+      let view = ScrollView {
+        VStack {
+          ForEach(names, id: \.self) { name in
+            HStack {
+              
+              Button(action: {
+                  let pasteboard = NSPasteboard.general
+                  pasteboard.clearContents()
+                  pasteboard.setString(name, forType: .string)
+                }) {
+                Image(systemName: "arrow.right.doc.on.clipboard")
+              }
+              .buttonStyle(BorderlessButtonStyle())
+              
+              Text(name)
+                .font(.title)
+                .frame(width: 250, height: 30, alignment: .leading)
+              Color(Colors.get(color: name).base.cgColor!)
+                .frame(height: 30)
+            }
+          }
+        }
+      }
+
+      return view
+    }
+  }
 
   func update() -> Void {
             
@@ -62,7 +111,7 @@ class GIVViewModel: ObservableObject {
     }
 
     guard self.givXMLDocument != nil else {
-      self.errorMsg = "GIV XMLDocument is empty or was not created"
+      self.errorMsg = "GIV XML is empty or was not created"
       return
     }
     
@@ -97,13 +146,14 @@ class GIVViewModel: ObservableObject {
     }
 
     guard self.givXMLDocument != nil else {
-      self.errorMsg = "GIV XMLDocument is empty or was not created"
+      self.errorMsg = "GIV XML is empty"
       return
     }
 
     let parser = GIVXMLParser()
     parser.parse(self.givXMLDocument!)
     
+    // Save the 'extent' for use in the View
     if let extent: Int = parser.extent {
       self.extent = CGFloat(extent)
     }

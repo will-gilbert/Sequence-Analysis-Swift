@@ -9,6 +9,8 @@ import SwiftUI
 
 struct PatternView: View {
   
+  @ObservedObject var sequenceState: SequenceState
+
   // External classes; Injected via the initializer
   @ObservedObject var sequence: Sequence
   @ObservedObject var viewModel: PatternViewModel
@@ -21,13 +23,22 @@ struct PatternView: View {
   
   private var length: Int
   private var checkSum: Int
-
-  init(sequence: Sequence, viewModel: PatternViewModel) {
-    self.sequence = sequence
-    self.viewModel = viewModel
-    self.checkSum = sequence.checkSum
-    self.length = sequence.length
+  
+  init(sequenceState: SequenceState) {
+    self.sequenceState = sequenceState
+    self.sequence = sequenceState.sequence
+    self.viewModel = sequenceState.patternViewModel
+    self.checkSum = sequenceState.sequence.checkSum
+    self.length = sequenceState.sequence.length
   }
+
+
+//  init(sequence: Sequence, viewModel: PatternViewModel) {
+//    self.sequence = sequence
+//    self.viewModel = viewModel
+//    self.checkSum = sequence.checkSum
+//    self.length = sequence.length
+//  }
     
   var body: some View {
      
@@ -177,9 +188,15 @@ struct PatternView: View {
       let pasteboard = NSPasteboard.general
       pasteboard.clearContents()
       pasteboard.setString(viewModel.text ?? "", forType: .string)
+      
+      if viewModel.panel == .GIV {
+        sequenceState.givViewModel.givXML = viewModel.text ?? ""
+      }
+
     }) {
       Image(systemName: "arrow.right.doc.on.clipboard")
     }
+    .buttonStyle(BorderlessButtonStyle())
     .disabled( viewModel.panel == .GRAPH)
     .help("Copy to Clipboard")
   }

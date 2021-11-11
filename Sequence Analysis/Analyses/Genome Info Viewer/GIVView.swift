@@ -22,16 +22,13 @@ struct GIVView: View {
     
     return VStack {
       VStack {
-        HStack { panelPicker ; Spacer().frame(width: 15) ; copyToClipboardBtn } //; copyToFileBtn }
+        HStack { panelPicker } //; Spacer().frame(width: 15) } //; copyToClipboardBtn } //; copyToFileBtn }
       }
-      .padding()
-      .frame(height: 150)
-      
       Divider()
-      
       // GIV XML and Graph panels go below options --------------------------
       
       switch viewModel.panel {
+        
       case .GIV:
         TextEditor(text: $viewModel.givXML)
           .font(.body)
@@ -41,10 +38,13 @@ struct GIVView: View {
            GraphView(givFrame: givFrame, extent: extent)
         } else if let errorMsg = viewModel.errorMsg {
           TextView(text: errorMsg)
-        } else {
-          TextView(text: "No error in XML")
         }
         
+      case .DTD:
+        if let dtdText = viewModel.dtdText {
+          TextView(text: dtdText)
+        }
+      case .COLORS:  viewModel.colorsView
       }
     }
   }

@@ -18,7 +18,9 @@ struct ORFOptions {
 // V I E W  ========================================================================
 
 struct ORFView: View {
-       
+  
+  @ObservedObject var sequenceState: SequenceState
+  
   @ObservedObject var sequence: Sequence
   @ObservedObject var viewModel: ORFViewModel
   
@@ -26,6 +28,12 @@ struct ORFView: View {
   @State private var startCodons: Bool = true
   @State private var stopCodons: Bool = true
   @State private var internalATG: Bool = true
+  
+  init(sequenceState: SequenceState) {
+    self.sequenceState = sequenceState
+    self.sequence = sequenceState.sequence
+    self.viewModel = sequenceState.orfViewModel
+  }
   
   var body: some View {
     
@@ -122,10 +130,12 @@ struct ORFView: View {
         let pasteboard = NSPasteboard.general
         pasteboard.clearContents()
         pasteboard.setString(string, forType: .string)
+        sequenceState.givViewModel.givXML = string
       }
     }) {
       Image(systemName: "arrow.right.doc.on.clipboard")
     }
+    .buttonStyle(BorderlessButtonStyle())
     .disabled( viewModel.panel == .GRAPH || (viewModel.text == nil && viewModel.givXML == nil))
     .help("Copy to Clipboard")
   }

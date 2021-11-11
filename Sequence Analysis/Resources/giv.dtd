@@ -1,14 +1,15 @@
-
-<!--                                                   -->
-<!-- William Gilbert, Informagen, Inc.                 -->
+<!--     D A T A   T Y P E   D E F I N I T I O N       -->
+<!--     =======================================       -->
+<!-- Will Gilbert, Informagen, Inc.                    -->
 <!-- 25-Dec-1999                                       -->
 <!-- Revised for macOS Swift, Oct 2021                 -->
 <!--                                                   -->
 
 <!ENTITY % Boolean "(true|false)">
 <!ENTITY % Buoyancy "(Floating | Sinking | TopDown | BottomUp | StackDown | StackUp)">
+<!ENTITY % Label "(Below | Inside | Above)">
 
-<!-- XML root; Name for thiscollection of genetic entities   -->
+<!-- XML root; Name for this collection of genetic entities   -->
 <!ELEMENT giv-frame (giv-panel | map-panel)*>
 <!ATTLIST giv-frame 
       name           CDATA #IMPLIED
@@ -18,14 +19,14 @@
       ruler          %Boolean; "true"
 >
 
-<!-- A collection of panels with a label -->
+<!-- A collection of map panels with a label -->
 <!ELEMENT giv-panel (map-panel)+>
 <!ATTLIST giv-panel
       label         CDATA #IMPLIED
       bkg-color     CDATA "None"
 >
 
-<!-- Map containing tile; Groups of mosaics and element glyphs  -->
+<!-- Map containing tiles, mosaics and/or elements  -->
 <!ELEMENT map-panel (style-for-type*, (group | element)*)>
 <!ATTLIST map-panel
       label         CDATA ""
@@ -35,16 +36,16 @@
       v-gap         CDATA "3"
 >
 
-<!-- Style for the glyphs by 'type' in this panel ================  -->
+<!-- Style for an element in this map panel; The style name is the PCDATA ================  -->
 <!ELEMENT style-for-type (#PCDATA)>
 <!ATTLIST style-for-type
       bar-color     CDATA "Green"
       bar-height    CDATA "20"
-      lbl-position  (Below | Inside | Above) "Inside"
+      lbl-position  %Label; "Inside"
       font-size     CDATA "10"
 >
 
-<!-- Mosaic can contain mosaics can glyphs ================ -->
+<!-- Mosaics can contain nested mosaics and/or elements ================ -->
 <!ELEMENT group (group | element)*>
 <!ATTLIST group
       label         CDATA #IMPLIED
@@ -54,11 +55,11 @@
       v-gap         CDATA "3"
 >
 
-<!-- Genomic element; Styled as a Glyph ===================== -->
+<!-- Genomic element; Styled by 'type' defined in the current map panel ===================== -->
 <!ELEMENT element EMPTY>
 <!ATTLIST element
       label   CDATA #IMPLIED
-      type    CDATA "default"
+      type    CDATA #IMPLIED
       from    CDATA #REQUIRED
       to      CDATA #REQUIRED
 >
