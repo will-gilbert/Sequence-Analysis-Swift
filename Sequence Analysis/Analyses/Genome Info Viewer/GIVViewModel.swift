@@ -15,7 +15,7 @@ class GIVViewModel: ObservableObject {
   // Panel types
   enum Panel: String, CaseIterable {
     case GRAPH = "GIV"
-    case GIV = "GIV XML"
+    case GIV = "GIV XML Editor"
     case DTD = "XML DTD"
     case COLORS = "GIV Colors"
   }

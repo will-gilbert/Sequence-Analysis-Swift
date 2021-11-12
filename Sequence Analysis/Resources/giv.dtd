@@ -1,9 +1,12 @@
+<!-- ================================================= -->
 <!--     D A T A   T Y P E   D E F I N I T I O N       -->
 <!--     =======================================       -->
+<!--          Genome Information Viewer                -->
+<!--                                                   -->
 <!-- Will Gilbert, Informagen, Inc.                    -->
 <!-- 25-Dec-1999                                       -->
-<!-- Revised for macOS Swift, Oct 2021                 -->
-<!--                                                   -->
+<!-- Revised for macOS/iOS Swift, Oct 2021             -->
+<!-- ================================================= -->
 
 <!ENTITY % Boolean "(true|false)">
 <!ENTITY % Buoyancy "(Floating | Sinking | TopDown | BottomUp | StackDown | StackUp)">
@@ -26,7 +29,7 @@
       bkg-color     CDATA "None"
 >
 
-<!-- Map containing tiles, mosaics and/or elements  -->
+<!-- Panel containing groups and/or elements  -->
 <!ELEMENT map-panel (style-for-type*, (group | element)*)>
 <!ATTLIST map-panel
       label         CDATA ""
@@ -45,7 +48,7 @@
       font-size     CDATA "10"
 >
 
-<!-- Mosaics can contain nested mosaics and/or elements ================ -->
+<!-- Goups can contain nested groups and/or elements ================ -->
 <!ELEMENT group (group | element)*>
 <!ATTLIST group
       label         CDATA #IMPLIED

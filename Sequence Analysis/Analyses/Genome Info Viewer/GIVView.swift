@@ -11,9 +11,12 @@ import SwiftUI
 
 
 struct GIVView: View {
+  @Environment(\.colorScheme) private var colorScheme: ColorScheme
+
   
   @ObservedObject var viewModel: GIVViewModel
-  
+  @State private var showMinimap: Bool = false
+
   var body: some View {
     
     if viewModel.panel == .GRAPH {
@@ -30,8 +33,28 @@ struct GIVView: View {
       switch viewModel.panel {
         
       case .GIV:
-        TextEditor(text: $viewModel.givXML)
-          .font(.body)
+//        TextEditor(text: $viewModel.givXML)
+//          .font(.body)
+        VStack {
+          CodeEditor(
+            text: $viewModel.givXML,
+            language: .xml,
+            layout: CodeEditor.LayoutConfiguration(showMinimap: showMinimap)
+          )
+          .environment(\.codeEditorTheme, colorScheme == .dark ? Theme.defaultDark : Theme.defaultLight)
+          
+          HStack {
+
+            Spacer()
+
+            Toggle("Show Minimap", isOn: $showMinimap)
+              .toggleStyle(CheckboxToggleStyle())
+              .padding([.top, .bottom])
+
+          }
+          .padding(EdgeInsets(top: 0, leading: 32, bottom: 8, trailing: 32))
+        }
+
 
       case .GRAPH:
         if let givFrame = viewModel.givFrame, let extent = viewModel.extent {

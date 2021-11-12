@@ -13,6 +13,20 @@
 		6E54C29A273D5EC400B12189 /* GIVView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E54C299273D5EC400B12189 /* GIVView.swift */; };
 		6E54C29C273D604200B12189 /* GIVViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E54C29B273D604200B12189 /* GIVViewModel.swift */; };
 		6E56236327271CEF0072CA75 /* PatternViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E56236227271CEF0072CA75 /* PatternViewModel.swift */; };
+		6E5CB7B9273F0BC40067A076 /* CodeEditor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E5CB7AB273F0BC40067A076 /* CodeEditor.swift */; };
+		6E5CB7BA273F0BC40067A076 /* CodeStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E5CB7AC273F0BC40067A076 /* CodeStorage.swift */; };
+		6E5CB7BB273F0BC40067A076 /* CodeStorageDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E5CB7AD273F0BC40067A076 /* CodeStorageDelegate.swift */; };
+		6E5CB7BC273F0BC40067A076 /* CodeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E5CB7AE273F0BC40067A076 /* CodeView.swift */; };
+		6E5CB7BD273F0BC40067A076 /* GutterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E5CB7AF273F0BC40067A076 /* GutterView.swift */; };
+		6E5CB7BE273F0BC40067A076 /* LanguageConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E5CB7B0273F0BC40067A076 /* LanguageConfiguration.swift */; };
+		6E5CB7BF273F0BC40067A076 /* LineMap.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E5CB7B1273F0BC40067A076 /* LineMap.swift */; };
+		6E5CB7C0273F0BC40067A076 /* Location.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E5CB7B2273F0BC40067A076 /* Location.swift */; };
+		6E5CB7C1273F0BC40067A076 /* MinimapView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E5CB7B3273F0BC40067A076 /* MinimapView.swift */; };
+		6E5CB7C2273F0BC40067A076 /* MutableAttributedString.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E5CB7B4273F0BC40067A076 /* MutableAttributedString.swift */; };
+		6E5CB7C3273F0BC40067A076 /* OSDefinitions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E5CB7B5273F0BC40067A076 /* OSDefinitions.swift */; };
+		6E5CB7C4273F0BC40067A076 /* XMLTextView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E5CB7B6273F0BC40067A076 /* XMLTextView.swift */; };
+		6E5CB7C5273F0BC40067A076 /* Theme.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E5CB7B7273F0BC40067A076 /* Theme.swift */; };
+		6E5CB7C6273F0BC40067A076 /* ViewModifiers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E5CB7B8273F0BC40067A076 /* ViewModifiers.swift */; };
 		6E738EF727285B22000594B4 /* ORFViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E738EF627285B22000594B4 /* ORFViewModel.swift */; };
 		6E8B7B78271F460D0040EBE2 /* Sequence_AnalysisTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E8B7B77271F460D0040EBE2 /* Sequence_AnalysisTests.swift */; };
 		6E8B7B82271F460D0040EBE2 /* Sequence_AnalysisUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E8B7B81271F460D0040EBE2 /* Sequence_AnalysisUITests.swift */; };
@@ -106,6 +120,20 @@
 		6E54C299273D5EC400B12189 /* GIVView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GIVView.swift; sourceTree = "<group>"; };
 		6E54C29B273D604200B12189 /* GIVViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GIVViewModel.swift; sourceTree = "<group>"; };
 		6E56236227271CEF0072CA75 /* PatternViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PatternViewModel.swift; sourceTree = "<group>"; };
+		6E5CB7AB273F0BC40067A076 /* CodeEditor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CodeEditor.swift; sourceTree = "<group>"; };
+		6E5CB7AC273F0BC40067A076 /* CodeStorage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CodeStorage.swift; sourceTree = "<group>"; };
+		6E5CB7AD273F0BC40067A076 /* CodeStorageDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CodeStorageDelegate.swift; sourceTree = "<group>"; };
+		6E5CB7AE273F0BC40067A076 /* CodeView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CodeView.swift; sourceTree = "<group>"; };
+		6E5CB7AF273F0BC40067A076 /* GutterView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GutterView.swift; sourceTree = "<group>"; };
+		6E5CB7B0273F0BC40067A076 /* LanguageConfiguration.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LanguageConfiguration.swift; sourceTree = "<group>"; };
+		6E5CB7B1273F0BC40067A076 /* LineMap.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LineMap.swift; sourceTree = "<group>"; };
+		6E5CB7B2273F0BC40067A076 /* Location.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Location.swift; sourceTree = "<group>"; };
+		6E5CB7B3273F0BC40067A076 /* MinimapView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MinimapView.swift; sourceTree = "<group>"; };
+		6E5CB7B4273F0BC40067A076 /* MutableAttributedString.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MutableAttributedString.swift; sourceTree = "<group>"; };
+		6E5CB7B5273F0BC40067A076 /* OSDefinitions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OSDefinitions.swift; sourceTree = "<group>"; };
+		6E5CB7B6273F0BC40067A076 /* XMLTextView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = XMLTextView.swift; sourceTree = "<group>"; };
+		6E5CB7B7273F0BC40067A076 /* Theme.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Theme.swift; sourceTree = "<group>"; };
+		6E5CB7B8273F0BC40067A076 /* ViewModifiers.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ViewModifiers.swift; sourceTree = "<group>"; };
 		6E738EF627285B22000594B4 /* ORFViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ORFViewModel.swift; sourceTree = "<group>"; };
 		6E8B7B62271F460B0040EBE2 /* Sequence Analysis.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Sequence Analysis.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		6E8B7B6E271F460D0040EBE2 /* Sequence_Analysis.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Sequence_Analysis.entitlements; sourceTree = "<group>"; };
@@ -229,6 +257,27 @@
 			path = "Genome Info Viewer";
 			sourceTree = "<group>";
 		};
+		6E5CB7AA273F0BC40067A076 /* XMLEditor */ = {
+			isa = PBXGroup;
+			children = (
+				6E5CB7AB273F0BC40067A076 /* CodeEditor.swift */,
+				6E5CB7AC273F0BC40067A076 /* CodeStorage.swift */,
+				6E5CB7AD273F0BC40067A076 /* CodeStorageDelegate.swift */,
+				6E5CB7AE273F0BC40067A076 /* CodeView.swift */,
+				6E5CB7AF273F0BC40067A076 /* GutterView.swift */,
+				6E5CB7B0273F0BC40067A076 /* LanguageConfiguration.swift */,
+				6E5CB7B1273F0BC40067A076 /* LineMap.swift */,
+				6E5CB7B2273F0BC40067A076 /* Location.swift */,
+				6E5CB7B3273F0BC40067A076 /* MinimapView.swift */,
+				6E5CB7B4273F0BC40067A076 /* MutableAttributedString.swift */,
+				6E5CB7B5273F0BC40067A076 /* OSDefinitions.swift */,
+				6E5CB7B6273F0BC40067A076 /* XMLTextView.swift */,
+				6E5CB7B7273F0BC40067A076 /* Theme.swift */,
+				6E5CB7B8273F0BC40067A076 /* ViewModifiers.swift */,
+			);
+			path = XMLEditor;
+			sourceTree = "<group>";
+		};
 		6E8B7B59271F460B0040EBE2 = {
 			isa = PBXGroup;
 			children = (
@@ -259,6 +308,7 @@
 				6E8B7BD2271F46740040EBE2 /* Sequence */,
 				6E8B7BBE271F46740040EBE2 /* GIV */,
 				6E8B7B9F271F46740040EBE2 /* Analyses */,
+				6E5CB7AA273F0BC40067A076 /* XMLEditor */,
 				6E8B7BD7271F46750040EBE2 /* System */,
 				6E8B7BB3271F46740040EBE2 /* Resources */,
 				6E14B9D7271F4BBF00546ED7 /* Preview Content */,
@@ -599,16 +649,23 @@
 			buildActionMask = 2147483647;
 			files = (
 				6E8B7C0D271F46750040EBE2 /* MapPanelView.swift in Sources */,
+				6E5CB7BD273F0BC40067A076 /* GutterView.swift in Sources */,
 				6E8B7BFA271F46750040EBE2 /* GIVPanelDemo.swift in Sources */,
+				6E5CB7BE273F0BC40067A076 /* LanguageConfiguration.swift in Sources */,
 				6E8B7BDA271F46750040EBE2 /* AppState.swift in Sources */,
 				6E56236327271CEF0072CA75 /* PatternViewModel.swift in Sources */,
 				6E8B7BFB271F46750040EBE2 /* SequenceEditor.swift in Sources */,
 				6E8B7BF4271F46750040EBE2 /* MainView.swift in Sources */,
+				6E5CB7BF273F0BC40067A076 /* LineMap.swift in Sources */,
+				6E5CB7C5273F0BC40067A076 /* Theme.swift in Sources */,
 				6E8B7BE7271F46750040EBE2 /* Composition.swift in Sources */,
 				6E8B7BEB271F46750040EBE2 /* ORFView.swift in Sources */,
+				6E5CB7BA273F0BC40067A076 /* CodeStorage.swift in Sources */,
 				6E8B7BF2271F46750040EBE2 /* AnalysisView.swift in Sources */,
 				6E8B7BF3271F46750040EBE2 /* AvailableSequencesList.swift in Sources */,
+				6E5CB7BB273F0BC40067A076 /* CodeStorageDelegate.swift in Sources */,
 				6E8B7BE8271F46750040EBE2 /* FormatView.swift in Sources */,
+				6E5CB7C0273F0BC40067A076 /* Location.swift in Sources */,
 				6E8B7C09271F46750040EBE2 /* TileLayout.swift in Sources */,
 				6E8B7BDE271F46750040EBE2 /* F.swift in Sources */,
 				6E8B7C07271F46750040EBE2 /* Mosaic.swift in Sources */,
@@ -618,14 +675,20 @@
 				6E8B7C03271F46750040EBE2 /* GIVPanel.swift in Sources */,
 				6E8B7BED271F46750040EBE2 /* PatternView.swift in Sources */,
 				6E8B7BE2271F46750040EBE2 /* SequenceState.swift in Sources */,
+				6E5CB7C1273F0BC40067A076 /* MinimapView.swift in Sources */,
 				6EE18D3C272B1CAF00447C26 /* Publish+MVVM.swift in Sources */,
+				6E5CB7B9273F0BC40067A076 /* CodeEditor.swift in Sources */,
 				6E8B7BE0271F46750040EBE2 /* SequenceAnalysisApp.swift in Sources */,
+				6E5CB7C4273F0BC40067A076 /* XMLTextView.swift in Sources */,
+				6E5CB7C3273F0BC40067A076 /* OSDefinitions.swift in Sources */,
 				6E8B7BFC271F46750040EBE2 /* SequenceEditorView.swift in Sources */,
 				6E8B7C10271F46750040EBE2 /* Sequence+Modifiers.swift in Sources */,
+				6E5CB7BC273F0BC40067A076 /* CodeView.swift in Sources */,
 				6E8B7C04271F46750040EBE2 /* Glyph.swift in Sources */,
 				6E8B7C0A271F46750040EBE2 /* GIVFrameView.swift in Sources */,
 				6E8B7BE1271F46750040EBE2 /* SequenceMenu.swift in Sources */,
 				6EDD38A527233A6C0004AA8D /* EditUIDorTitle.swift in Sources */,
+				6E5CB7C6273F0BC40067A076 /* ViewModifiers.swift in Sources */,
 				6E8E58612720578800EE6C7C /* FetchFromNCBI.swift in Sources */,
 				6E8B7C0F271F46750040EBE2 /* Alphabet.swift in Sources */,
 				6E8B7C0E271F46750040EBE2 /* MosaicView.swift in Sources */,
@@ -635,6 +698,7 @@
 				6E8B7C0C271F46750040EBE2 /* GlyphView.swift in Sources */,
 				6E738EF727285B22000594B4 /* ORFViewModel.swift in Sources */,
 				6E8B7BFF271F46750040EBE2 /* Element.swift in Sources */,
+				6E5CB7C2273F0BC40067A076 /* MutableAttributedString.swift in Sources */,
 				6E8B7BDD271F46750040EBE2 /* CreateNewSequence.swift in Sources */,
 				6E8B7BF0271F46750040EBE2 /* Publish.swift in Sources */,
 				6E8B7BE4271F46750040EBE2 /* WindowController.swift in Sources */,
