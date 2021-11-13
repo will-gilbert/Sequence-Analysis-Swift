@@ -15,7 +15,7 @@ struct AnalysisView: View {
     case PUBLISH = "Publish"
     case COMPOSITION = "Composition"
     case PI = "pI"
-    case GIV = "GIV"
+    case GIV = "GIV Editor"
 
     var id: Analyses { self }
   }

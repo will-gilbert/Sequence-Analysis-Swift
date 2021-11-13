@@ -214,8 +214,8 @@ extension LanguageConfiguration {
 
   /// Language configuration for XML formerly Haskell (including GHC extensions)
   ///
-  public static let xml = LanguageConfiguration(stringRegexp: "\"(?:\\\\\"|[^\"])*+\"",
-                                                    characterRegexp: "'(?:\\\\'|[^']|\\\\[^']*+)'",
+  public static let xml = LanguageConfiguration(stringRegexp: "\"(?:\\\\\"|[^\"])*+\"|\'(?:\\\\\'|[^\'])*+\'",
+                                                    characterRegexp: nil, //"'(?:\\\\'|[^']|\\\\[^']*+)'",
                                                     numberRegexp:
                                                       optNeg +
                                                       group(alternatives([

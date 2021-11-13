@@ -11,11 +11,9 @@ import SwiftUI
 
 
 struct GIVView: View {
-  @Environment(\.colorScheme) private var colorScheme: ColorScheme
 
-  
   @ObservedObject var viewModel: GIVViewModel
-  @State private var showMinimap: Bool = false
+  
 
   var body: some View {
     
@@ -25,49 +23,17 @@ struct GIVView: View {
     
     return VStack {
       VStack {
-        HStack { panelPicker } //; Spacer().frame(width: 15) } //; copyToClipboardBtn } //; copyToFileBtn }
+        HStack { panelPicker }
       }
-      Divider()
-      // GIV XML and Graph panels go below options --------------------------
       
+      Divider()
+      
+      // GIV XML Editor, Graph DTD and Colors panels go below options --------------------------
       switch viewModel.panel {
-        
-      case .GIV:
-//        TextEditor(text: $viewModel.givXML)
-//          .font(.body)
-        VStack {
-          CodeEditor(
-            text: $viewModel.givXML,
-            language: .xml,
-            layout: CodeEditor.LayoutConfiguration(showMinimap: showMinimap)
-          )
-          .environment(\.codeEditorTheme, colorScheme == .dark ? Theme.defaultDark : Theme.defaultLight)
-          
-          HStack {
-
-            Spacer()
-
-            Toggle("Show Minimap", isOn: $showMinimap)
-              .toggleStyle(CheckboxToggleStyle())
-              .padding([.top, .bottom])
-
-          }
-          .padding(EdgeInsets(top: 0, leading: 32, bottom: 8, trailing: 32))
-        }
-
-
-      case .GRAPH:
-        if let givFrame = viewModel.givFrame, let extent = viewModel.extent {
-           GraphView(givFrame: givFrame, extent: extent)
-        } else if let errorMsg = viewModel.errorMsg {
-          TextView(text: errorMsg)
-        }
-        
-      case .DTD:
-        if let dtdText = viewModel.dtdText {
-          TextView(text: dtdText)
-        }
-      case .COLORS:  viewModel.colorsView
+      case .GIV: GIVEditorPanel(givXML: $viewModel.givXML)
+      case .GRAPH: givGraphPanel
+      case .DTD: dtdPanel
+      case .COLORS: ColorsPanel()
       }
     }
   }
@@ -83,29 +49,95 @@ struct GIVView: View {
     .font(.title)
   }
   
-  var copyToClipboardBtn: some View {
-    Button(action: {
-        let pasteboard = NSPasteboard.general
-        pasteboard.clearContents()
-        pasteboard.setString(viewModel.givXML, forType: .string)
-    }) {
-      Image(systemName: "arrow.right.doc.on.clipboard")
+  struct GIVEditorPanel: View {
+     
+    @Environment(\.colorScheme) private var colorScheme: ColorScheme
+    @Binding var givXML: String
+    @State var showMinimap: Bool = false
+
+    var body: some View {
+      VStack {
+        HStack {
+          Spacer()
+          Toggle("Show Minimap", isOn: $showMinimap)
+            .toggleStyle(CheckboxToggleStyle())
+            .padding([.top, .bottom])
+        }
+        .padding(EdgeInsets(top: 0, leading: 32, bottom: 8, trailing: 32))
+
+        
+        CodeEditor(
+          text: $givXML,
+          language: .xml,
+          layout: CodeEditor.LayoutConfiguration(showMinimap: showMinimap)
+        )
+        .environment(\.codeEditorTheme, colorScheme == .dark ? Theme.defaultDark : Theme.defaultLight)
+        
+      }
     }
-    .disabled( viewModel.panel == .GRAPH)
-    .help("Copy to Clipboard")
+  }
+  
+  var givGraphPanel: some View {
+    if let givFrame = viewModel.givFrame, let extent = viewModel.extent {
+       return AnyView(GraphView(givFrame: givFrame, extent: extent))
+    } else if let errorMsg = viewModel.errorMsg {
+      return AnyView(TextView(text: errorMsg))
+    }
+    return AnyView(EmptyView())
+  }
+  
+  var dtdPanel: some View {
+    if let dtdText = viewModel.dtdText {
+      return AnyView(TextView(text: dtdText))
+    } else if let errorMsg = viewModel.errorMsg {
+      return AnyView(TextView(text: errorMsg))
+    }
+    return AnyView(EmptyView())
+  }
+  
+  
+  struct ColorsPanel: View {
+       
+    var names: [String]
+
+    init() {
+      names = Colors.getNames().sorted()
+      names = names.map {name in
+        name.contains("aga") ? name.uppercased() : name.capitalized(with:  NSLocale.current)
+      }
+    }
+    
+    var body: some View {
+      ScrollView {
+        VStack {
+          ForEach(names, id: \.self) { name in
+            HStack {
+              
+              Button(action: {
+                  let pasteboard = NSPasteboard.general
+                  pasteboard.clearContents()
+                  pasteboard.setString(name, forType: .string)
+                }) {
+                Image(systemName: "arrow.right.doc.on.clipboard")
+              }
+              .buttonStyle(BorderlessButtonStyle())
+              
+              Text(name)
+                .font(.title)
+                .frame(width: 250, height: 30, alignment: .leading)
+              Color(Colors.get(color: name).base.cgColor!)
+                .frame(height: 30)
+            }
+          }
+        }
+      }
+    }
+    
   }
 
-//  var copyToFileBtn: some View {
-//    Button(action: {
-//      print("Save to File")
-//    }) {
-//      Image(systemName: "square.and.arrow.down")
-//    }
-//    .disabled( viewModel.panel == .GRAPH)
-//    .help("Save to File")
-//  }
-
-    
+  
+  
+  
     // O R F   G R A P H  ======================================================================
 
     struct GraphView: View {

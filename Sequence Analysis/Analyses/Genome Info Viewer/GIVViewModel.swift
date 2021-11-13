@@ -38,43 +38,8 @@ class GIVViewModel: ObservableObject {
       }
     }
   }
-
-  var colorsView: some View {
-    get {
-      var names = Colors.getNames().sorted()
-      
-      names = names.map {name in
-        name.contains("aga") ? name.uppercased() : name.capitalized(with:  NSLocale.current)
-      }
-      
-      let view = ScrollView {
-        VStack {
-          ForEach(names, id: \.self) { name in
-            HStack {
-              
-              Button(action: {
-                  let pasteboard = NSPasteboard.general
-                  pasteboard.clearContents()
-                  pasteboard.setString(name, forType: .string)
-                }) {
-                Image(systemName: "arrow.right.doc.on.clipboard")
-              }
-              .buttonStyle(BorderlessButtonStyle())
-              
-              Text(name)
-                .font(.title)
-                .frame(width: 250, height: 30, alignment: .leading)
-              Color(Colors.get(color: name).base.cgColor!)
-                .frame(height: 30)
-            }
-          }
-        }
-      }
-
-      return view
-    }
-  }
-
+    
+  
   func update() -> Void {
             
     self.errorMsg = nil

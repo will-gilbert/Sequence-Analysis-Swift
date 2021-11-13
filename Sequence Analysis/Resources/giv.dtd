@@ -10,7 +10,7 @@
 
 <!ENTITY % Boolean "(true|false)">
 <!ENTITY % Buoyancy "(Floating | Sinking | TopDown | BottomUp | StackDown | StackUp)">
-<!ENTITY % Label "(Below | Inside | Above)">
+<!ENTITY % Label "(Below | Inside | Above | Hidden)">
 
 <!-- XML root; Name for this collection of genetic entities   -->
 <!ELEMENT giv-frame (giv-panel | map-panel)*>
