@@ -7,101 +7,74 @@
 
 import SwiftUI
 
-struct EditUIDorTitle {
-
+// https://developer.apple.com/documentation/appkit/nswindow
+struct EditUIDorTitleView: View {
+  
+  @Environment(\.presentationMode) var presentationMode
   var sequenceState : SequenceState
+  
+  @State private var uid: String
+  @State private var title: String
 
-  func createWindow(width: CGFloat, height: CGFloat) -> NSWindow {
-    
-    return NSWindow(
-      contentRect: CGRect(x: 0, y: 0, width: width, height: height),
-      styleMask: [.titled, .closable],
-      backing: .buffered,
-      defer: false
-    )
-
+  init(sequenceState: SequenceState) {
+    self.sequenceState = sequenceState
+    _uid = State(initialValue: sequenceState.sequence.uid)
+    _title = State(initialValue: sequenceState.sequence.title)
   }
 
-  func openWindow() {
-    
-    let window = createWindow(width: 0, height: 0)
-    let contents = EditUIDorTitleView(sequenceState: sequenceState, window: window)
-    let _ = WindowController(window: window, contents: AnyView(contents))
-    
-    NSApp.runModal(for: window)
-  }
-}
-    
-
-
-  // https://developer.apple.com/documentation/appkit/nswindow
-  struct EditUIDorTitleView: View {
-    
-    var sequenceState : SequenceState
-    var window: NSWindow
-    
-    @State var uid: String
-    @State var title: String
-
-    init(sequenceState: SequenceState, window: NSWindow) {
-      self.sequenceState = sequenceState
-      self.window = window
-      uid = sequenceState.sequence.uid
-      title = sequenceState.sequence.title
-    }
-
-    var body: some View {
+  var body: some View {
+          
+   return Group {
       
-            
-     return Group {
-        
-        Section(header: SectionHeader(name: "Edit UID or Title")) {
-          Text("")
-        }
-        
-        Section {
-          VStack(alignment: .leading) {
-            HStack {
-              Text("Unique ID")
-              TextField("", text: $uid).frame(width: 100)
-            }
-            HStack {
-              Text("Title")
-              TextField("", text: $title)
-            }
-          }
-        }
-        Divider()
-        Section {
+      Section(header: SectionHeader(name: "Edit UID or Title")) {
+        Text("")
+      }
+      
+      Section {
+        VStack(alignment: .leading) {
           HStack {
-            Spacer()
-            // C A N C E L  ============================
-            Button(action: {
-              window.close()
-            }) {
-              Text("Cancel")
-            }.keyboardShortcut(.cancelAction)
-
-            // O K  =====================================
-            Button(action: {
-              
-              sequenceState.sequence.uid = uid
-              sequenceState.sequence.title = title
-              sequenceState.changed = true // On macOS use this to force an update to the 'NavigationTitle"
-                            
-              window.close()
-
-            }) {
-              Text("OK")
-            }
-            .keyboardShortcut(.defaultAction)
+            Text("Unique ID: ")
+            TextField("", text: $uid).frame(width: 100)
           }
-
+          HStack {
+            Text("Title: ")
+            TextField("", text: $title)
+          }
         }
       }
-      .padding(EdgeInsets(top: 12, leading: 20, bottom: 12, trailing: 20))
-      .frame(width: 500, height: 150)
+     
+      Divider()
+     
+      Section {
+        HStack {
+          Spacer()
+          // C A N C E L  ============================
+          Button(action: {
+            presentationMode.wrappedValue.dismiss()
+          }) {
+            Text("Cancel")
+          }.keyboardShortcut(.cancelAction)
+
+          // O K  =====================================
+          Button(action: {
+            
+            sequenceState.sequence.uid = uid
+            sequenceState.sequence.title = title
+            sequenceState.changed = true // On macOS use this to force an update to the 'NavigationTitle"
+                          
+            presentationMode.wrappedValue.dismiss()
+
+          }) {
+            Text("OK")
+          }
+          .keyboardShortcut(.defaultAction)
+        }
+
+      }
     }
+    .padding(EdgeInsets(top: 12, leading: 20, bottom: 12, trailing: 20))
+    .frame(width: 500, height: 150)
+  }
 
   struct SectionHeader: View {
     var name: String

@@ -10,6 +10,7 @@ struct SequenceAnalysis: View {
 
   @State private var showCreateNewSequence: Bool = false
   @State private var showFetchFromNCBI: Bool = false
+  @State private var showEditUIDorTitle: Bool = false
 
   
   let window: NSWindow?
@@ -70,12 +71,11 @@ struct SequenceAnalysis: View {
               .keyboardShortcut("s", modifiers: .command)
               
               // Edit the UID and/or title
-              Button(action: {
-                if let sequenceState = windowState.currentSequenceState {
-                  EditUIDorTitle(sequenceState: sequenceState).openWindow()
-                }
-              }) {
+              Button(action: { showEditUIDorTitle = true }) {
                   Image(systemName: "rectangle.and.pencil.and.ellipsis")
+              }
+              .sheet(isPresented: $showEditUIDorTitle) {
+                  EditUIDorTitleView(sequenceState: windowState.currentSequenceState!)
               }
               .disabled(windowState.currentSequenceState == nil)
               .help("Edit UID or Title")

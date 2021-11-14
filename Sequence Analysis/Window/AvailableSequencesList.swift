@@ -39,7 +39,7 @@ struct AvailableSequencesList: View {
           .moveDisabled(isHovering == false)
           .contextMenu {
             Button( action: {
-              EditUIDorTitle(sequenceState: sequenceState).openWindow()
+              // EditUIDorTitle(sequenceState: sequenceState).openWindow()
             }){Text("Edit UID/Title")}
             Button( action: {
               if windowState.currentSequenceState == sequenceState {
