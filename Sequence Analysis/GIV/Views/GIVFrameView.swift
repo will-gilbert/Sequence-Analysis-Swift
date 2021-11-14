@@ -22,7 +22,6 @@ struct GIVFrameView: View {
     let height = givFrame.size.height
     let frgColor = givFrame.frgColor
     let bkgColor = givFrame.bkgColor
-//    let offsetLeft: CGFloat = (extent * (1.0 - scale))/2  // This works, but why?
 
     return VStack(alignment: .leading, spacing: 0) {
       

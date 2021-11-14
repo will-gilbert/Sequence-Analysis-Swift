@@ -108,7 +108,7 @@ struct FetchFromNCBI {
               urlString.append("db=")
               urlString.append( sequenceType == .DNA ? "nucleotide" : "protein" )
               urlString.append("&id=")
-//              urlString.append("NM_000485")
+//              urlString.append("NM_000485")  // Remove this after Features panel has been implemented
               urlString.append(entrezID)
               urlString.append("&retmode=xml")
                             
@@ -121,7 +121,8 @@ struct FetchFromNCBI {
                   if let string = parser.sequenceString {
                     let title = parser.sequenceTitle ?? "Untitled"
                     let sequence = Sequence(string.uppercased(), uid: entrezID, title: title, type: sequenceType)
-                    let _ = appState.addSequence(sequence)
+                    let sequenceState = appState.addSequence(sequence)
+                    sequenceState.featuresViewModel.xmlDocument = xmlDocument
                   } else if let error = parser.errorMsg {
                     alertIsShowing = true
                     errorMsg = error

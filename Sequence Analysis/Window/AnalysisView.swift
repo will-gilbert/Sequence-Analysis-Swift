@@ -9,6 +9,7 @@ struct AnalysisView: View {
   
   enum Analyses: String, CaseIterable {
     case ORF = "ORF"
+    case FEATURES = "Features"
     case STRUCTURE = "Structure"
     case PATTERN = "Pattern"
     case FORMAT = "Format"
@@ -26,7 +27,7 @@ struct AnalysisView: View {
     
     let disallowed: [Analyses] = (sequenceState.sequence.isNucleic) ?
     [.STRUCTURE, .PI] :   // Nucleic
-    [.ORF, .STRUCTURE]    // Protein
+    [.ORF,.FEATURES, .STRUCTURE]    // Protein, Removed 'FEATURES' until we can handle very short <100 sequences
     
     // Remove any analyses not used by this sequence type
     var filteredData: [Analyses] {
@@ -47,6 +48,8 @@ struct AnalysisView: View {
       switch selectedAnalysis {
       case .ORF:
         ORFView(sequenceState: sequenceState)
+      case .FEATURES:
+        FeaturesView(sequenceState: sequenceState)
       case .STRUCTURE:
         StructureView(sequenceState.sequence)
       case .PATTERN:

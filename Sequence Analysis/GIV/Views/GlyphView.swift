@@ -130,8 +130,10 @@ struct GlyphView: View {
           sequenceState.selectedORFGlyph = glyph
         } else if windowState.selectedAnalysis == .PATTERN {
           sequenceState.selectedPatternGlyph = glyph
+        } else if windowState.selectedAnalysis == .FEATURES {
+          sequenceState.selectedFeatureGlyph = glyph
         }
-        
+
         sequenceState.selection = NSRange(location: glyph.element.start-1, length: glyph.element.stop - glyph.element.start + 1)
       }
       

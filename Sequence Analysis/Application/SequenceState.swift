@@ -15,9 +15,11 @@ class SequenceState: ObservableObject {
   @Published var selection: NSRange?
   @Published var selectedORFGlyph: Glyph?
   @Published var selectedPatternGlyph: Glyph?
+  @Published var selectedFeatureGlyph: Glyph?
   @Published var fileFormat: FileFormat = FileFormat.FASTA
   
   var orfViewModel = ORFViewModel()
+  var featuresViewModel = FeaturesViewModel()
   var patternViewModel: PatternViewModel
   var givViewModel = GIVViewModel()
 
