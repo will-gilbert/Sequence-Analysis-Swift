@@ -6,6 +6,8 @@ struct AvailableSequencesList: View {
   @EnvironmentObject var appState: AppState
   @EnvironmentObject var windowState: WindowState
   
+  @State private var showEditUIDorTitle: Bool = false
+
   let window: NSWindow?
   
   @State var isHovering: Bool = false
@@ -38,9 +40,6 @@ struct AvailableSequencesList: View {
           }
           .moveDisabled(isHovering == false)
           .contextMenu {
-            Button( action: {
-              // EditUIDorTitle(sequenceState: sequenceState).openWindow()
-            }){Text("Edit UID/Title")}
             Button( action: {
               if windowState.currentSequenceState == sequenceState {
                 windowState.currentSequenceState = nil

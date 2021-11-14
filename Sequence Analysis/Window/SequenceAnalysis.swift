@@ -71,7 +71,11 @@ struct SequenceAnalysis: View {
               .keyboardShortcut("s", modifiers: .command)
               
               // Edit the UID and/or title
-              Button(action: { showEditUIDorTitle = true }) {
+              Button(action: {
+                if windowState.currentSequenceState != nil {
+                  showEditUIDorTitle = true
+                }
+              } ) {
                   Image(systemName: "rectangle.and.pencil.and.ellipsis")
               }
               .sheet(isPresented: $showEditUIDorTitle) {
@@ -114,11 +118,6 @@ struct SequenceAnalysis: View {
           Label("Hide/Show Sidebar", systemImage: "sidebar.left")
         }
       }
-//      ToolbarItem {
-//        Button(action:{}) {
-//          Label("Hide/Show Sequences", systemImage: "list.dash")
-//        }
-//      }
     }
   }
   
