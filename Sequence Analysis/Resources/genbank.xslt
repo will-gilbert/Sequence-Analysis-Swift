@@ -21,20 +21,21 @@
 
 
       <xsl:element name="giv-panel">
-        <xsl:attribute name="label">Single Panel</xsl:attribute>
+        <xsl:attribute name="label">
+          <xsl:value-of select='./GBSeq/GBSeq_primary-accession'/>
+          <xsl:text>:</xsl:text>
+          <xsl:value-of select='./GBSeq/GBSeq_locus'/>
+          <xsl:text>  </xsl:text>
+          <xsl:value-of select='./GBSeq/GBSeq_definition'/>
+        </xsl:attribute>
         
         <xsl:element name="map-panel">
-          <xsl:attribute name="label">
-            <xsl:value-of select='./GBSeq/GBSeq_locus'/>
-            <xsl:text>:</xsl:text>
-            <xsl:value-of select='./GBSeq/GBSeq_definition'/>
-          </xsl:attribute>
           <xsl:attribute name="buoyancy">Floating</xsl:attribute>
           <xsl:attribute name="h-gap">0</xsl:attribute>
           <xsl:attribute name="v-gap">3</xsl:attribute>
           <xsl:element name="style-for-type">
             <xsl:attribute name="bar-color">Navy</xsl:attribute>
-            <xsl:attribute name="bar-height">15</xsl:attribute>
+            <xsl:attribute name="bar-height">4</xsl:attribute>
             <xsl:attribute name="lbl-position">Above</xsl:attribute>
             <xsl:text>GenBank Entry</xsl:text>
           </xsl:element>
@@ -52,60 +53,61 @@
         <xsl:element name="map-panel">
           <xsl:attribute name="label">Genebank Features</xsl:attribute>
           <xsl:attribute name="buoyancy">Floating</xsl:attribute>
-          <xsl:attribute name="h-gap">3</xsl:attribute>
+          <xsl:attribute name="h-gap">0</xsl:attribute>
           <xsl:attribute name="v-gap">3</xsl:attribute>
  
  
           <xsl:element name="style-for-type">
             <xsl:attribute name="bar-color">Magenta</xsl:attribute>
-            <xsl:attribute name="bar-height">12</xsl:attribute>
+            <xsl:attribute name="bar-height">18</xsl:attribute>
             <xsl:text>gene</xsl:text>
           </xsl:element>
 
           <xsl:element name="style-for-type">
             <xsl:attribute name="bar-color">Orange</xsl:attribute>
-            <xsl:attribute name="bar-height">8</xsl:attribute>
+            <xsl:attribute name="bar-height">18</xsl:attribute>
             <xsl:text>CDS</xsl:text>
           </xsl:element>
 
           <xsl:element name="style-for-type">
-            <xsl:attribute name="bar-color">Red</xsl:attribute>
-            <xsl:attribute name="bar-height">8</xsl:attribute>
+            <xsl:attribute name="bar-color">Tomato</xsl:attribute>
+            <xsl:attribute name="bar-height">18</xsl:attribute>
             <xsl:text>intron</xsl:text>
           </xsl:element>
 
           <xsl:element name="style-for-type">
             <xsl:attribute name="bar-color">Green</xsl:attribute>
-            <xsl:attribute name="bar-height">8</xsl:attribute>
+            <xsl:attribute name="bar-height">18</xsl:attribute>
             <xsl:text>exon</xsl:text>
           </xsl:element>
 
           <xsl:element name="style-for-type">
-            <xsl:attribute name="bar-color">Raw Sienna</xsl:attribute>
-            <xsl:attribute name="bar-height">8</xsl:attribute>
+            <xsl:attribute name="bar-color">Chocolate</xsl:attribute>
+            <xsl:attribute name="bar-height">18</xsl:attribute>
             <xsl:text>sig_peptide</xsl:text>
           </xsl:element>
 
           <xsl:element name="style-for-type">
             <xsl:attribute name="bar-color">Gold</xsl:attribute>
+            <xsl:attribute name="bar-height">18</xsl:attribute>
             <xsl:text>mat_peptide</xsl:text>
           </xsl:element>
 
           <xsl:element name="style-for-type">
             <xsl:attribute name="bar-color">Blue</xsl:attribute>
-            <xsl:attribute name="bar-height">4</xsl:attribute>
+            <xsl:attribute name="bar-height">18</xsl:attribute>
             <xsl:text>polyA_signal</xsl:text>
           </xsl:element>
 
           <xsl:element name="style-for-type">
             <xsl:attribute name="bar-color">Blue</xsl:attribute>
-            <xsl:attribute name="bar-height">4</xsl:attribute>
+            <xsl:attribute name="bar-height">18</xsl:attribute>
             <xsl:text>polyA_site</xsl:text>
           </xsl:element>
 
           <xsl:element name="style-for-type">
             <xsl:attribute name="bar-color">Blue</xsl:attribute>
-            <xsl:attribute name="bar-height">4</xsl:attribute>
+            <xsl:attribute name="bar-height">18</xsl:attribute>
             <xsl:text>variation</xsl:text>
           </xsl:element>
 
