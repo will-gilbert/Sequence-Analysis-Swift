@@ -8,6 +8,10 @@ struct SequenceAnalysis: View {
   @EnvironmentObject var appState: AppState
   @EnvironmentObject var windowState: WindowState
 
+  @State private var showCreateNewSequence: Bool = false
+  @State private var showFetchFromNCBI: Bool = false
+
+  
   let window: NSWindow?
 
   var body: some View {
@@ -22,19 +26,18 @@ struct SequenceAnalysis: View {
             HStack(spacing: 3) {
               
               //  NCBI Entrez
-              Button(action: {
-                FetchFromNCBI(appState: appState).openWindow()
-              }) {
+              Button(action: { showFetchFromNCBI = true }) {
                   Image(systemName: "network")
-              }.help("Fetch an entry from the NCBI,  ⌘-E")
-                .keyboardShortcut("e", modifiers: .command)
+              }
+              .sheet(isPresented: $showFetchFromNCBI){ NCBIFetchView(appState: appState) }
+              .help("Fetch an entry from the NCBI,  ⌘-E")
+              .keyboardShortcut("e", modifiers: .command)
 
               // Add a sequence
-              Button(action: {
-                CreateNewSequence(appState: appState).openWindow()
-              }) {
+              Button(action: { showCreateNewSequence = true } ) {
                   Image(systemName: "plus")
               }
+              .sheet(isPresented: $showCreateNewSequence){ NewSequenceView(appState: appState) }
               .help("Add a new sequence,  ⌥⌘-N")
               .keyboardShortcut("n", modifiers: [.option, .command])
 

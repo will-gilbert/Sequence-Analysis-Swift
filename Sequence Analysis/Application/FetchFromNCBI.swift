@@ -18,39 +18,12 @@
 // NPKKYIPGTKMIFVGIKKKEERADLIAYLKKATNE
 
 import SwiftUI
-
-struct FetchFromNCBI {
-
-  var appState : AppState
-
-  func createWindow(width: CGFloat, height: CGFloat) -> NSWindow {
     
-    return NSWindow(
-      contentRect: CGRect(x: 0, y: 0, width: width, height: height),
-      styleMask: [.titled, .closable],
-      backing: .buffered,
-      defer: false
-    )
-
-  }
-
-  func openWindow() {
-    
-    let window = createWindow(width: 0, height: 0)
-    let contents = NCBIFetchView(appState: appState, window: window)
-    let _ = WindowController(window: window, contents: AnyView(contents))
-    
-    NSApp.runModal(for: window)
-  }
-}
-    
-
-
-  // https://developer.apple.com/documentation/appkit/nswindow
   struct NCBIFetchView: View {
-    
+
+    @Environment(\.presentationMode) var presentationMode
+
     var appState : AppState
-    var window: NSWindow
 
     @State var entrezID: String = ""
     @State var sequenceType: SequenceType = SequenceType.DNA
@@ -89,6 +62,9 @@ struct FetchFromNCBI {
             .pickerStyle(SegmentedPickerStyle())
         }
         Divider()
+       
+       TextView(text: errorMsg)
+       
         Spacer(minLength: 10)
                 
         Section {
@@ -96,7 +72,7 @@ struct FetchFromNCBI {
             Spacer()
             // C A N C E L  ============================
             Button(action: {
-              window.close()
+              presentationMode.wrappedValue.dismiss()
             }) {
               Text("Cancel")
             }.keyboardShortcut(.cancelAction)
@@ -124,31 +100,28 @@ struct FetchFromNCBI {
                     let sequenceState = appState.addSequence(sequence)
                     sequenceState.featuresViewModel.xmlDocument = xmlDocument
                   } else if let error = parser.errorMsg {
-                    alertIsShowing = true
                     errorMsg = error
                     errorMsg.append("\n\nTry the ")
                     errorMsg.append( sequenceType == .DNA ? "Protein" : "Nucleic" )
                     errorMsg.append(" database.")
+                    return
                   }
                   
                 } catch {
-                  alertIsShowing = true
                   errorMsg = "Contents could not be loaded"
+                  return
                 }
               } else {
-                alertIsShowing = true
                 errorMsg = "Bad URL"
+                return
               }
               
-              window.close()
+              presentationMode.wrappedValue.dismiss()
 
             }) {
               Text("OK")
             }
             .keyboardShortcut(.defaultAction)
-          }
-          .alert(isPresented: $alertIsShowing) {
-            Alert(title: Text("Fetch from NCBI"), message: Text(errorMsg), dismissButton: .default(Text("OK")))
           }
         }
       }

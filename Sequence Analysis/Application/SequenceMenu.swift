@@ -26,8 +26,7 @@ struct SequenceMenu: Commands {
         SequenceType.DNA,
         SequenceType.RNA,
         SequenceType.PROTEIN,
-        SequenceType.PEPTIDE,
-        SequenceType.UNDEFINED
+        SequenceType.PEPTIDE
       ])
     }
   }
