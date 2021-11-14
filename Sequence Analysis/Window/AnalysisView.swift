@@ -27,7 +27,7 @@ struct AnalysisView: View {
     
     let disallowed: [Analyses] = (sequenceState.sequence.isNucleic) ?
     [.STRUCTURE, .PI] :   // Nucleic
-    [.ORF,.FEATURES, .STRUCTURE]    // Protein, Removed 'FEATURES' until we can handle very short <100 sequences
+    [.ORF, .STRUCTURE]    // Protein, Removed 'FEATURES' until we can handle very short <100 sequences
     
     // Remove any analyses not used by this sequence type
     var filteredData: [Analyses] {

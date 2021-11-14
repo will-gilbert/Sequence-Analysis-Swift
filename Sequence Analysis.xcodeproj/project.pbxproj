@@ -95,7 +95,7 @@
 		6EDB880F27381D020077592A /* Buoyancy.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6EDB880E27381D020077592A /* Buoyancy.swift */; };
 		6EDB881327381ECD0077592A /* giv.dtd in Resources */ = {isa = PBXBuildFile; fileRef = 6EDB881227381ECD0077592A /* giv.dtd */; };
 		6EDD38A527233A6C0004AA8D /* EditUIDorTitle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6EDD38A427233A6C0004AA8D /* EditUIDorTitle.swift */; };
-		6EE18D3C272B1CAF00447C26 /* Publish+MVVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6EE18D3B272B1CAF00447C26 /* Publish+MVVM.swift */; };
+		6EE18D3C272B1CAF00447C26 /* PublishViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6EE18D3B272B1CAF00447C26 /* PublishViewModel.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -209,7 +209,7 @@
 		6EDB880E27381D020077592A /* Buoyancy.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Buoyancy.swift; sourceTree = "<group>"; };
 		6EDB881227381ECD0077592A /* giv.dtd */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = giv.dtd; sourceTree = "<group>"; };
 		6EDD38A427233A6C0004AA8D /* EditUIDorTitle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditUIDorTitle.swift; sourceTree = "<group>"; };
-		6EE18D3B272B1CAF00447C26 /* Publish+MVVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Publish+MVVM.swift"; sourceTree = "<group>"; };
+		6EE18D3B272B1CAF00447C26 /* PublishViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PublishViewModel.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -524,7 +524,7 @@
 			isa = PBXGroup;
 			children = (
 				6E8B7BAB271F46740040EBE2 /* Publish.swift */,
-				6EE18D3B272B1CAF00447C26 /* Publish+MVVM.swift */,
+				6EE18D3B272B1CAF00447C26 /* PublishViewModel.swift */,
 			);
 			path = Publish;
 			sourceTree = "<group>";
@@ -694,7 +694,7 @@
 				6E8B7BED271F46750040EBE2 /* PatternView.swift in Sources */,
 				6E8B7BE2271F46750040EBE2 /* SequenceState.swift in Sources */,
 				6E5CB7C1273F0BC40067A076 /* MinimapView.swift in Sources */,
-				6EE18D3C272B1CAF00447C26 /* Publish+MVVM.swift in Sources */,
+				6EE18D3C272B1CAF00447C26 /* PublishViewModel.swift in Sources */,
 				6E5CB7B9273F0BC40067A076 /* CodeEditor.swift in Sources */,
 				6E8B7BE0271F46750040EBE2 /* SequenceAnalysisApp.swift in Sources */,
 				6E5CB7C4273F0BC40067A076 /* XMLTextView.swift in Sources */,

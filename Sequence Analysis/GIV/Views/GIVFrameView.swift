@@ -50,6 +50,9 @@ struct GIVRulerView: View {
   let frgColor: String
   
   var body: some View {
+    
+    // Prevent crashes with very short sequences; This is a TODO
+    guard extent > 100 else { return AnyView(EmptyView())  }
    
     let ticksAt: CGFloat = 50
     let labelsAt: CGFloat = 100
@@ -58,7 +61,7 @@ struct GIVRulerView: View {
     let labelExtent: Int = Int(extent/labelsAt)
     let color: Color = Colors.get(color: frgColor).base
     
-    return ZStack {
+    return AnyView( ZStack {
     
       // Baseline
       Path() { path in
@@ -90,6 +93,6 @@ struct GIVRulerView: View {
 
     }
     .frame(width: extent * scale, height: 30, alignment: .leading)
-  }
+  )}
         
 }
