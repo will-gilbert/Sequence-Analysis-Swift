@@ -65,9 +65,22 @@ struct SequenceEditorView: NSViewRepresentable {
     scrollView.documentView = textView
     textView.delegate = context.coordinator
 
-    // Set up the ruler last
-    textView.setUpLineNumberView()
+    // Build line number ruler and attach callbacks
+    let rulerView = SequenceRulerView(textView: textView)
+      
+    scrollView.verticalRulerView = rulerView
+    scrollView.hasVerticalRuler = true
+    scrollView.rulersVisible = true
     
+    textView.postsFrameChangedNotifications = true
+    NotificationCenter.default.addObserver(forName: NSView.frameDidChangeNotification, object: self, queue: nil, using: updateRuler)
+    NotificationCenter.default.addObserver(forName: NSText.didChangeNotification, object: self, queue: nil, using: updateRuler)
+    NotificationCenter.default.addObserver(forName: NSView.boundsDidChangeNotification, object: scrollView.contentView, queue: nil, using: updateRuler)
+    
+    func updateRuler(notification: Notification) -> Void {
+      rulerView.needsDisplay = true
+    }
+
     return scrollView
   }
 
