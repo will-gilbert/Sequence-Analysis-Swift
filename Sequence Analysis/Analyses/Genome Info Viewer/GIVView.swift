@@ -65,14 +65,7 @@ struct GIVView: View {
         }
         .padding(EdgeInsets(top: 0, leading: 32, bottom: 8, trailing: 32))
 
-        
-        CodeEditor(
-          text: $givXML,
-          language: .xml,
-          layout: CodeEditor.LayoutConfiguration(showMinimap: showMinimap)
-        )
-        .environment(\.codeEditorTheme, colorScheme == .dark ? Theme.defaultDark : Theme.defaultLight)
-        
+        TextEditorView($givXML)
       }
     }
   }
