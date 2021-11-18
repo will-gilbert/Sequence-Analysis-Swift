@@ -161,20 +161,18 @@ struct GIVView: View {
           GeometryReader { geometry in
        
           let panelWidth = geometry.size.width
-          var minScale = (panelWidth/extent < 1.0) ? 1.0 : panelWidth/extent
-          let maxScale = log2(extent)
+          var minScale = panelWidth/extent
+          let maxScale = minScale * log2(extent)
           let scrollViewWidth =  extent * scale
 
           VStack(alignment: .leading) {
-            if minScale < maxScale {
-              HStack (spacing: 15) {
-                Slider(
-                  value: $scale,
-                  in: minScale...maxScale
-                ).disabled(minScale >= maxScale)
-                
-                Text("Pixels per BP: \(F.f(scale, decimal: 2))")
-              }
+            HStack (spacing: 15) {
+              Slider(
+                value: $scale,
+                in: minScale...maxScale
+              ).disabled(minScale >= maxScale)
+              
+              Text("Pixels per BP: \(F.f(scale, decimal: 2))")
             }
             
             // The following nested 'GeometryReader' and 'mapPanelView.size' is
@@ -202,9 +200,8 @@ struct GIVView: View {
             // SCROLLVIEW ----------------------------------------------------------
             
           }.onAppear {
-            let windowWidth = geometry.size.width
-            minScale = (windowWidth/Double(extent)) < 1.0 ? 1.0 : windowWidth/Double(extent)
-            scale = minScale
+            let panelWidth = geometry.size.width
+            scale = panelWidth/extent
           }.onChange(of: geometry.frame(in: .global).width) { value in
             minScale = value/Double(extent)
             scale = scale > minScale ? scale : minScale

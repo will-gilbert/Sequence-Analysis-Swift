@@ -49,16 +49,19 @@ struct GIVRulerView: View {
   let scale: CGFloat
   let frgColor: String
   
+  
   var body: some View {
     
-    // Prevent crashes with very short sequences; This is a TODO
+    // Prevent crashes with very short sequences; Don't show a ruler
     guard extent > 100 else { return AnyView(EmptyView())  }
    
-    let ticksAt: CGFloat = 50
-    let labelsAt: CGFloat = 100
-
-    let tickExtent: Int = Int(extent/ticksAt)
-    let labelExtent: Int = Int(extent/labelsAt)
+    // Need smarter math here!!  OK for now
+    let factor: CGFloat = ceil(log2(extent))
+    let ticksAt: CGFloat = extent > 5000 ? factor * 50.0 : 50
+    let labelsAt: CGFloat = ticksAt * 5.0
+    
+    let tickExtent: Int = Int(extent / ticksAt)
+    let labelExtent: Int = tickExtent - 1
     let color: Color = Colors.get(color: frgColor).base
     
     return AnyView( ZStack {
@@ -84,7 +87,7 @@ struct GIVRulerView: View {
       ForEach(1..<labelExtent){ i in
         let x = CGFloat(CGFloat(i) * labelsAt) * scale
 
-        Text("\(i*100)")
+        Text("\(i * Int(labelsAt))")
           .foregroundColor(color)
           .background(Color.clear)
           .font(.system(size: 10))

@@ -196,12 +196,11 @@ struct ORFView: View {
         GeometryReader { geometry in
      
         let panelWidth = geometry.size.width
-        var minScale = (panelWidth/extent < 1.0) ? 1.0 : panelWidth/extent
-        let maxScale = log2(extent)
+        var minScale = panelWidth/extent
+        let maxScale = minScale * log2(extent)
         let scrollViewWidth =  extent * scale
 
         VStack(alignment: .leading) {
-          if minScale < maxScale {
             HStack (spacing: 15) {
               Slider(
                 value: $scale,
@@ -210,7 +209,6 @@ struct ORFView: View {
               
               Text("Pixels per BP: \(F.f(scale, decimal: 2))")
             }
-          }
           
           // The following nested 'GeometryReader' and 'mapPanelView.size' is
           //   a horrible hack to get the 'mapPanelView" to at the top of the
@@ -254,9 +252,8 @@ struct ORFView: View {
           }
 
         }.onAppear {
-          let windowWidth = geometry.size.width
-          minScale = (windowWidth/Double(extent)) < 1.0 ? 1.0 : windowWidth/Double(extent)
-          scale = minScale
+          let panelWidth = geometry.size.width
+          scale = panelWidth/extent
         }.onChange(of: geometry.frame(in: .global).width) { value in
           minScale = value/Double(extent)
           scale = scale > minScale ? scale : minScale
