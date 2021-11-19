@@ -10,16 +10,18 @@ import SwiftUI
 // https://developer.apple.com/documentation/appkit/nswindow
 struct EditUIDorTitleView: View {
   
-  @Environment(\.presentationMode) var presentationMode
   var sequenceState : SequenceState
   
   @State private var uid: String
   @State private var title: String
 
-  init(sequenceState: SequenceState) {
+  @Binding var isSheetVisible: Bool
+
+  init(sequenceState: SequenceState, isSheetVisible: Binding<Bool> ) {
     self.sequenceState = sequenceState
     _uid = State(initialValue: sequenceState.sequence.uid)
     _title = State(initialValue: sequenceState.sequence.title)
+    self._isSheetVisible = isSheetVisible
   }
 
   var body: some View {
@@ -50,7 +52,8 @@ struct EditUIDorTitleView: View {
           Spacer()
           // C A N C E L  ============================
           Button(action: {
-            presentationMode.wrappedValue.dismiss()
+            isSheetVisible = false
+            NSApp.mainWindow?.endSheet(NSApp.keyWindow!)
           }) {
             Text("Cancel")
           }.keyboardShortcut(.cancelAction)
@@ -62,7 +65,8 @@ struct EditUIDorTitleView: View {
             sequenceState.sequence.title = title
             sequenceState.changed = true // On macOS use this to force an update to the 'NavigationTitle"
                           
-            presentationMode.wrappedValue.dismiss()
+            isSheetVisible = false
+            NSApp.mainWindow?.endSheet(NSApp.keyWindow!)
 
           }) {
             Text("OK")

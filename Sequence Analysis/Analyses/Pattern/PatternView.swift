@@ -23,7 +23,7 @@ struct PatternView: View {
   
   private var length: Int
   private var checkSum: Int
-  
+
   init(sequenceState: SequenceState) {
     self.sequenceState = sequenceState
     self.sequence = sequenceState.sequence
@@ -31,14 +31,6 @@ struct PatternView: View {
     self.checkSum = sequenceState.sequence.checkSum
     self.length = sequenceState.sequence.length
   }
-
-
-//  init(sequence: Sequence, viewModel: PatternViewModel) {
-//    self.sequence = sequence
-//    self.viewModel = viewModel
-//    self.checkSum = sequence.checkSum
-//    self.length = sequence.length
-//  }
     
   var body: some View {
      
@@ -227,12 +219,14 @@ struct PatternView: View {
     let extent: CGFloat
     let height: CGFloat
     let width: CGFloat
+    private var unit: String = "BP"
 
     init?(givFrame: GIVFrame, sequence: Sequence) {
       self.givFrame = givFrame
       self.extent = CGFloat(sequence.length)
       self.height = self.givFrame.size.height
       self.width = self.givFrame.size.width
+      self.unit = sequence.isNucleic ? "BP" : "AA"
     }
         
     var body: some View {
@@ -258,7 +252,7 @@ struct PatternView: View {
               in: minScale...maxScale
             ).disabled(minScale >= maxScale)
             
-            Text("Pixels per BP: \(F.f(scale, decimal: 2))")
+            Text("Pixels per \(unit): \(F.f(scale, decimal: 2))")
           }
           
           // The following nested 'GeometryReader' and 'mapPanelView.size' is

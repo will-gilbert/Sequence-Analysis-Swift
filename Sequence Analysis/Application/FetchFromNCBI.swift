@@ -13,15 +13,9 @@
 // https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch?db=nucleotide&id=NM_000485.2&retmode=xml
 // https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch?db=nucleotide&id=NM_000485.2&retmode=json //This is ASN.1
 
-// >NP_061820.1 cytochrome c [Homo sapiens]
-// MGDVEKGKKIFIMKCSQCHTVEKGGKHKTGPNLHGLFGRKTGQAPGYSYTAANKNKGIIWGEDTLMEYLE
-// NPKKYIPGTKMIFVGIKKKEERADLIAYLKKATNE
-
 import SwiftUI
     
   struct NCBIFetchView: View {
-
-    @Environment(\.presentationMode) var presentationMode
 
     var appState : AppState
 
@@ -31,6 +25,7 @@ import SwiftUI
     @State private var alertIsShowing = false
     @State var errorMsg: String = ""
 
+    @Binding var isSheetVisible: Bool
         
     let types = [SequenceType.DNA, SequenceType.PROTEIN]
     
@@ -72,7 +67,8 @@ import SwiftUI
             Spacer()
             // C A N C E L  ============================
             Button(action: {
-              presentationMode.wrappedValue.dismiss()
+              isSheetVisible = false
+              NSApp.mainWindow?.endSheet(NSApp.keyWindow!)
             }) {
               Text("Cancel")
             }.keyboardShortcut(.cancelAction)
@@ -116,7 +112,8 @@ import SwiftUI
                 return
               }
               
-              presentationMode.wrappedValue.dismiss()
+              isSheetVisible = false
+              NSApp.mainWindow?.endSheet(NSApp.keyWindow!)
 
             }) {
               Text("OK")

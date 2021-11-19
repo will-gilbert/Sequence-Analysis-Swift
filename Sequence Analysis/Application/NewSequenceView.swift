@@ -8,8 +8,6 @@
 import SwiftUI
 
 struct NewSequenceView: View {
-
-  @Environment(\.presentationMode) var presentationMode
   
   var appState : AppState
 
@@ -20,6 +18,8 @@ struct NewSequenceView: View {
   @State var createRandom: Bool = false
   @State var randomLength: Int = 1200
   @State var randomAlphabet: String = "ATCG"
+  
+  @Binding var isSheetVisible: Bool
   
   let tempUID = Sequence.nextUID()
   let types = [SequenceType.DNA, SequenceType.RNA, SequenceType.PROTEIN, SequenceType.PEPTIDE]
@@ -85,7 +85,8 @@ struct NewSequenceView: View {
           Spacer()
           // C A N C E L  ============================
           Button(action: {
-            presentationMode.wrappedValue.dismiss()
+            isSheetVisible = false
+            NSApp.mainWindow?.endSheet(NSApp.keyWindow!)
           }) {
             Text("Cancel")
           }.keyboardShortcut(.cancelAction)
@@ -108,13 +109,13 @@ struct NewSequenceView: View {
               }
             }
             
-            
             uid = uid.isEmpty ? tempUID : uid
             title = title.isEmpty ? "Untitled" : title
             let sequence = Sequence(string, uid: uid, title: title, type: sequenceType)
             let _ = appState.addSequence(sequence)
-            presentationMode.wrappedValue.dismiss()
-
+            isSheetVisible = false
+            NSApp.mainWindow?.endSheet(NSApp.keyWindow!)
+            
           }) {
             Text("OK")
           }

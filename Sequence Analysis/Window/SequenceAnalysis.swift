@@ -30,7 +30,9 @@ struct SequenceAnalysis: View {
               Button(action: { showFetchFromNCBI = true }) {
                   Image(systemName: "network")
               }
-              .sheet(isPresented: $showFetchFromNCBI){ NCBIFetchView(appState: appState) }
+              .sheet(isPresented: $showFetchFromNCBI){
+                NCBIFetchView(appState: appState, isSheetVisible: $showFetchFromNCBI)
+              }
               .help("Fetch an entry from the NCBI,  ⌘-E")
               .keyboardShortcut("e", modifiers: .command)
 
@@ -38,7 +40,9 @@ struct SequenceAnalysis: View {
               Button(action: { showCreateNewSequence = true } ) {
                   Image(systemName: "plus")
               }
-              .sheet(isPresented: $showCreateNewSequence){ NewSequenceView(appState: appState) }
+              .sheet(isPresented: $showCreateNewSequence){
+                NewSequenceView(appState: appState, isSheetVisible: $showCreateNewSequence)
+              }
               .help("Add a new sequence,  ⌥⌘-N")
               .keyboardShortcut("n", modifiers: [.option, .command])
 
@@ -79,7 +83,7 @@ struct SequenceAnalysis: View {
                   Image(systemName: "rectangle.and.pencil.and.ellipsis")
               }
               .sheet(isPresented: $showEditUIDorTitle) {
-                  EditUIDorTitleView(sequenceState: windowState.currentSequenceState!)
+                EditUIDorTitleView(sequenceState: windowState.currentSequenceState!, isSheetVisible: $showEditUIDorTitle)
               }
               .disabled(windowState.currentSequenceState == nil)
               .help("Edit UID or Title")
