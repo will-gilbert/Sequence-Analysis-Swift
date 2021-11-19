@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		6E36632D2721AA840095100D /* FormatFile.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E36632C2721AA840095100D /* FormatFile.swift */; };
+		6E3D69D32747E0B200FF2658 /* GIVRulerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E3D69D22747E0B200FF2658 /* GIVRulerView.swift */; };
 		6E42C59327415188004B9994 /* genbank.xslt in Resources */ = {isa = PBXBuildFile; fileRef = 6E42C59227415188004B9994 /* genbank.xslt */; };
 		6E42C596274151DA004B9994 /* FeaturesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E42C595274151DA004B9994 /* FeaturesView.swift */; };
 		6E42C598274151EC004B9994 /* FeaturesViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E42C597274151EC004B9994 /* FeaturesViewModel.swift */; };
@@ -106,6 +107,7 @@
 /* Begin PBXFileReference section */
 		6E14B9D8271F4C2F00546ED7 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		6E36632C2721AA840095100D /* FormatFile.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FormatFile.swift; sourceTree = "<group>"; };
+		6E3D69D22747E0B200FF2658 /* GIVRulerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GIVRulerView.swift; sourceTree = "<group>"; };
 		6E42C59227415188004B9994 /* genbank.xslt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = genbank.xslt; sourceTree = "<group>"; };
 		6E42C595274151DA004B9994 /* FeaturesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeaturesView.swift; sourceTree = "<group>"; };
 		6E42C597274151EC004B9994 /* FeaturesViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeaturesViewModel.swift; sourceTree = "<group>"; };
@@ -456,6 +458,7 @@
 			isa = PBXGroup;
 			children = (
 				6E8B7BCD271F46740040EBE2 /* GIVFrameView.swift */,
+				6E3D69D22747E0B200FF2658 /* GIVRulerView.swift */,
 				6E8B7BCE271F46740040EBE2 /* GIVPanelView.swift */,
 				6E8B7BD0271F46740040EBE2 /* MapPanelView.swift */,
 				6E8B7BD1271F46740040EBE2 /* MosaicView.swift */,
@@ -686,6 +689,7 @@
 				6E8B7C05271F46750040EBE2 /* LabelPosition.swift in Sources */,
 				6E8B7C01271F46750040EBE2 /* Colors.swift in Sources */,
 				6E8B7C06271F46750040EBE2 /* MapPanel.swift in Sources */,
+				6E3D69D32747E0B200FF2658 /* GIVRulerView.swift in Sources */,
 				6E54C29A273D5EC400B12189 /* GIVView.swift in Sources */,
 				6E8B7BF6271F46750040EBE2 /* SequenceRow.swift in Sources */,
 				6E8B7BE3271F46750040EBE2 /* String-macOS.swift in Sources */,

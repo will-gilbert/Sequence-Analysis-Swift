@@ -13,7 +13,6 @@ import SwiftUI
 struct GIVView: View {
 
   @ObservedObject var viewModel: GIVViewModel
-  
 
   var body: some View {
     
@@ -59,9 +58,6 @@ struct GIVView: View {
       VStack {
         HStack {
           Spacer()
-          Toggle("Show Minimap", isOn: $showMinimap)
-            .toggleStyle(CheckboxToggleStyle())
-            .padding([.top, .bottom])
         }
         .padding(EdgeInsets(top: 0, leading: 32, bottom: 8, trailing: 32))
 
