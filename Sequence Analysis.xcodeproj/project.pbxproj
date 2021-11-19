@@ -81,6 +81,8 @@
 		6E8E58612720578800EE6C7C /* FetchFromNCBI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E8E58602720578800EE6C7C /* FetchFromNCBI.swift */; };
 		6ECC81352738686500BE3943 /* GIVXMLParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6ECC81342738686500BE3943 /* GIVXMLParser.swift */; };
 		6ECC813727386BF500BE3943 /* orf.dtd in Resources */ = {isa = PBXBuildFile; fileRef = 6ECC813627386BF500BE3943 /* orf.dtd */; };
+		6ED4FED62747F6C600D43285 /* contig.giv.xml in Resources */ = {isa = PBXBuildFile; fileRef = 6ED4FED52747F6C600D43285 /* contig.giv.xml */; };
+		6ED4FED82747FF4200D43285 /* nested.giv.xml in Resources */ = {isa = PBXBuildFile; fileRef = 6ED4FED72747FF4200D43285 /* nested.giv.xml */; };
 		6EDB880F27381D020077592A /* Buoyancy.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6EDB880E27381D020077592A /* Buoyancy.swift */; };
 		6EDB881327381ECD0077592A /* giv.dtd in Resources */ = {isa = PBXBuildFile; fileRef = 6EDB881227381ECD0077592A /* giv.dtd */; };
 		6EDD38A527233A6C0004AA8D /* EditUIDorTitle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6EDD38A427233A6C0004AA8D /* EditUIDorTitle.swift */; };
@@ -184,6 +186,8 @@
 		6E8E58602720578800EE6C7C /* FetchFromNCBI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FetchFromNCBI.swift; sourceTree = "<group>"; };
 		6ECC81342738686500BE3943 /* GIVXMLParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GIVXMLParser.swift; sourceTree = "<group>"; };
 		6ECC813627386BF500BE3943 /* orf.dtd */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = orf.dtd; sourceTree = "<group>"; };
+		6ED4FED52747F6C600D43285 /* contig.giv.xml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = contig.giv.xml; sourceTree = "<group>"; };
+		6ED4FED72747FF4200D43285 /* nested.giv.xml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = nested.giv.xml; sourceTree = "<group>"; };
 		6EDB880E27381D020077592A /* Buoyancy.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Buoyancy.swift; sourceTree = "<group>"; };
 		6EDB881227381ECD0077592A /* giv.dtd */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = giv.dtd; sourceTree = "<group>"; };
 		6EDD38A427233A6C0004AA8D /* EditUIDorTitle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditUIDorTitle.swift; sourceTree = "<group>"; };
@@ -387,10 +391,12 @@
 		6E8B7BB3271F46740040EBE2 /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				6ED4FED72747FF4200D43285 /* nested.giv.xml */,
+				6ED4FED52747F6C600D43285 /* contig.giv.xml */,
 				6ECC813627386BF500BE3943 /* orf.dtd */,
+				6E8B7BB4271F46740040EBE2 /* orf2giv.xslt */,
 				6E432C112739C33600DC3A79 /* pattern.dtd */,
 				6EDB881227381ECD0077592A /* giv.dtd */,
-				6E8B7BB4271F46740040EBE2 /* orf2giv.xslt */,
 				6E8B7BB5271F46740040EBE2 /* xml2json.xslt */,
 				6E42C59227415188004B9994 /* genbank.xslt */,
 				6E432C132739C59400DC3A79 /* pattern2giv.xslt */,
@@ -600,9 +606,11 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				6ED4FED82747FF4200D43285 /* nested.giv.xml in Resources */,
 				6E42C59327415188004B9994 /* genbank.xslt in Resources */,
 				6ECC813727386BF500BE3943 /* orf.dtd in Resources */,
 				6EDB881327381ECD0077592A /* giv.dtd in Resources */,
+				6ED4FED62747F6C600D43285 /* contig.giv.xml in Resources */,
 				6E432C122739C33600DC3A79 /* pattern.dtd in Resources */,
 				6E8B7BF7271F46750040EBE2 /* orf2giv.xslt in Resources */,
 				6E8B7C14271F46750040EBE2 /* Info.plist in Resources */,

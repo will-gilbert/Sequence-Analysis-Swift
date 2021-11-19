@@ -1,0 +1,205 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<giv-frame name="Contig with splice sites" extent="41306" bkg-color="Apricot"  ruler="true">
+
+  <giv-panel label="EST Clusters on BAC">
+
+    <!-- BAC coverage -->
+  
+    <map-panel label="BAC" buoyancy="Floating" h-gap="0" v-gap="3">
+      <style-for-type bar-color="Navy" bar-height="18" lbl-position="Above">DNAClone</style-for-type>
+      <element label="Contig Clone" type="DNAClone" from="1" to="41306"/>
+    </map-panel>
+
+
+    <!-- Groups of genes with splice sites -->
+
+    <map-panel label="EST Clusters" h-gap="0" v-gap="3">
+  
+      <!-- Default style is red to show us that we haven't setup a style -->
+      
+      <style-for-type bar-color="Magenta" bar-height="18">Gene</style-for-type>
+      <style-for-type bar-color ="Orange" bar-height="18">Consensus</style-for-type>
+      <style-for-type bar-color ="red"    bar-height="3">+ Frame EST</style-for-type>
+      <style-for-type bar-color ="green"  bar-height="3">- Frame EST</style-for-type>
+    
+    
+      <group label="Gene 0 Cluster"  h-gap="5" v-gap="5">
+        <element label="Gene 0" type="Gene" from="7136" to="10551"/>
+        
+        <group label ="586850 cDNA" bkg-color="White" h-gap="3" v-gap="3">
+          <element label="mRNA span" type="Consensus" from="7136" to="10551"/>
+          <element label ="5'" type="+ Frame EST" from="7136" to="7182"/>
+          <element label ="3'" type="- Frame EST" from="10120" to="10548"/>
+       </group>
+
+        <group label ="DKFZphsnu1_1a20 cDNA" bkg-color="White" h-gap="3" v-gap="3">
+          <element label ="mRNA span" type="Consensus" from="7209" to="10551"/>
+          <element label ="5'" type="+ Frame EST" from="7209" to="9166"/>
+          <element label ="3'" type="- Frame EST" from="10103" to="10549"/>
+        </group>
+        
+        <group label ="365731 cDNA" bkg-color="White" h-gap="3" v-gap="3">
+          <element label ="mRNA span" type="Consensus" from="9892" to="10551"/>
+          <element label ="5'" type="+ Frame EST" from="9892" to="10197"/>
+          <element label ="3'" type="- Frame EST" from="10096" to="10549"/>
+        </group>
+        
+        <group label ="IMAGE:1010112 cDNA" bkg-color="White" h-gap="3" v-gap="3">
+          <element label ="mRNA span" type="Consensus" from="9998" to="10551"/>
+          <element label ="NA" type="+ Frame EST" from="9998" to="10199"/>
+          <element label ="NA" type="- Frame EST" from="10118" to="10551"/>
+        </group>
+        
+        <group label ="114309 cDNA" bkg-color="White" h-gap="3" v-gap="3">
+          <element label ="mRNA span" type="Consensus" from="9998" to="10551"/>
+          <element label ="5'" type="+ Frame EST" from="10006" to="10435"/>
+          <element label ="3'" type="- Frame EST" from="10254" to="10549"/>
+        </group>
+        
+        <group label ="74065 cDNA" bkg-color="White" h-gap="3" v-gap="3">
+          <element label ="mRNA span" type="Consensus" from="9998" to="10551"/>
+          <element label ="5'" type="+ Frame EST" from="10023" to="10320"/>
+          <element label ="3'" type="- Frame EST" from="10150" to="10547"/>
+        </group>
+
+        
+        <group label ="417136 cDNA" bkg-color="White" h-gap="3" v-gap="3">
+          <element label ="mRNA span" type="Consensus" from="10055" to="10551"/>
+          <element label ="5'" type="+ Frame EST" from="10055" to="10542"/>
+          <element label ="3'" type="- Frame EST" from="10080" to="10547"/>
+        </group>
+        
+        <group label ="724501 cDNA" bkg-color="White" h-gap="3" v-gap="3">
+          <element label ="mRNA span" type="Consensus" from="10055" to="10551"/>
+          <element label ="5'" type="+ Frame EST" from="10059" to="10496"/>
+          <element label ="3'" type="- Frame EST" from="10227" to="10549"/>
+        </group>
+        
+        <group label ="IMAGE:1011087 cDNA" bkg-color="White" h-gap="3" v-gap="3">
+          <element label ="mRNA span" type="Consensus" from="10150" to="10551"/>
+          <element label ="NA" type="+ Frame EST" from="10150" to="10404"/>
+          <element label ="NA" type="- Frame EST" from="10186" to="10548"/>
+        </group>
+        
+        <group label ="841678 cDNA" bkg-color="White" h-gap="3" v-gap="3">
+          <element label ="mRNA span" type="Consensus" from="10248" to="10551"/>
+          <element label ="5'" type="+ Frame EST" from="10248" to="10548"/>
+          <element label ="3'" type="- Frame EST" from="10269" to="10549"/>
+        </group>
+
+      </group>
+
+
+      <group label ="Gene 1 Cluster" h-gap="5" v-gap="5" >
+        <element label="Gene 1"    type="Gene"        from="35636" to="41306"/>
+        
+        <group label ="c-35h03 cDNA" bkg-color="White" h-gap="3" v-gap="3">
+          <element label ="mRNA span" type="Consensus" from="35636" to="37234"/>
+          <element label ="NA" type="+ Frame EST" from="35636" to="36376"/>
+          <element label ="NA" type="- Frame EST" from="36936" to="37234"/>
+        </group>
+        
+        <group label ="160880 cDNA" bkg-color="White" h-gap="3" v-gap="3">
+          <element label ="mRNA span" type="Consensus" from="36543" to="37234"/>
+          <element label ="5'" type="+ Frame EST" from="36543" to="36785"/>
+          <element label ="3'" type="- Frame EST" from="36858" to="37214"/>
+        </group>
+
+        <group label ="725349 cDNA" bkg-color="White" h-gap="3" v-gap="3">
+          <element label ="mRNA span" type="Consensus" from="37213" to="40678"/>
+          <element label ="5'" type="+ Frame EST" from="37213" to="38260"/>
+          <element label ="3'" type="- Frame EST" from="40223" to="40678"/>
+        </group>
+        
+        <group label ="531398 cDNA" bkg-color="White" h-gap="3" v-gap="3">
+          <element label ="mRNA span" type="Consensus" from="37213" to="40735"/>
+          <element label ="5'" type="+ Frame EST" from="37217" to="38242"/>
+          <element label ="3'" type="- Frame EST" from="40670" to="40712"/>
+        </group>
+        
+        <group label ="c-zsf10 cDNA" bkg-color="White" h-gap="3" v-gap="3">
+          <element label ="mRNA span" type="Consensus" from="37213" to="41306"/>
+          <element label ="NA" type="+ Frame EST" from="37224" to="37487"/>
+          <element label ="NA" type="- Frame EST" from="40670" to="41306"/>
+        </group>
+        
+        <group label ="IMAGE:825808 cDNA" bkg-color="White" h-gap="3" v-gap="3">
+          <element label ="mRNA span" type="Consensus" from="37213" to="40056"/>
+          <element label ="5'" type="+ Frame EST" from="37234" to="38244"/>
+          <element label ="3'" type="- Frame EST" from="38450" to="40026"/>
+        </group>
+        
+        <group label ="664759 cDNA" bkg-color="White" h-gap="3" v-gap="3">
+          <element label ="mRNA span" type="Consensus" from="37213" to="41306"/>
+          <element label ="5'" type="+ Frame EST" from="37234" to="38260"/>
+          <element label ="3'" type="- Frame EST" from="40232" to="41270"/>
+        </group>
+
+        <group label ="563544 cDNA" bkg-color="White" h-gap="3" v-gap="3">
+          <element label ="mRNA span" type="Consensus" from="37213" to="38310"/>
+          <element label ="5'" type="+ Frame EST" from="37234" to="37613"/>
+          <element label ="3'" type="- Frame EST" from="37262" to="38272"/>
+        </group>
+        
+        <group label ="23866 cDNA" bkg-color="White" h-gap="3" v-gap="3">
+          <element label ="mRNA span" type="Consensus" from="37213" to="40735"/>
+          <element label ="5'" type="+ Frame EST" from="37234" to="37586"/>
+          <element label ="3'" type="- Frame EST" from="40203" to="40735"/>
+        </group>
+        
+        <group label ="758297 cDNA" bkg-color="White" h-gap="3" v-gap="3">
+          <element label ="mRNA span" type="Consensus" from="37213" to="38310"/>
+          <element label ="5'" type="+ Frame EST" from="37234" to="37384"/>
+          <element label ="3'" type="- Frame EST" from="37290" to="38310"/>
+        </group>
+        
+        <group label ="366824 cDNA" bkg-color="White" h-gap="3" v-gap="3">
+          <element label ="mRNA span" type="Consensus" from="37213" to="38310"/>
+          <element label ="5'" type="+ Frame EST" from="37240" to="38310"/>
+          <element label ="3'" type="- Frame EST" from="37241" to="38310"/>
+        </group>
+        
+        <group label ="563059 cDNA" bkg-color="White" h-gap="3" v-gap="3">
+          <element label ="mRNA span" type="Consensus" from="37213" to="41260"/>
+          <element label ="5'" type="+ Frame EST" from="37241" to="37613"/>
+          <element label ="3'" type="- Frame EST" from="40222" to="41230"/>
+        </group>
+        
+        <group label ="489420 cDNA" bkg-color="White" h-gap="3" v-gap="3">
+          <element label ="mRNA span" type="Consensus" from="37213" to="40056"/>
+          <element label ="5'" type="+ Frame EST" from="37241" to="37553"/>
+          <element label ="3'" type="- Frame EST" from="39672" to="40056"/>
+        </group>
+        
+        <group label ="724248 cDNA" bkg-color="White" h-gap="3" v-gap="3">
+          <element label ="mRNA span" type="Consensus" from="37213" to="37613"/>
+          <element label ="5'" type="+ Frame EST" from="37243" to="37611"/>
+          <element label ="3'" type="- Frame EST" from="37248" to="37613"/>
+        </group>
+        
+        <group label ="723891 cDNA" bkg-color="White" h-gap="3" v-gap="3">
+          <element label ="mRNA span" type="Consensus" from="37213" to="37613"/>
+          <element label ="5'" type="+ Frame EST" from="37244" to="37613"/>
+          <element label ="3'" type="- Frame EST" from="37254" to="37613"/>
+        </group>
+        
+        <group label ="c-1zg04 cDNA" bkg-color="White" h-gap="3" v-gap="3">
+          <element label ="mRNA span" type="Consensus" from="37255" to="41260"/>
+          <element label ="NA" type="+ Frame EST" from="37255" to="37518"/>
+          <element label ="NA" type="- Frame EST" from="40506" to="41260"/>
+        </group>
+
+      </group>
+
+    </map-panel>
+  </giv-panel>
+</giv-frame>
+
+
+
+
+
+
+
+

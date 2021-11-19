@@ -32,11 +32,11 @@ struct MosaicView: View {
     .frame(width: mosaic.size.width * scale, height: mosaic.size.height, alignment: .topLeading)
     .background(mosaic.color)
     .onTapGesture {
-      if let label = mosaic.label {
-        print("Tapped on Mosaic: \(label)")
-      } else {
-        print("Tapped on Mosaic: no label")
-      }
+//      if let label = mosaic.label {
+//        print("Tapped on Mosaic: \(label)")
+//      } else {
+//        print("Tapped on Mosaic: no label")
+//      }
     }
 
   }

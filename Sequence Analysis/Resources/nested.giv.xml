@@ -1,0 +1,40 @@
+<?xml version='1.0' standalone='yes'?>
+<giv-frame name='Nested Groups' extent='1000' ruler='true'>
+  <map-panel bkg-color='Light Yellow' buoyancy='Floating' h-gap='2' v-gap='2'>
+    
+    <style-for-type bar-color='Salmon' bar-height='20' font-size='10' lbl-position='Inside'>Outside</style-for-type>
+    <style-for-type bar-color='Light Green' bar-height='20' font-size='10' lbl-position='Inside'>Nested</style-for-type>
+
+    <group  bkg-color='Orange' buoyancy='Floating'>
+      <element type='Nested' label='Orange @ 100' from='100' to='205' />
+      <element type='Nested' label='Orange @ 130' from='130' to='450' />
+      <element type='Nested' label='Orange @ 230' from='230' to='300' />
+
+      <group bkg-color='Aquamarine' buoyancy='StackDown'>
+        <element type='Nested' label='Aqua @ 200' from='200' to='305' />
+        <element type='Nested' label='Aqua @ 230' from='230' to='550' />
+        <element type='Nested' label='Aqua @ 310' from='310' to='400' />
+
+        <group  bkg-color='Brick' buoyancy='StackDown'>
+          <element type='Nested' label='Brick @ 210' from='210' to='260' />
+          <element type='Nested' label='Brick @ 230' from='230' to='280' />
+          <element type='Nested' label='Brick @ 310' from='310' to='475' />
+        </group>
+
+      </group>
+
+      <group bkg-color='Yellow' buoyancy='StackDown'>
+        <element type='Nested' label='Yellow @ 200' from='200' to='305' />
+        <element type='Nested' label='Yellow @ 230' from='230' to='550' />
+        <element type='Nested' label='Yellow @ 310' from='310' to='400' />
+      </group>
+
+    </group>
+
+    <element label='Not Nested' from='60' to='225' type = 'Outside'/>
+    <element label='Not Nested' from='110' to='225' type = 'Outside'/>
+    <element label='Not Nested' from='550' to='725' type = 'Outside'/>
+    <element label='Not Nested' from='625' to='750' type = 'Outside'/>
+
+  </map-panel>
+</giv-frame>

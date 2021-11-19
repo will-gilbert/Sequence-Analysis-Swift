@@ -11,9 +11,27 @@ import SwiftUI
 
 
 struct GIVView: View {
+  
+  enum Example: String, CaseIterable, Identifiable {
+    case CONTIG = "Contig with splice sites"
+    case NESTED = "Nested Groups"
+
+    var id: Example { self }
+    
+    var filename: String {
+      switch self {
+      case .CONTIG: return "contig.giv"
+      case .NESTED: return "nested.giv"
+      }
+    }
+
+  }
+
+  
 
   @ObservedObject var viewModel: GIVViewModel
-
+  @State private var currentExample: Example? = nil
+  
   var body: some View {
     
     if viewModel.panel == .GRAPH {
@@ -23,6 +41,23 @@ struct GIVView: View {
     return VStack {
       VStack {
         HStack { panelPicker }
+        
+        HStack(alignment: .center) {
+          Menu("GIVExamples:") {
+            ForEach(Example.allCases, id: \.self) { example in
+              Button(action: {
+                currentExample = example
+                loadExample()
+              }, label: {
+                Text(example.rawValue)
+              })
+            }
+          }.frame(width: 150)
+          if let example = currentExample {
+            Text(example.rawValue)
+          }
+          Spacer()
+        }
       }
       
       Divider()
@@ -35,8 +70,23 @@ struct GIVView: View {
       case .COLORS: ColorsPanel()
       }
     }
+
   }
     
+  func loadExample() -> Void {
+    guard let example = currentExample else { return }
+    
+    do {
+      let filepath = Bundle.main.path(forResource: example.filename, ofType: "xml")
+      let string = try String(contentsOfFile: filepath!)
+      viewModel.givXML = string
+      
+    } catch {
+      viewModel.givXML =  "Could not load the '\(example.filename).xml' resource: \(error.localizedDescription)"
+    }
+
+  }
+
     
   var panelPicker: some View {
     Picker("", selection: $viewModel.panel) {
@@ -121,10 +171,8 @@ struct GIVView: View {
         }
       }
     }
-    
   }
 
-  
   
   
     // G I V   G R A P H  ======================================================================
