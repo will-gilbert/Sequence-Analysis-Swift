@@ -33,6 +33,8 @@ struct PublishView: View {
 
   var body: some View {
     
+    guard sequence.length > 0 else {  return AnyView(TextView(text: "This sequence has no content"))}
+    
     // Pass in the state variables, it will be displayed when 'Publish' is finished
     DispatchQueue.main.async {
       
@@ -49,7 +51,7 @@ struct PublishView: View {
       let _ = Publish(sequence, text: $text, options: options)
     }
 
-    return VStack {
+    return AnyView ( VStack {
       
       HStack {
         
@@ -125,7 +127,7 @@ struct PublishView: View {
       Divider()
       
       TextView(text: $text, isEditable: false)
-    }
+    })
   }
 
   
@@ -259,7 +261,7 @@ private struct Publish {
   }
 
   mutating func doFormat() {
-    guard sequence.length > 0 else { buffer.append("The sequence has no contents") ; return }
+    guard sequence.length > 0 else { buffer.append("This sequence has no content") ; return }
     guard options.blockSize > 0 else { buffer.append("Block size cannot be zero") ; return }
     guard options.lineSize > 0 else { buffer.append("Line size cannot be zero") ; return }
     guard options.format.count > 0 else { buffer.append("Format string cannot be empty; Try 's+ra_'") ; return}

@@ -223,28 +223,33 @@ class FilteredTextView : NSTextView {
       
   override func insertText(_ string: Any, replacementRange: NSRange) {
     
-    guard allowed != nil else {
-      print("No allowed characters have been set")
-      return
-    }
+    guard allowed != nil else { return }
     
+
     // Cast the incoming 'Any' to a 'String'; 'allowed' can be force unwrapped here
     if let string = string as? String {
-      if allowed!.contains(string) {
-        super.insertText(string, replacementRange: replacementRange)
-      }
+      let allowedContents: String = string.filter { char in allowed!.contains(char)}
+      super.insertText(allowedContents, replacementRange: replacementRange)
     }
   }
   
-  override func readSelection(from pboard: NSPasteboard, type: NSPasteboard.PasteboardType) -> Bool {
+  override func paste( _ sender: Any?) {
     
-    print(type) // type is an array of allowed type
+    // No allowed characters; This is bad!
+    guard allowed != nil else { return }
+
+    // Get the contents of the pasteboard; Only allow 'allowed' characters
+    let contents: String = NSPasteboard.general.string(forType: .string) ?? ""
+    let allowedContents: String = contents.filter { char in allowed!.contains(char)}
     
-    //guard type == NSPasteboard.PasteboardType.string else { return false }
+    // Update the pasteboard with the new contents
+    NSPasteboard.general.clearContents()
+    NSPasteboard.general.setString(allowedContents, forType: .string)
     
-    return super.readSelection(from: pboard, type: type)
+    // Only pass along plain text just to be sure
+    pasteAsPlainText(sender)
   }
-  
+    
   
 }
 

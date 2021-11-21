@@ -42,14 +42,20 @@ struct Composition {
     
     
   mutating func doComposition() {
-      buffer.append(sequence.description)
-      buffer.append("\n\n")
     
-      if(sequence.isNucleic) {
-        doNucleic(Array(sequence.string.uppercased()))
-      } else {
-        doProtein(Array(sequence.string.uppercased()))
-      }
+    guard sequence.string.count > 0 else {
+      buffer.append("This sequence has no content")
+      return
+    }
+    
+    buffer.append(sequence.description)
+    buffer.append("\n\n")
+  
+    if(sequence.isNucleic) {
+      doNucleic(Array(sequence.string.uppercased()))
+    } else {
+      doProtein(Array(sequence.string.uppercased()))
+    }
   }
   
   mutating func doNucleic(_ strand: [Character]) {

@@ -13,14 +13,13 @@ struct GIVRulerView: View {
   let scale: CGFloat
   let frgColor: String
   
-  
   var body: some View {
     
     let pixelsPerTick: CGFloat = 50 // Tick every 50 pixels
     let ticksPerLabel: Int = 2  // Label every other tick
     
     // Prevent crashes with very short sequences; Don't show a ruler
-    guard extent > 100 else { return AnyView(EmptyView())  }
+    //guard extent > 100 else { return AnyView(EmptyView())  }
        
     let tickSize = (1/scale) * pixelsPerTick
     
@@ -33,9 +32,11 @@ struct GIVRulerView: View {
     // Total ticks; total labels
     let totalTicks: Int = Int(extent / ticksAtEvery)
     let totalLabels: Int = Int(totalTicks / ticksPerLabel)
-
     let color: Color = Colors.get(color: frgColor).base
     
+    guard totalTicks > 1 else {return AnyView(EmptyView())}
+    guard totalLabels > 1 else {return AnyView(EmptyView())}
+
     return AnyView( ZStack {
     
       // Baseline
@@ -66,8 +67,10 @@ struct GIVRulerView: View {
           .position(x: x, y: 5.0)
       }
 
+    }.onAppear {
     }
     .frame(width: extent * scale, height: 30, alignment: .leading)
+
   )}
         
 }

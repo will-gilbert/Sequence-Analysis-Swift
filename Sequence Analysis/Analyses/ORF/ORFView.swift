@@ -38,7 +38,6 @@ struct ORFView: View {
   var body: some View {
     
     // One of the states or sequence has changed, rebuilt the view model then redraw the view
-    //print("ORF: Redraw View")
     updateViewModel()
     
     return VStack {
@@ -59,6 +58,8 @@ struct ORFView: View {
           GraphView(givFrame: givFrame, sequence: sequence)
         } else if let errorMsg = viewModel.errorMsg {
           TextView(text: errorMsg)
+        } else {
+          TextView(text: "This sequence has no content")
         }
       case .XML, .JSON:
         if let text = viewModel.text {
@@ -187,11 +188,12 @@ struct ORFView: View {
         
     var body: some View {
       
-      // Protect against divide by zero
-      if extent.isZero {
-          return AnyView(EmptyView())
-      } else {
-
+      // Prevent divide by zero
+      guard extent.isZero == false else {return AnyView(TextView(text: "This sequence has no content")) }
+      
+      // Prevent scale max < min; Greater than zero would work but this seems a bit more logical
+      guard extent >= 3 else {return AnyView(TextView(text: "Not enough sequence to render ORF; Must be at least 3 bp")) }
+      
       return AnyView(
         GeometryReader { geometry in
      
@@ -259,7 +261,6 @@ struct ORFView: View {
           scale = scale > minScale ? scale : minScale
         }
       })
-      }
     }
   }
   

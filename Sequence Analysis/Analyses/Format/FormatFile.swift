@@ -41,7 +41,7 @@ struct FormatFile {
   mutating func doFileFormat(_ format: FileFormat) -> String {
 
     guard sequence.string.count > 0 else {
-      self.text.append("The sequence has no contents")
+      self.text.append("This sequence has no content")
       return text
     }
     

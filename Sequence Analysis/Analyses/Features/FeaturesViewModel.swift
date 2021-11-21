@@ -53,7 +53,7 @@ class FeaturesViewModel: ObservableObject {
     }
 
     guard self.xmlDocument != nil else {
-      self.errorMsg = "XML Document was not created or is empty"
+      self.errorMsg = "Features document was not created or is empty"
       return
     }
     
