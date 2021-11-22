@@ -74,7 +74,6 @@
 		6E8B7C11271F46750040EBE2 /* Sequence.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E8B7BD5271F46740040EBE2 /* Sequence.swift */; };
 		6E8B7C12271F46750040EBE2 /* SequenceType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E8B7BD6271F46740040EBE2 /* SequenceType.swift */; };
 		6E8B7C13271F46750040EBE2 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 6E8B7BD8271F46750040EBE2 /* Assets.xcassets */; };
-		6E8B7C14271F46750040EBE2 /* Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 6E8B7BD9271F46750040EBE2 /* Info.plist */; };
 		6E8B7C17271F468F0040EBE2 /* FTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E8B7C15271F468F0040EBE2 /* FTests.swift */; };
 		6E8B7C1A271F47AD0040EBE2 /* SequenceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E8B7C19271F47AD0040EBE2 /* SequenceTests.swift */; };
 		6E8E58612720578800EE6C7C /* FetchFromNCBI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E8E58602720578800EE6C7C /* FetchFromNCBI.swift */; };
@@ -178,7 +177,6 @@
 		6E8B7BD5271F46740040EBE2 /* Sequence.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Sequence.swift; sourceTree = "<group>"; };
 		6E8B7BD6271F46740040EBE2 /* SequenceType.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SequenceType.swift; sourceTree = "<group>"; };
 		6E8B7BD8271F46750040EBE2 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
-		6E8B7BD9271F46750040EBE2 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		6E8B7C15271F468F0040EBE2 /* FTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FTests.swift; sourceTree = "<group>"; };
 		6E8B7C19271F47AD0040EBE2 /* SequenceTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SequenceTests.swift; sourceTree = "<group>"; };
 		6E8E58602720578800EE6C7C /* FetchFromNCBI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FetchFromNCBI.swift; sourceTree = "<group>"; };
@@ -485,7 +483,6 @@
 			isa = PBXGroup;
 			children = (
 				6E8B7BD8271F46750040EBE2 /* Assets.xcassets */,
-				6E8B7BD9271F46750040EBE2 /* Info.plist */,
 			);
 			path = System;
 			sourceTree = "<group>";
@@ -610,7 +607,6 @@
 				6ED4FED62747F6C600D43285 /* contig.giv.xml in Resources */,
 				6E432C122739C33600DC3A79 /* pattern.dtd in Resources */,
 				6E8B7BF7271F46750040EBE2 /* orf2giv.xslt in Resources */,
-				6E8B7C14271F46750040EBE2 /* Info.plist in Resources */,
 				6E8B7BF8271F46750040EBE2 /* xml2json.xslt in Resources */,
 				6E8B7C13271F46750040EBE2 /* Assets.xcassets in Resources */,
 				6E432C142739C59400DC3A79 /* pattern2giv.xslt in Resources */,
@@ -860,7 +856,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = "Sequence Analysis/Sequence_Analysis.entitlements";
-				CODE_SIGN_IDENTITY = "-";
+				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 211122;
@@ -869,7 +865,7 @@
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.reference";
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.education";
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -877,7 +873,7 @@
 				);
 				MACOSX_DEPLOYMENT_TARGET = 11.0;
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = "com.informagen.Sequence-Analysis";
+				PRODUCT_BUNDLE_IDENTIFIER = "org.willgilbert.Sequence-Analysis";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
@@ -890,7 +886,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = "Sequence Analysis/Sequence_Analysis.entitlements";
-				CODE_SIGN_IDENTITY = "-";
+				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 211122;
@@ -899,7 +895,7 @@
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.reference";
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.education";
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -907,7 +903,7 @@
 				);
 				MACOSX_DEPLOYMENT_TARGET = 11.0;
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = "com.informagen.Sequence-Analysis";
+				PRODUCT_BUNDLE_IDENTIFIER = "org.willgilbert.Sequence-Analysis";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
