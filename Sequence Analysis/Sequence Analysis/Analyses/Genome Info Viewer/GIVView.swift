@@ -52,7 +52,11 @@ struct GIVView: View {
                 Text(example.rawValue)
               })
             }
-          }.frame(width: 150)
+          }
+          .frame(width: 150)
+          .disabled(viewModel.panel != .GIV)
+          
+          // Currently selected example
           if let example = currentExample {
             Text(example.rawValue)
           }
