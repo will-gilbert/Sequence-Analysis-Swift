@@ -13,6 +13,16 @@
 // https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch?db=nucleotide&id=NM_000485.2&retmode=xml
 // https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch?db=nucleotide&id=NM_000485.2&retmode=json //This is ASN.1
 
+// https://www.ncbi.nlm.nih.gov/books/NBK25499/table/chapter4.T._valid_values_of__retmode_and/
+// 'gene' not useful
+// https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch?db=gene&id=NM_000485.2&retmode=xml&rettype=gene_table
+// https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch?db=gene&id=NM_000485.2&retmode=xml&rettype=gene_table
+
+// 'protein' returns text; 'nucleotide' and 'nuccore' returns a parsable table
+// https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch?db=protein&id=NP_061820.1&retmode=xml&rettype=ft
+// https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch?db=nuccore&id=NM_000485.2&retmode=text&rettype=ft
+// https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch?db=nucleotide&id=M31657&retmode=text&rettype=ft
+
 import SwiftUI
     
   struct NCBIFetchView: View {
