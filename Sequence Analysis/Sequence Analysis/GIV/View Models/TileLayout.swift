@@ -38,25 +38,23 @@ struct TileLayout {
     // There must be tiles lay them out
     guard tiles.count > 0 else { return CGSize.zero }
 
-    // Sort the "tiles" array
-    let sortedTiles = tiles.sorted { $0.origin.x < $1.origin.x }
 
     var bounds = CGSize.zero
     switch buoyancy {
     
       case .floating:
-        bounds = packTiles(tiles: sortedTiles)
+        bounds = packTiles(tiles: tiles)
 
       case .sinking:
-        bounds = packTiles(tiles: sortedTiles)
+        bounds = packTiles(tiles: tiles)
         let thickness = bounds.height
         flipTiles(tiles: tiles, thickness: thickness)
  
       case .stackDown:
-        bounds = stackTiles(tiles: sortedTiles)
+        bounds = stackTiles(tiles: tiles)
         
       case .stackUp:
-        bounds = stackTiles(tiles: sortedTiles)
+        bounds = stackTiles(tiles: tiles)
         let thickness = bounds.height
         flipTiles(tiles: tiles, thickness: thickness)
     }
@@ -91,6 +89,10 @@ struct TileLayout {
     
   private func packTiles(tiles: [Tile]) -> CGSize {
     
+    // Sort the "tiles" array for the algorithm to work
+    let sortedTiles = tiles.sorted { $0.origin.x < $1.origin.x }
+
+    
     var height: CGFloat = 0
     var width: CGFloat = 0
         
@@ -104,7 +106,7 @@ struct TileLayout {
     
     var edgeTiles = Array<Tile?>()
 
-    for tile in tiles {
+    for tile in sortedTiles {
             
       // For each tile, create a temporary, "aTile", from the array of ordered tiles.
       //   Compare against every tile along the left to right edge.
