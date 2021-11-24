@@ -25,10 +25,11 @@ struct SequenceEditor: View {
     
   @State private var position: String = ""
   @State private var editorHasSelection: Bool = false
+  @State private var editorSelection: NSRange?
   private var length: Int = 0
   
   let symbolSize = CGFloat(13)
-  let symbolWeight = Font.Weight.semibold
+  let symbolWeight = Font.Weight.medium
     
   var body: some View {
     return VStack(alignment: .leading) {
@@ -59,23 +60,19 @@ struct SequenceEditor: View {
         isEditable: true,
         fontSize: 14
       )
-      .onCommit {
-        //print("Commited")
-      }
-      .onEditingChanged {
-        //print("Editing changed")
-      }
+      .onCommit {}
+      .onEditingChanged {}
       .onTextChange { text in
-        //print("Text changed: \(text == sequenceState.sequence.sequence)")
         // Not sure why I need this. Bad things otherwise.
-        sequenceState.selection = nil
+        //sequenceState.selection = nil
+        editorSelection = nil
       }
       .onSelectionChange { (range: NSRange) in
-        
+                
         // Update outside of the UI thread
         DispatchQueue.main.async {
           editorHasSelection = range.length != 0
-
+          editorSelection = range
           if range.length == 0 {
             self.position = "Position: \(range.location + 1)"
           } else {
@@ -108,7 +105,18 @@ struct SequenceEditor: View {
   var translateSelectionBtn: some View {
     Button(action: {
 
-      let range = sequenceState.selection
+      // TODO I do not like this code! sequenceState.selection should
+      //       get set via the editor selection and GIV graph selection
+    
+      var range: NSRange? = nil
+      if(sequenceState.selection != nil) {
+        range = sequenceState.selection
+      } else if (editorSelection != nil) {
+        range = editorSelection
+      }
+      
+      guard range != nil else { return }
+      
       let from = range!.location
       let to  = range!.location + range!.length
       
@@ -127,9 +135,8 @@ struct SequenceEditor: View {
       }
       
     }) {
-//      Image(systemName: "goforward")
       Text("NA➜AA")
-
+        .font(.system(size: symbolSize, weight: symbolWeight))
     }
     .font(.system(size: symbolSize, weight: symbolWeight))
     .disabled(sequenceState.sequence.isProtein || editorHasSelection == false)
