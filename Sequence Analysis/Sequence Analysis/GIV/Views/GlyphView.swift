@@ -103,7 +103,8 @@ struct GlyphView: View {
     }
     .frame(width: glyph.size.width * scale, height: glyph.size.height, alignment: .center)
     .gesture( TapGesture(count: 2).onEnded {
-      print("Double Click")
+            
+      guard windowState.selectedAnalysis == .ORF else { return }
       
       let range = NSRange(location: glyph.element.start-1, length: glyph.element.stop - glyph.element.start + 1)
       let from = range.location
@@ -126,6 +127,8 @@ struct GlyphView: View {
     .simultaneousGesture(TapGesture().onEnded {
       
       DispatchQueue.main.async {
+        guard windowState.selectedAnalysis != .GIV else { return }
+        
         if windowState.selectedAnalysis == .ORF {
           sequenceState.selectedORFGlyph = glyph
         } else if windowState.selectedAnalysis == .PATTERN {
@@ -133,7 +136,7 @@ struct GlyphView: View {
         } else if windowState.selectedAnalysis == .FEATURES {
           sequenceState.selectedFeatureGlyph = glyph
         }
-
+        
         sequenceState.selection = NSRange(location: glyph.element.start-1, length: glyph.element.stop - glyph.element.start + 1)
       }
       

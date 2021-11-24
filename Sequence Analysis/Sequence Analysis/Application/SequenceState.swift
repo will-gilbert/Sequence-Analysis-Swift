@@ -12,7 +12,6 @@ class SequenceState: ObservableObject {
   
   @Published var sequence: Sequence
   @Published var changed: Bool = false // TODO: This hack is used to force a refresh of the sequence editor, hmmmmm
-  @Published var selection: NSRange?
   @Published var selectedORFGlyph: Glyph?
   @Published var selectedPatternGlyph: Glyph?
   @Published var selectedFeatureGlyph: Glyph?
@@ -24,6 +23,8 @@ class SequenceState: ObservableObject {
   var givViewModel = GIVViewModel()
 
   var defaultAnalysis: AnalysisView.Analyses
+
+  var selection: NSRange? = NSRange(location:0, length:0)
 
   init(_ sequence: Sequence) {
     self.sequence = sequence

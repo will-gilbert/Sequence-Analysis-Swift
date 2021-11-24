@@ -25,7 +25,6 @@ struct SequenceEditor: View {
     
   @State private var position: String = ""
   @State private var editorHasSelection: Bool = false
-  @State private var editorSelection: NSRange?
   private var length: Int = 0
   
   let symbolSize = CGFloat(13)
@@ -65,14 +64,12 @@ struct SequenceEditor: View {
       .onTextChange { text in
         // Not sure why I need this. Bad things otherwise.
         //sequenceState.selection = nil
-        editorSelection = nil
       }
       .onSelectionChange { (range: NSRange) in
                 
         // Update outside of the UI thread
         DispatchQueue.main.async {
           editorHasSelection = range.length != 0
-          editorSelection = range
           if range.length == 0 {
             self.position = "Position: \(range.location + 1)"
           } else {
@@ -96,29 +93,20 @@ struct SequenceEditor: View {
         sequenceState.changed.toggle()
       }
     }) {
-      Text("A⇄a")
+      Text("A") + Text(Image(systemName: "arrow.left.arrow.right")) + Text("a")
         .font(.system(size: symbolSize, weight: symbolWeight))
     }
+    .disabled(sequenceState.sequence.length == 0)
     .help("Toggle Uppercase/Lowercase")
   }
   
   var translateSelectionBtn: some View {
     Button(action: {
-
-      // TODO I do not like this code! sequenceState.selection should
-      //       get set via the editor selection and GIV graph selection
-    
-      var range: NSRange? = nil
-      if(sequenceState.selection != nil) {
-        range = sequenceState.selection
-      } else if (editorSelection != nil) {
-        range = editorSelection
-      }
+          
+      guard let range = sequenceState.selection else { return }
       
-      guard range != nil else { return }
-      
-      let from = range!.location
-      let to  = range!.location + range!.length
+      let from = range.location
+      let to  = range.location + range.length
       
       let orf = String(Array(sequenceState.sequence.string)[from...to])
       let protein = Sequence.nucToProtein(orf)
@@ -157,9 +145,9 @@ struct SequenceEditor: View {
         sequenceState.changed.toggle()
       }
     }) {
-      Text("T⇄U")
+      Text("T") + Text(Image(systemName: "arrow.left.arrow.right")) + Text("U")
     }
-    .disabled(sequenceState.sequence.isProtein)
+    .disabled(sequenceState.sequence.isProtein || sequenceState.sequence.length == 0)
     .font(.system(size: symbolSize, weight: symbolWeight))
     .help("DNA to/from RNA")
   }
@@ -174,7 +162,7 @@ struct SequenceEditor: View {
     }) {
       Image(systemName: "arrow.left.arrow.right")
     }
-    .disabled(sequenceState.sequence.isProtein)
+    .disabled(sequenceState.sequence.isProtein || sequenceState.sequence.length == 0)
     .font(.system(size: symbolSize, weight: symbolWeight))
     .help("Reverse Complement")
   }
@@ -188,6 +176,7 @@ struct SequenceEditor: View {
     }) {
       Image(systemName: "shuffle")
     }
+    .disabled(sequenceState.sequence.length == 0)
     .font(.system(size: symbolSize, weight: symbolWeight))
     .help("Shuffle")
   }
