@@ -99,7 +99,7 @@ struct SequenceEditor: View {
         sequenceState.changed.toggle()
       }
     }) {
-      Text("A\u{21C6}a")
+      Text("A⇄a")
         .font(.system(size: symbolSize, weight: symbolWeight))
     }
     .help("Toggle Uppercase/Lowercase")
@@ -127,7 +127,9 @@ struct SequenceEditor: View {
       }
       
     }) {
-      Image(systemName: "goforward")
+//      Image(systemName: "goforward")
+      Text("NA➜AA")
+
     }
     .font(.system(size: symbolSize, weight: symbolWeight))
     .disabled(sequenceState.sequence.isProtein || editorHasSelection == false)
@@ -148,7 +150,7 @@ struct SequenceEditor: View {
         sequenceState.changed.toggle()
       }
     }) {
-      Text("T\u{21C6}U")
+      Text("T⇄U")
     }
     .disabled(sequenceState.sequence.isProtein)
     .font(.system(size: symbolSize, weight: symbolWeight))
