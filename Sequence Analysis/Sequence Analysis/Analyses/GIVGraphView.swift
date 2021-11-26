@@ -13,22 +13,12 @@ struct GIVGraphView: View {
 
   let givFrame: GIVFrame
   let extent: CGFloat
-  
+  let glyphReporter: (() -> String)?
+
   var height: CGFloat = 0.0
   var width: CGFloat = 0.0
   
-  var glyphReporter: (() -> String)?
-
-  init(givFrame: GIVFrame, extent: CGFloat ) {
-    self.givFrame = givFrame
-    self.extent = extent
-    self.glyphReporter = nil
-    height = givFrame.size.height
-    width = givFrame.size.width
-  }
-
-  
-  init(givFrame: GIVFrame, extent: CGFloat, glyphReporter: (@escaping () -> String) ) {
+  init(givFrame: GIVFrame, extent: CGFloat, glyphReporter: (() -> String)? = nil ) {
     self.givFrame = givFrame
     self.extent = extent
     self.glyphReporter = glyphReporter
