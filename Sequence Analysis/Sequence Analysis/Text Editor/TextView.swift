@@ -7,8 +7,6 @@
 
 import SwiftUI
 
-import SwiftUI
-
 /// A wrapper around NSTextView so we can get multiline text editing in SwiftUI.
 struct TextView: NSViewRepresentable {
     @Binding private var text: String

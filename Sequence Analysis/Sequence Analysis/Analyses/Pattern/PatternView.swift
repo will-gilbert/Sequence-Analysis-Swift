@@ -65,7 +65,7 @@ struct PatternView: View {
       switch viewModel.panel {
       case .GRAPH:
         if let givFrame = viewModel.givFrame {
-          GraphView(givFrame: givFrame, sequence: sequence)
+          GIVGraphView(givFrame: givFrame, extent: CGFloat(sequence.length))
         } else if let errorMsg = viewModel.errorMsg {
           TextView(text: errorMsg)
         } else if let text = viewModel.text {
@@ -212,97 +212,97 @@ struct PatternView: View {
 
   // P A T T E R N   G R A P H  =============================================================
 
-  struct GraphView : View {
-    
-    @EnvironmentObject var sequenceState: SequenceState
-
-    @State var scale: Double = 1.0
-
-    let givFrame: GIVFrame
-    let extent: CGFloat
-    let height: CGFloat
-    let width: CGFloat
-    private var unit: String = "BP"
-
-    init?(givFrame: GIVFrame, sequence: Sequence) {
-      self.givFrame = givFrame
-      self.extent = CGFloat(sequence.length)
-      self.height = self.givFrame.size.height
-      self.width = self.givFrame.size.width
-      self.unit = sequence.isNucleic ? "BP" : "AA"
-    }
-        
-    var body: some View {
-      
-      // Protect against divide by zero
-      if extent.isZero {
-        return AnyView(EmptyView())
-      } else {
-      
-                  
-      return AnyView(
-        GeometryReader { geometry in
-     
-        let panelWidth = geometry.size.width
-        var minScale = panelWidth/extent
-        let maxScale = minScale * log2(extent)
-        let scrollViewWidth =  extent * scale
-
-        VStack(alignment: .leading) {
-          HStack (spacing: 15) {
-            Slider(
-              value: $scale,
-              in: minScale...maxScale
-            ).disabled(minScale >= maxScale)
-            
-            Text("Pixels per \(unit): \(F.f(scale, decimal: 2))")
-          }
-          
-          // The following nested 'GeometryReader' and 'mapPanelView.size' is
-          //   a horrible hack to get the 'mapPanelView" to at the top of the
-          //   'ScrollView';  Nested 'VStack' did not; Spent 2 days on this!
-          //   Maybe a macOS SwiftUI bug, maybe not.
-          //   TODO: Revisit in the future.
-          
-          // SCROLLVIEW ----------------------------------------------------------
-          GeometryReader { g in
-            ScrollView( [.vertical, .horizontal], showsIndicators: true) {
-             
-              VStack(spacing: 0) {
-                GIVFrameView(givFrame, scale: scale)
-              }.frame(width: scrollViewWidth, height: height)
-
-              // Create a bottom 'Spacer' as needed when the GIV panels do not fill the ScrollView
-              if g.size.height > height {
-                Spacer()
-                .frame(height: g.size.height - height)
-              }
-            }
-            .background(Colors.get(color: "Peach").base)
-          }
-          // SCROLLVIEW ----------------------------------------------------------
-          
-          if let glyph = sequenceState.selectedPatternGlyph {
-            let element = glyph.element
-            let style = glyph.style
-            let name = element.label
-            let size = "\(element.start)-\(element.stop) length: \(element.stop - element.start + 1)"
-            let type = style.name
-            Text("\(name); \(size)bp; \(type)")
-          } else {
-            Text(" ")
-          }
-
-        }.onAppear {
-          let panelWidth = geometry.size.width
-          scale = panelWidth/extent
-        }.onChange(of: geometry.frame(in: .global).width) { value in
-          minScale = value/Double(extent)
-          scale = scale > minScale ? scale : minScale
-        }
-      })
-      }
-    }
-  }
+//  struct GraphView : View {
+//    
+//    @EnvironmentObject var sequenceState: SequenceState
+//
+//    @State var scale: Double = 1.0
+//
+//    let givFrame: GIVFrame
+//    let extent: CGFloat
+//    let height: CGFloat
+//    let width: CGFloat
+//    private var unit: String = "BP"
+//
+//    init?(givFrame: GIVFrame, sequence: Sequence) {
+//      self.givFrame = givFrame
+//      self.extent = CGFloat(sequence.length)
+//      self.height = self.givFrame.size.height
+//      self.width = self.givFrame.size.width
+//      self.unit = sequence.isNucleic ? "BP" : "AA"
+//    }
+//        
+//    var body: some View {
+//      
+//      // Protect against divide by zero
+//      if extent.isZero {
+//        return AnyView(EmptyView())
+//      } else {
+//      
+//                  
+//      return AnyView(
+//        GeometryReader { geometry in
+//     
+//        let panelWidth = geometry.size.width
+//        var minScale = panelWidth/extent
+//        let maxScale = minScale * log2(extent)
+//        let scrollViewWidth =  extent * scale
+//
+//        VStack(alignment: .leading) {
+//          HStack (spacing: 15) {
+//            Slider(
+//              value: $scale,
+//              in: minScale...maxScale
+//            ).disabled(minScale >= maxScale)
+//            
+//            Text("Pixels per \(unit): \(F.f(scale, decimal: 2))")
+//          }
+//          
+//          // The following nested 'GeometryReader' and 'mapPanelView.size' is
+//          //   a horrible hack to get the 'mapPanelView" to at the top of the
+//          //   'ScrollView';  Nested 'VStack' did not; Spent 2 days on this!
+//          //   Maybe a macOS SwiftUI bug, maybe not.
+//          //   TODO: Revisit in the future.
+//          
+//          // SCROLLVIEW ----------------------------------------------------------
+//          GeometryReader { g in
+//            ScrollView( [.vertical, .horizontal], showsIndicators: true) {
+//             
+//              VStack(spacing: 0) {
+//                GIVFrameView(givFrame, scale: scale)
+//              }.frame(width: scrollViewWidth, height: height)
+//
+//              // Create a bottom 'Spacer' as needed when the GIV panels do not fill the ScrollView
+//              if g.size.height > height {
+//                Spacer()
+//                .frame(height: g.size.height - height)
+//              }
+//            }
+//            .background(Colors.get(color: "Peach").base)
+//          }
+//          // SCROLLVIEW ----------------------------------------------------------
+//          
+//          if let glyph = sequenceState.selectedPatternGlyph {
+//            let element = glyph.element
+//            let style = glyph.style
+//            let name = element.label
+//            let size = "\(element.start)-\(element.stop) length: \(element.stop - element.start + 1)"
+//            let type = style.name
+//            Text("\(name); \(size)bp; \(type)")
+//          } else {
+//            Text(" ")
+//          }
+//
+//        }.onAppear {
+//          let panelWidth = geometry.size.width
+//          scale = panelWidth/extent
+//        }.onChange(of: geometry.frame(in: .global).width) { value in
+//          minScale = value/Double(extent)
+//          scale = scale > minScale ? scale : minScale
+//        }
+//      })
+//      }
+//    }
+//  }
 }
 

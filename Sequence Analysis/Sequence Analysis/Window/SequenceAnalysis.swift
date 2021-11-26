@@ -18,90 +18,20 @@ struct SequenceAnalysis: View {
   var body: some View {
         
     return NavigationView {
-      self.availableSequences
+      self.sequencesSideBar
         .frame(minWidth: 200, maxWidth: 300, minHeight: 300, alignment: .leading)
         .padding()
         .toolbar {
-
           ToolbarItemGroup(placement: .navigation) {
             HStack(spacing: 3) {
-              
-              //  NCBI Entrez
-              Button(action: { showFetchFromNCBI = true }) {
-                  Image(systemName: "network")
-              }
-              .sheet(isPresented: $showFetchFromNCBI){
-                NCBIFetchView(appState: appState, isSheetVisible: $showFetchFromNCBI)
-              }
-              .help("Fetch an entry from the NCBI,  ⌘-E")
-              .keyboardShortcut("e", modifiers: .command)
-
-              // Add a sequence
-              Button(action: { showCreateNewSequence = true } ) {
-                  Image(systemName: "plus")
-              }
-              .sheet(isPresented: $showCreateNewSequence){
-                NewSequenceView(appState: appState, isSheetVisible: $showCreateNewSequence)
-              }
-              .help("Add a new sequence,  ⌥⌘-N")
-              .keyboardShortcut("n", modifiers: [.option, .command])
-
-              // Read a sequence file
-              Button(action: {
-                readSequenceFromFile()
-              }) {
-                  Image(systemName: "arrow.up.doc")
-              }
-              .help("Read a sequence file in .raw, .seq, .fasta, .gcg, .nbrf, .pir format")
-              
-              
-              // Save the sequence per the format selected in "Format"
-              Button(action: {
-                saveSequenceToFile()
-              }) {
-                  Image(systemName: "arrow.down.doc")
-              }
-              .disabled(windowState.currentSequenceState == nil)
-              .help("Save using the file format chosen in 'Format'")
-
-              // Save the sequence per the format selected in "Format"
-              Button(action: {
-                windowState.editorIsVisible.toggle()
-              }) {
-                Image(systemName: windowState.editorIsVisible ? "eye" : "eye.slash")
-              }
-              .disabled(windowState.currentSequenceState == nil)
-              .help("Show/Hide the sequence editor, ⌘-S")
-              .keyboardShortcut("s", modifiers: .command)
-              
-              // Edit the UID and/or title
-              Button(action: {
-                if windowState.currentSequenceState != nil {
-                  showEditUIDorTitle = true
-                }
-              } ) {
-                  Image(systemName: "rectangle.and.pencil.and.ellipsis")
-              }
-              .sheet(isPresented: $showEditUIDorTitle) {
-                EditUIDorTitleView(sequenceState: windowState.currentSequenceState!, isSheetVisible: $showEditUIDorTitle)
-              }
-              .disabled(windowState.currentSequenceState == nil)
-              .help("Edit UID or Title")
-
+              entrzBtn
+              addSequenceBtn
+              readFromFileBtn
+              saveToFileBtn
+              toggleSequenceEditorBtn
+              editTitleUIDBtn
               Spacer(minLength: 15)
-              
-              Button(action: {
-                if let sequenceState = windowState.currentSequenceState {
-                  appState.removeSequeneState(sequenceState)
-                  windowState.currentSequenceState = nil
-                }
-              }) {
-                  Image(systemName: "trash")
-              }
-              .disabled(windowState.currentSequenceState == nil)
-              .help("Remove seqeunce from the sidebar")
-
-              Spacer(minLength: 20)
+              deleteCurrentSequenceBtn
             }
           }
         }
@@ -112,8 +42,8 @@ struct SequenceAnalysis: View {
     .frame(maxHeight: .infinity)
   }
     
-  // List of Sequences; Nucleic and Protein
-  var availableSequences: some View {
+  // Navigation Sidebar: List of Sequences & show/hide button
+  var sequencesSideBar: some View {
     AvailableSequencesList(window: window)
     .toolbar {
       // Show/Hide the list of available sequences
@@ -125,13 +55,108 @@ struct SequenceAnalysis: View {
     }
   }
   
+  // Fetch a sequence entry from the NCBI; XML format
+  var entrzBtn: some View {
+    Button(action: { showFetchFromNCBI = true }) {
+        Image(systemName: "network")
+    }
+    .sheet(isPresented: $showFetchFromNCBI){
+      NCBIFetchView(appState: appState, isSheetVisible: $showFetchFromNCBI)
+    }
+    .help("Fetch an entry from the NCBI,  ⌘-E")
+    .keyboardShortcut("e", modifiers: .command)
+
+  }
+  
+  // Create a sequence entry to randomize sequence
+  var addSequenceBtn: some View {
+    // Add a sequence
+    Button(action: { showCreateNewSequence = true } ) {
+        Image(systemName: "plus")
+    }
+    .sheet(isPresented: $showCreateNewSequence){
+      NewSequenceView(appState: appState, isSheetVisible: $showCreateNewSequence)
+    }
+    .help("Add a new sequence,  ⌥⌘-N")
+    .keyboardShortcut("n", modifiers: [.option, .command])
+  }
+  
+  // Read from an external flat file
+  var readFromFileBtn: some View {
+    // Read a sequence file
+    Button(action: {
+      readSequenceFromFile()
+    }) {
+        Image(systemName: "arrow.up.doc")
+    }
+    .help("Read a sequence file in .raw, .seq, .fasta, .gcg, .nbrf, .pir format")
+  }
+  
+  //  Save the sequence in the format specified by the "Format" panel
+  var saveToFileBtn: some View {
+    // Save the sequence per the format selected in "Format"
+    Button(action: {
+      saveSequenceToFile()
+    }) {
+        Image(systemName: "arrow.down.doc")
+    }
+    .disabled(windowState.currentSequenceState == nil)
+    .help("Save using the file format chosen in 'Format'")
+
+  }
+  
+  // Show/Hide the sequence editor
+  var toggleSequenceEditorBtn: some View {
+    Button(action: {
+      windowState.editorIsVisible.toggle()
+    }) {
+      Image(systemName: windowState.editorIsVisible ? "eye" : "eye.slash")
+    }
+    .disabled(windowState.currentSequenceState == nil)
+    .help("Show/Hide the sequence editor, ⌘-S")
+    .keyboardShortcut("s", modifiers: .command)
+  }
+  
+  // Edit the title or UID of sequence
+  var editTitleUIDBtn: some View {
+    // Edit the UID and/or title
+    Button(action: {
+      if windowState.currentSequenceState != nil {
+        showEditUIDorTitle = true
+      }
+    } ) {
+        Image(systemName: "rectangle.and.pencil.and.ellipsis")
+    }
+    .sheet(isPresented: $showEditUIDorTitle) {
+      EditUIDorTitleView(sequenceState: windowState.currentSequenceState!, isSheetVisible: $showEditUIDorTitle)
+    }
+    .disabled(windowState.currentSequenceState == nil)
+    .help("Edit UID or Title")
+  }
+  
+  // Delete the current sequence from the sidebar. TODO Remove from all visible windows
+  var deleteCurrentSequenceBtn: some View {
+    Button(action: {
+      if let sequenceState = windowState.currentSequenceState {
+        appState.removeSequeneState(sequenceState)
+        windowState.currentSequenceState = nil
+      }
+    }) {
+        Image(systemName: "trash")
+    }
+    .disabled(windowState.currentSequenceState == nil)
+    .help("Remove seqeunce from the sidebar")
+
+  }
+  
+  // Function to show/hide the sidebar sequences
   func toggleSideBar() {
     NSApp.keyWindow?.firstResponder?.tryToPerform(
       #selector(NSSplitViewController.toggleSidebar),
       with: nil)
   }
   
-  
+  // Function to save the sequence to a file
   func saveSequenceToFile() {
         
     if let sequenceState = windowState.currentSequenceState {
@@ -162,6 +187,7 @@ struct SequenceAnalysis: View {
     }
   }
   
+  // Function to read a sequence from a flat file
   func readSequenceFromFile() {
     let panel = NSOpenPanel()
     
@@ -202,6 +228,7 @@ struct SequenceAnalysis: View {
     }
   }
   
+  // Read file formats =================================================================
   
   func parseFasta(_ contents: String, filename: String) {
     

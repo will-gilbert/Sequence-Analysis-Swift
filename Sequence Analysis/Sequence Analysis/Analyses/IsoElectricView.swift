@@ -13,11 +13,7 @@
 // Stryer          8.00   4.40  4.40  6.50  8.50 10.00  10.00  12.00   N/A   N/A     3.10
 
 
-
-
 import SwiftUI
-
-
 
 struct IsoElectricView: View {
   
@@ -26,39 +22,15 @@ struct IsoElectricView: View {
     
   var body: some View {
     
-    // Pass in a\ state variable, it will be displayed when 'Composition' is finished
+    // Pass in sequence and bind a text string for the results
     DispatchQueue.main.async {
       text.removeAll()
       let _ = IsoElectricReport(sequence, text: $text)
     }
     
     return TextView(text: $text, isEditable: false)
-
   }
-  
 }
-
-struct IsoElectricView_Previews: PreviewProvider {
-
-  static var previews: some View {
-
-    let sequence = Sequence(String(repeating: "ACGT", count: 7),
-                                   uid: "TEST-3",
-                                   title: "Cornavirus Spike Peptide",
-                                   type: .PROTEIN)
-
-    return Group {
-        IsoElectricView(sequence: sequence)
-          .environment(\.colorScheme, .light)
-          .previewDisplayName("Light Mode")
-//
-//        CompositionView(sequence: sequence)
-//          .environment(\.colorScheme, .dark)
-//          .previewDisplayName("Dark Mode")
-      }
-    }
-}
-
 
 struct IsoElectricReport {
   

@@ -12,9 +12,6 @@ struct SequenceMenu: Commands {
         Button("All") { showAll() }.keyboardShortcut("1", modifiers: [.command, .option])
         Button("Only Nucleic") { showNucleic() }.keyboardShortcut("2", modifiers: [.command, .option])
         Button("Only Protein") { showProtein() }.keyboardShortcut("3", modifiers: [.command, .option])
-//        Button("Peptide") {show Peptide() }.keyboardShortcut("4", modifiers: [.command, .option])
-//        Button("DNA") { showDNA() }.keyboardShortcut("4", modifiers: [.command, .option])
-//        Button("RNA") { showRNA() }.keyboardShortcut("6", modifiers: [.command, .option])
       }
     }
   }
