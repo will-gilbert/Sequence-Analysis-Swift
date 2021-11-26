@@ -102,8 +102,8 @@ struct GlyphView: View {
 //      Path(CGRect(x: 0, y: 0, width: glyph.size.width, height: glyph.size.height)).stroke(Color.red)
     }
     .frame(width: glyph.size.width * scale, height: glyph.size.height, alignment: .center)
-    .gesture( TapGesture(count: 2).onEnded {
-            
+//    .gesture( TapGesture(count: 2).onEnded {
+    .onTapGesture(count: 2) {
       guard windowState.selectedAnalysis == .ORF else { return }
       
       let range = NSRange(location: glyph.element.start-1, length: glyph.element.stop - glyph.element.start + 1)
@@ -123,9 +123,10 @@ struct GlyphView: View {
         let newSequenceState = appState.addSequence(sequence)
         windowState.currentSequenceState = newSequenceState
       }
-    })
-    .simultaneousGesture(TapGesture().onEnded {
-      
+    }
+//    })
+//    .simultaneousGesture(TapGesture().onEnded {
+    .onTapGesture {
       DispatchQueue.main.async {
         guard windowState.selectedAnalysis != .GIV else { return }
         
@@ -154,7 +155,8 @@ struct GlyphView: View {
 //      print("   Element: \(glyph.element.start)-\(glyph.element.stop), length: \(glyph.element.stop - glyph.element.start + 1)")
 //      print("      Type: \(glyph.style.name)")
 //      print("     Label: \(glyph.label!.position.rawValue.capitalized)")
-    })
+//    })
+    }
   }
 }
 
