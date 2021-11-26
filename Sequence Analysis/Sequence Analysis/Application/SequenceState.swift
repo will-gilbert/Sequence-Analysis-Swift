@@ -12,11 +12,12 @@ class SequenceState: ObservableObject {
   
   @Published var sequence: Sequence
   @Published var changed: Bool = false // TODO: This hack is used to force a refresh of the sequence editor, hmmmmm
+  @Published var fileFormat: FileFormat = FileFormat.FASTA
+  
   @Published var selectedORFGlyph: Glyph?
   @Published var selectedPatternGlyph: Glyph?
   @Published var selectedFeatureGlyph: Glyph?
-  @Published var fileFormat: FileFormat = FileFormat.FASTA
-  
+
   var orfViewModel = ORFViewModel()
   var featuresViewModel = FeaturesViewModel()
   var patternViewModel: PatternViewModel

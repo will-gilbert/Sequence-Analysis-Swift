@@ -24,10 +24,7 @@ struct GIVView: View {
       case .NESTED: return "nested.giv"
       }
     }
-
   }
-
-  
 
   @ObservedObject var viewModel: GIVViewModel
   @State private var currentExample: Example? = nil
@@ -127,13 +124,13 @@ struct GIVView: View {
   // Show either the GIV graph or the error message
   var givGraphPanel: some View {
     if let givFrame = viewModel.givFrame, let extent = viewModel.extent {
-       return AnyView(GIVGraphView(givFrame: givFrame, extent: extent))
+       return AnyView( GIVGraphView(givFrame: givFrame, extent: extent) )
     } else if let errorMsg = viewModel.errorMsg {
       return AnyView(TextView(text: errorMsg))
     }
     return AnyView(EmptyView())
   }
-
+  
   // Show either the DTD or the error message if it could not be loaded
   var dtdPanel: some View {
     if let dtdText = viewModel.dtdText {

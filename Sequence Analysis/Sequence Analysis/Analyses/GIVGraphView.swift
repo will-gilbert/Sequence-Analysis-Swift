@@ -16,10 +16,22 @@ struct GIVGraphView: View {
   
   var height: CGFloat = 0.0
   var width: CGFloat = 0.0
+  
+  var glyphReporter: (() -> String)?
 
-  init(givFrame: GIVFrame, extent: CGFloat) {
+  init(givFrame: GIVFrame, extent: CGFloat ) {
     self.givFrame = givFrame
     self.extent = extent
+    self.glyphReporter = nil
+    height = givFrame.size.height
+    width = givFrame.size.width
+  }
+
+  
+  init(givFrame: GIVFrame, extent: CGFloat, glyphReporter: (@escaping () -> String) ) {
+    self.givFrame = givFrame
+    self.extent = extent
+    self.glyphReporter = glyphReporter
     height = givFrame.size.height
     width = givFrame.size.width
   }
@@ -73,6 +85,10 @@ struct GIVGraphView: View {
         }
         // SCROLLVIEW ----------------------------------------------------------
         
+        if let glyphReporter = glyphReporter {
+          Text(glyphReporter())
+        }
+
       }.onAppear {
         let panelWidth = geometry.size.width
         scale = panelWidth/extent
@@ -83,4 +99,8 @@ struct GIVGraphView: View {
     })
     }
   }
+  
+  
+  
+  
 }

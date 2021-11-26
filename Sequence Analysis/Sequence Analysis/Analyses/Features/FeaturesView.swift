@@ -90,114 +90,27 @@ struct FeaturesView: View {
   
   var givGraphPanel: some View {
     if let givFrame = viewModel.givFrame, let extent = viewModel.extent {
-       return AnyView(GIVGraphView(givFrame: givFrame, extent: extent))
+      return AnyView(GIVGraphView(givFrame: givFrame, extent: extent, glyphReporter: glyphReporter))
     } else if let errorMsg = viewModel.errorMsg {
       return AnyView(TextView(text: errorMsg))
     }
     return AnyView(EmptyView())
   }
 
+  func glyphReporter() -> String {
 
-  // F E A T U R E S   G R A P H  ======================================================================
+    if let glyph = sequenceState.selectedFeatureGlyph {
+      let element = glyph.element
+      let style = glyph.style
+      let name = element.label
+      let size = "\(element.start)-\(element.stop) length: \(element.stop - element.start + 1)"
+      let type = style.name
+      return "\(name); \(size)bp; \(type)"
+    } else {
+      return " "
+    }
 
-//  struct GraphView: View {
-//    
-//    @EnvironmentObject var sequenceState: SequenceState
-//
-//    @State var scale: Double = 1.0
-//    private var unit: String = "BP"
-//
-//    let givFrame: GIVFrame
-//    let extent: CGFloat
-//    
-//    var height: CGFloat = 0.0
-//    var width: CGFloat = 0.0
-//
-//    init(givFrame: GIVFrame, extent: CGFloat) {
-//      self.givFrame = givFrame
-//      self.extent = extent
-//      height = givFrame.size.height
-//      width = givFrame.size.width
-//      //self.unit = sequenceState.sequence.isNucleic ? "BP" : "AA"
-//   }
-//        
-//    var body: some View {
-//      
-//      // Protect against divide by zero
-//      if extent.isZero {
-//          return AnyView(EmptyView())
-//      } else {
-//
-//      return AnyView(
-//        GeometryReader { geometry in
-//     
-//          let panelWidth = geometry.size.width
-//          var minScale = panelWidth/extent
-//          let maxScale = minScale * log2(extent)
-//          let scrollViewWidth =  extent * scale
-//
-//        VStack(alignment: .leading) {
-//          HStack (spacing: 15) {
-//            Slider(
-//              value: $scale,
-//              in: minScale...maxScale
-//            ).disabled(minScale >= maxScale)
-//            
-//            Text("Pixels per \(unit): \(F.f(scale, decimal: 2))")
-//          }
-//          
-//          // The following nested 'GeometryReader' and 'mapPanelView.size' is
-//          //   a horrible hack to get the 'mapPanelView" to at the top of the
-//          //   'ScrollView';  Nested 'VStack' did not; Spent 2 days on this!
-//          //   Maybe a macOS SwiftUI bug, maybe not.
-//          //   TODO: Revisit in the future.
-//          
-//          // SCROLLVIEW ----------------------------------------------------------
-//          GeometryReader { g in
-//            ScrollView( [.vertical, .horizontal], showsIndicators: true) {
-//             
-//              VStack(spacing: 0) {
-//                GIVFrameView(givFrame, scale: scale)
-//              }.frame(width: scrollViewWidth, height: height)
-//
-//              // Create a bottom 'Spacer' as needed when the GIV panels do not fill the ScrollView
-//              if g.size.height > height {
-//                Spacer()
-//                .frame(height: g.size.height - height)
-//              }
-//            }
-//            .background(Colors.get(color: "AGA 01").base)
-//          }
-//          // SCROLLVIEW ----------------------------------------------------------
-//          
-//          if let glyph = sequenceState.selectedFeatureGlyph {
-//            let element = glyph.element
-//            let style = glyph.style
-//            let name = element.label
-//            let size = "\(element.start)-\(element.stop) length: \(element.stop - element.start + 1)"
-//            let type = style.name
-//
-////            if type == "ORF" {
-////              let aa: Int = Int(Double(element.stop - element.start + 1)/3.0)
-////              Text("\(name); \(size)bp (\(aa)aa); \(type)")
-////            } else {
-//              Text("\(name); \(size)bp; \(type)")
-////            }
-//          } else {
-//            Text(" ")
-//          }
-//
-//        }.onAppear {
-//          let panelWidth = geometry.size.width
-//          scale = panelWidth/extent
-//        }.onChange(of: geometry.frame(in: .global).width) { value in
-//          minScale = value/Double(extent)
-//          scale = scale > minScale ? scale : minScale
-//        }
-//      })
-//      }
-//    }
-//  }
+  }
 
 }
 
