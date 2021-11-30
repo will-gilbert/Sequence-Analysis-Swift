@@ -75,7 +75,7 @@ struct SequenceAnalysis: View {
         Image(systemName: "plus")
     }
     .sheet(isPresented: $showCreateNewSequence){
-      NewSequenceView(appState: appState, isSheetVisible: $showCreateNewSequence)
+      NewSequenceView(isSheetVisible: $showCreateNewSequence)
     }
     .help("Add a new sequence,  ⌥⌘-N")
     .keyboardShortcut("n", modifiers: [.option, .command])

@@ -53,7 +53,7 @@ import SwiftUI
             TextField("", text: $entrezID)
           }
           VStack {
-            Text("Nucleic examples: M31657 NM_000485 NG_023438")
+            Text("Nucleic examples: M31657 NM_000485 NG_023438 NC_045512")
             Text("Protein examples: NP_061820 2392216 1CA0_H")
           }
           .font(.footnote)
@@ -90,7 +90,6 @@ import SwiftUI
               urlString.append("db=")
               urlString.append( sequenceType == .DNA ? "nucleotide" : "protein" )
               urlString.append("&id=")
-//              urlString.append("NM_000485")  // Remove this after Features panel has been implemented
               urlString.append(entrezID)
               urlString.append("&retmode=xml")
                             

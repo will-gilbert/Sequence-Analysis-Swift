@@ -102,48 +102,11 @@ struct GlyphView: View {
 //      Path(CGRect(x: 0, y: 0, width: glyph.size.width, height: glyph.size.height)).stroke(Color.red)
     }
     .frame(width: glyph.size.width * scale, height: glyph.size.height, alignment: .center)
-//    .gesture( TapGesture(count: 2).onEnded {
     .onTapGesture(count: 2) {
-      
-      //windowState.activateGlyph(glyph)
-      
-      guard windowState.selectedAnalysis == .ORF else { return }
-
-      let range = NSRange(location: glyph.element.start-1, length: glyph.element.stop - glyph.element.start + 1)
-      let from = range.location
-      let to  = range.location + range.length
-
-      let orf = String(Array(sequenceState.sequence.string)[from...to])
-      let protein = Sequence.nucToProtein(orf)
-
-      let uid = Sequence.nextUID()
-      let title = "Translate from '\(sequenceState.sequence.uid)', \(from + 1)-\(to)"
-      let sequence = Sequence(protein, uid: uid, title: title, type: .PROTEIN)
-      sequence.alphabet = .PROTEIN
-
-      // Change the state in the main thread
-      DispatchQueue.main.async {
-        let newSequenceState = appState.addSequence(sequence)
-        windowState.currentSequenceState = newSequenceState
-      }
+      windowState.activateGlyph(glyph)
     }
     .onTapGesture {
       windowState.selectGlyph(glyph)
-      
-//      print("")
-//      print("      Name: \(glyph.label?.string ?? "Untitled")")
-//      print("    Origin: x: \(Int(glyph.origin.x)), y:\(Int(glyph.origin.y))")
-//      print("Glyph Size: width: \(F.f(glyph.size.width *  scale))px, height: \(F.f(glyph.size.height))px")
-//      if let label = glyph.label {
-//        if label.position != .kLabelHidden {
-//          print("  Lbl size: width: \(F.f(glyph.label?.size.width ?? 0.0))px, height: \(F.f(glyph.label?.size.height ?? 0.0))px")
-//        }
-//      }
-//      print("  Bar size: width: \(F.f(barWidth, decimal: 1))px, height: \(F.f(barHeight))px")
-//      print("     Color: \(glyph.bar.color.base)")
-//      print("   Element: \(glyph.element.start)-\(glyph.element.stop), length: \(glyph.element.stop - glyph.element.start + 1)")
-//      print("      Type: \(glyph.style.name)")
-//      print("     Label: \(glyph.label!.position.rawValue.capitalized)")
     }
   }
 }

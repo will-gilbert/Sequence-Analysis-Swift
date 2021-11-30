@@ -13,7 +13,7 @@ struct SequenceAnalysisApp: App {
   
   @NSApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
   
-  @StateObject var appState = AppState()
+  @StateObject var appState = AppSequences.shared().appState
 
   var body: some Scene {
     WindowGroup {
@@ -28,11 +28,11 @@ struct SequenceAnalysisApp: App {
       SequenceMenu(appState: appState)
     }
     
-    Settings {
-      VStack {
-        Text("Sequence Analysis Preferences will go here")
-      }.frame(minWidth: 800, minHeight: 600)
-    }
+//    Settings {
+//      VStack {
+//        Text("Sequence Analysis Preferences will go here")
+//      }.frame(minWidth: 800, minHeight: 600)
+//    }
 
 
   }

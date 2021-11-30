@@ -19,11 +19,7 @@ class AppState: NSObject, ObservableObject {
     SequenceType.PEPTIDE,
     SequenceType.UNDEFINED
   ]
-  
-//  override init() {
-//    super.init()
-//  }
-    
+      
   var hasSequences: Bool {
     get {
       return sequenceStates.count > 0

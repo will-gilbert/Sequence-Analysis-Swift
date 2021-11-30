@@ -114,7 +114,6 @@ struct SequenceEditor: View {
       let uid = Sequence.nextUID()
       let title = "Translate from '\(sequenceState.sequence.uid)', \(from + 1)-\(to)"
       let sequence = Sequence(protein, uid: uid, title: title, type: .PROTEIN)
-      sequence.alphabet = .PROTEIN
       
       // Change the state in the main thread
       DispatchQueue.main.async {
@@ -189,7 +188,6 @@ struct SequenceEditor: View {
       let type = sequenceState.sequence.type
       let text = sequenceState.sequence.string
       let newSequence = Sequence(text, uid: uid, title: title, type: type)
-      newSequence.alphabet = sequenceState.sequence.alphabet
       let _ = appState.addSequence(newSequence)
       
     }) {
