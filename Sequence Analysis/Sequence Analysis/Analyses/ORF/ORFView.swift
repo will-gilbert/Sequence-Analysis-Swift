@@ -5,7 +5,6 @@
 //  Created by Will Gilbert on 9/14/21.
 //
 
-import Foundation
 import SwiftUI
 
 struct ORFOptions {
@@ -75,6 +74,7 @@ struct ORFView: View {
         }
       }
     }
+    
   }
   
   func glyphReporter() -> String {

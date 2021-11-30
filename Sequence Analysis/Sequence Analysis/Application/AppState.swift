@@ -20,9 +20,9 @@ class AppState: NSObject, ObservableObject {
     SequenceType.UNDEFINED
   ]
   
-  override init() {
-    super.init()
-  }
+//  override init() {
+//    super.init()
+//  }
     
   var hasSequences: Bool {
     get {

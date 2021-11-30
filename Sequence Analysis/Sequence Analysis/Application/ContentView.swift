@@ -1,6 +1,5 @@
 //
 //  ContentView.swift
-//  Shared
 //
 //  Created by Will Gilbert on 8/25/21.
 //

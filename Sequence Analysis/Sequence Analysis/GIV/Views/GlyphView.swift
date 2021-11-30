@@ -104,12 +104,15 @@ struct GlyphView: View {
     .frame(width: glyph.size.width * scale, height: glyph.size.height, alignment: .center)
 //    .gesture( TapGesture(count: 2).onEnded {
     .onTapGesture(count: 2) {
-      guard windowState.selectedAnalysis == .ORF else { return }
       
+      //windowState.activateGlyph(glyph)
+      
+      guard windowState.selectedAnalysis == .ORF else { return }
+
       let range = NSRange(location: glyph.element.start-1, length: glyph.element.stop - glyph.element.start + 1)
       let from = range.location
       let to  = range.location + range.length
-      
+
       let orf = String(Array(sequenceState.sequence.string)[from...to])
       let protein = Sequence.nucToProtein(orf)
 
@@ -117,29 +120,15 @@ struct GlyphView: View {
       let title = "Translate from '\(sequenceState.sequence.uid)', \(from + 1)-\(to)"
       let sequence = Sequence(protein, uid: uid, title: title, type: .PROTEIN)
       sequence.alphabet = .PROTEIN
-      
+
       // Change the state in the main thread
       DispatchQueue.main.async {
         let newSequenceState = appState.addSequence(sequence)
         windowState.currentSequenceState = newSequenceState
       }
     }
-//    })
-//    .simultaneousGesture(TapGesture().onEnded {
     .onTapGesture {
-      DispatchQueue.main.async {
-        guard windowState.selectedAnalysis != .GIV else { return }
-        
-        if windowState.selectedAnalysis == .ORF {
-          sequenceState.selectedORFGlyph = glyph
-        } else if windowState.selectedAnalysis == .PATTERN {
-          sequenceState.selectedPatternGlyph = glyph
-        } else if windowState.selectedAnalysis == .FEATURES {
-          sequenceState.selectedFeatureGlyph = glyph
-        }
-        
-        sequenceState.selection = NSRange(location: glyph.element.start-1, length: glyph.element.stop - glyph.element.start + 1)
-      }
+      windowState.selectGlyph(glyph)
       
 //      print("")
 //      print("      Name: \(glyph.label?.string ?? "Untitled")")
@@ -155,7 +144,6 @@ struct GlyphView: View {
 //      print("   Element: \(glyph.element.start)-\(glyph.element.stop), length: \(glyph.element.stop - glyph.element.start + 1)")
 //      print("      Type: \(glyph.style.name)")
 //      print("     Label: \(glyph.label!.position.rawValue.capitalized)")
-//    })
     }
   }
 }

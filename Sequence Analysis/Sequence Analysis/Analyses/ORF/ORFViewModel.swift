@@ -56,7 +56,6 @@ class ORFViewModel: ObservableObject {
     case .JSON: jsonPanel()
     default: break
     }
-
   }
   
   // MARK: C R E A T E  X M L
