@@ -22,19 +22,21 @@ struct MapPanelView: View {
     let extent = mapPanel.extent
     let height = mapPanel.size.height
 
+    // NB: Subtract '1' from the x position becuase sequences
+    //     are one-based and Views are zero-based
+    
     return ZStack(alignment: .topLeading) {
       ForEach(mapPanel.tiles, id: \.self) { tile in
-          
-          if let glyph = tile as? Glyph {
-            GlyphView(glyph: glyph, scale: scale)
-              .offset(x: glyph.origin.x * scale, y: glyph.origin.y)
-          } else if let mosaic = tile as? Mosaic {
-            MosaicView(mosaic: mosaic, scale: scale)
-              .offset(x: mosaic.origin.x * scale, y: mosaic.origin.y)
-          }
-          
+        if let glyph = tile as? Glyph {
+          GlyphView(glyph: glyph, scale: scale)
+            .offset(x: (glyph.origin.x - 1) * scale, y: glyph.origin.y)
+        } else if let mosaic = tile as? Mosaic {
+          MosaicView(mosaic: mosaic, scale: scale)
+            .offset(x: (mosaic.origin.x - 1) * scale, y: mosaic.origin.y)
         }
+          
       }
+    }
     .frame(width: extent * scale, height: height, alignment: .topLeading)
     .background(mapPanel.color)
     }
