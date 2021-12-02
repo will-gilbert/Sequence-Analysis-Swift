@@ -31,7 +31,7 @@ import SwiftUI
 
     @State var entrezID: String = ""
     @State var sequenceType: SequenceType = SequenceType.DNA
-    @State var onlyFeatures:Bool = false
+    @State var onlyFeatures:Bool = true
 
     @State private var alertIsShowing = false
     @State var errorMsg: String = ""

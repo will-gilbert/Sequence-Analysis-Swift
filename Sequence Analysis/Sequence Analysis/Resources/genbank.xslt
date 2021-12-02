@@ -57,11 +57,23 @@
           <xsl:attribute name="v-gap">3</xsl:attribute>
  
  
-          <xsl:element name="style-for-type">
-            <xsl:attribute name="bar-color">Magenta</xsl:attribute>
-            <xsl:attribute name="bar-height">18</xsl:attribute>
-            <xsl:text>gene</xsl:text>
-          </xsl:element>
+ <xsl:element name="style-for-type">
+   <xsl:attribute name="bar-color">Yellow</xsl:attribute>
+   <xsl:attribute name="bar-height">18</xsl:attribute>
+   <xsl:text>5'UTR</xsl:text>
+ </xsl:element>
+
+ <xsl:element name="style-for-type">
+   <xsl:attribute name="bar-color">Yellow</xsl:attribute>
+   <xsl:attribute name="bar-height">18</xsl:attribute>
+   <xsl:text>stem_loop</xsl:text>
+ </xsl:element>
+ 
+         <xsl:element name="style-for-type">
+           <xsl:attribute name="bar-color">Magenta</xsl:attribute>
+           <xsl:attribute name="bar-height">18</xsl:attribute>
+           <xsl:text>gene</xsl:text>
+         </xsl:element>
 
           <xsl:element name="style-for-type">
             <xsl:attribute name="bar-color">Orange</xsl:attribute>
@@ -119,12 +131,14 @@
             <xsl:apply-templates select="./GBSeq/GBSeq_feature-table/GBFeature[./GBFeature_key/text()='exon']/GBFeature_intervals/GBInterval"/>
           </xsl:element>
 
-
+          
+          <xsl:apply-templates select="./GBSeq/GBSeq_feature-table/GBFeature[./GBFeature_key/text()='stem_loop']/GBFeature_intervals/GBInterval"/>
           <xsl:apply-templates select="./GBSeq/GBSeq_feature-table/GBFeature[./GBFeature_key/text()='gene']/GBFeature_intervals/GBInterval"/>
           <xsl:apply-templates select="./GBSeq/GBSeq_feature-table/GBFeature[./GBFeature_key/text()='CDS']/GBFeature_intervals/GBInterval"/>
           <xsl:apply-templates select="./GBSeq/GBSeq_feature-table/GBFeature[./GBFeature_key/text()='sig_peptide']/GBFeature_intervals/GBInterval"/>
           <xsl:apply-templates select="./GBSeq/GBSeq_feature-table/GBFeature[./GBFeature_key/text()='mat_peptide']/GBFeature_intervals/GBInterval"/>
 
+<!--          <xsl:apply-templates select="./GBSeq/GBSeq_feature-table/GBFeature/GBFeature_intervals/GBInterval"/>-->
 
           <xsl:element name="group">
             <xsl:attribute name="label">poly-A</xsl:attribute>
@@ -157,7 +171,7 @@
   <xsl:template match="GBInterval">
     <xsl:element name="element">
       <xsl:attribute name="label">
-        <xsl:value-of select="../../GBFeature_key"/>
+        <xsl:value-of select="../../GBFeature_quals/GBQualifier/GBQualifier_value"/>
       </xsl:attribute>
       <xsl:attribute name="type">
         <xsl:value-of select="../../GBFeature_key"/>
