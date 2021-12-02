@@ -25,9 +25,24 @@ struct AnalysisView: View {
     
     windowState.selectedAnalysis = selectedAnalysis
     
-    let disallowed: [Analyses] = (sequenceState.sequence.isNucleic) ?
-    [.STRUCTURE, .PI] :   // Nucleic
-    [.ORF, .STRUCTURE]    // Protein, Removed 'FEATURES' until we can handle very short <100 sequences
+    var disallowed = Array<Analyses>()
+    if sequenceState.featuresViewModel.xmlDocument != nil {
+      
+      // ORF is meaningless because we have the Genbank features
+      disallowed.append(.ORF)
+      
+      // Hide all the other analyses on "Only Features"
+      if sequenceState.sequence.length == 0 {
+        disallowed.append(contentsOf: [.STRUCTURE, .PATTERN, .FORMAT, .PUBLISH, .COMPOSITION, .PI])
+      }
+      
+    } else {
+      disallowed.append(.FEATURES)
+    }
+    disallowed.append( contentsOf: (sequenceState.sequence.isNucleic) ?
+      [.STRUCTURE, .PI] :   // Nucleic
+      [.ORF, .STRUCTURE]    // Protein
+   )
     
     // Remove any analyses not used by this sequence type
     var filteredData: [Analyses] {

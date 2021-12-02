@@ -27,13 +27,13 @@ class AppSequences {
     self.appState = AppState()
   }
   
-  func createSequence(_ string: String, uid: String? = nil, title : String = "Untitled", type: SequenceType = SequenceType.DNA) {
+  func createSequence(_ string: String, uid: String? = nil, title : String = "Untitled", type: SequenceType = SequenceType.DNA) -> SequenceState{
         
     let sequence = Sequence(string,
                             uid: uid ?? Sequence.nextUID(),
                             title: title,
                             type: type)
-    let _ = appState.addSequence(sequence)
+    return appState.addSequence(sequence)
   }
 
 }

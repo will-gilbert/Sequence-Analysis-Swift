@@ -164,7 +164,7 @@ struct ORFView: View {
 
   
   func updateViewModel() -> Void {
-    
+ 
     // Pass in the state variables, it will be displayed when 'ORF' is finished
     var options = ORFOptions()
     options.minORFsize = Int(minORFSize)

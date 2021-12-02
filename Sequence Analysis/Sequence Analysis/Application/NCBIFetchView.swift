@@ -31,6 +31,7 @@ import SwiftUI
 
     @State var entrezID: String = ""
     @State var sequenceType: SequenceType = SequenceType.DNA
+    @State var onlyFeatures:Bool = false
 
     @State private var alertIsShowing = false
     @State var errorMsg: String = ""
@@ -66,7 +67,14 @@ import SwiftUI
             }
             .pickerStyle(SegmentedPickerStyle())
         }
-        Divider()
+       Button(action: toggle) {
+           HStack{
+               Image(systemName: onlyFeatures ? "checkmark.square": "square")
+               Text("Only Features")
+           }
+       }
+       
+       Divider()
        
        TextView(text: errorMsg)
        
@@ -86,39 +94,46 @@ import SwiftUI
             // O K  =====================================
             Button(action: {
               
-              var urlString: String = "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch?"
-              urlString.append("db=")
-              urlString.append( sequenceType == .DNA ? "nucleotide" : "protein" )
-              urlString.append("&id=")
-              urlString.append(entrezID)
-              urlString.append("&retmode=xml")
-                            
-              if let url = URL(string: urlString) {
-                do {
-                  let contents = try String(contentsOf: url)
-                  let xmlDocument = try XMLDocument(xmlString: contents)
-                  let parser = NCBI_XMLParser()
-                  parser.parse(xmlDocument: xmlDocument)
-                  if let string = parser.sequenceString {
-                    let title = parser.sequenceTitle ?? "Untitled"
-                    let sequence = Sequence(string.uppercased(), uid: entrezID, title: title, type: sequenceType)
-                    let sequenceState = appState.addSequence(sequence)
-                    sequenceState.featuresViewModel.xmlDocument = xmlDocument
-                  } else if let error = parser.errorMsg {
-                    errorMsg = error
-                    errorMsg.append("\n\nTry the ")
-                    errorMsg.append( sequenceType == .DNA ? "Protein" : "Nucleic" )
-                    errorMsg.append(" database.")
+              DispatchQueue.main.async {
+              
+                var urlString: String = "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch?"
+                urlString.append("db=")
+                urlString.append( sequenceType == .DNA ? "nucleotide" : "protein" )
+                urlString.append("&id=")
+                urlString.append(entrezID)
+                urlString.append("&retmode=xml")
+                              
+                if let url = URL(string: urlString) {
+                  do {
+                    let contents = try String(contentsOf: url)
+                    let xmlDocument = try XMLDocument(xmlString: contents)
+                    let parser = NCBI_XMLParser()
+                    parser.parse(xmlDocument: xmlDocument)
+                    if var string = parser.sequenceString {
+                      let title = parser.sequenceTitle ?? "Untitled"
+                      if onlyFeatures {
+                        string = ""
+                      }
+                      let sequence = Sequence(string.uppercased(), uid: entrezID, title: title, type: sequenceType)
+                      let sequenceState = appState.addSequence(sequence)
+                      sequenceState.featuresViewModel.xmlDocument = xmlDocument
+                      sequenceState.defaultAnalysis = .FEATURES
+                    } else if let error = parser.errorMsg {
+                      errorMsg = error
+                      errorMsg.append("\n\nTry the ")
+                      errorMsg.append( sequenceType == .DNA ? "Protein" : "Nucleic" )
+                      errorMsg.append(" database.")
+                      return
+                    }
+                    
+                  } catch {
+                    errorMsg = "Contents could not be loaded"
                     return
                   }
-                  
-                } catch {
-                  errorMsg = "Contents could not be loaded"
+                } else {
+                  errorMsg = "Bad URL"
                   return
                 }
-              } else {
-                errorMsg = "Bad URL"
-                return
               }
               
               isSheetVisible = false
@@ -135,13 +150,14 @@ import SwiftUI
       .frame(width: 500, height: 275)
     }
 
+  func toggle(){onlyFeatures = !onlyFeatures}
+
   struct SectionHeader: View {
     var name: String
     var body: some View {
       Text(name)
         .font(.largeTitle)
     }
-    
     
   }
 }

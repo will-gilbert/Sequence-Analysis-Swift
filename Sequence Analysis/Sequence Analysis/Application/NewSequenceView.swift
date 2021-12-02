@@ -109,10 +109,7 @@ struct NewSequenceView: View {
             }
             
             uid = uid.isEmpty ? tempUID : uid
-            title = title.isEmpty ? "Untitled" : title
-//            let sequence = Sequence(string, uid: uid, title: title, type: sequenceType)
-//            let _ = appState.addSequence(sequence)
-            
+            title = title.isEmpty ? "Untitled" : title            
             AppSequences.shared().createSequence(string, uid: uid, title : title, type: sequenceType)
             
             isSheetVisible = false
