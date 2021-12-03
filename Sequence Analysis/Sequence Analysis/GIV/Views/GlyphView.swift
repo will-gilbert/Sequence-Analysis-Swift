@@ -17,10 +17,13 @@ struct GlyphView: View {
   let scale: CGFloat
   
   var body: some View {
+    
+    // Draw very small elements as 1 pixel wide
+    let glyphWidth = glyph.size.width * scale
         
     // Simplfy the variable notation for 'bar' and 'bar border'
     let bar = glyph.bar
-    let barWidth = bar.size.width * scale
+    let barWidth = glyphWidth < 1.0 ? 1.0 : bar.size.width * scale
     let barHeight = bar.size.height
     let y = bar.origin.y
 
@@ -101,7 +104,7 @@ struct GlyphView: View {
       // Tile hightlight -- TODO
 //      Path(CGRect(x: 0, y: 0, width: glyph.size.width, height: glyph.size.height)).stroke(Color.red)
     }
-    .frame(width: glyph.size.width * scale, height: glyph.size.height, alignment: .center)
+    .frame(width: barWidth, height: glyph.size.height, alignment: .center)
     .onTapGesture(count: 2) {
       windowState.activateGlyph(glyph)
     }
