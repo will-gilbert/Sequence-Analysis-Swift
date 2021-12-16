@@ -59,7 +59,7 @@ class WindowState: ObservableObject {
       let uid = Sequence.nextUID()
       let title = "Translate from '\(sequenceState.sequence.uid)', \(from + 1)-\(to)"
       
-      AppSequences.shared().createSequence(protein, uid: uid, title : title, type: .PROTEIN)
+      let _ = AppSequences.shared().createSequence(protein, uid: uid, title : title, type: .PROTEIN)
     }
   }
 
