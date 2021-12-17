@@ -110,7 +110,7 @@ struct NewSequenceView: View {
             
             uid = uid.isEmpty ? tempUID : uid
             title = title.isEmpty ? "Untitled" : title            
-            AppSequences.shared().createSequence(string, uid: uid, title : title, type: sequenceType)
+            let _ = AppSequences.shared().createSequence(string, uid: uid, title : title, type: sequenceType)
             
             isSheetVisible = false
             NSApp.mainWindow?.endSheet(NSApp.keyWindow!)

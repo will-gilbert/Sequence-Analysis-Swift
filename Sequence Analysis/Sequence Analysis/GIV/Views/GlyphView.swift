@@ -105,12 +105,12 @@ struct GlyphView: View {
 //      Path(CGRect(x: 0, y: 0, width: glyph.size.width, height: glyph.size.height)).stroke(Color.red)
     }
     .frame(width: barWidth, height: glyph.size.height, alignment: .center)
-    .onTapGesture(count: 2) {
-      windowState.activateGlyph(glyph)
-    }
-    .onTapGesture {
+//    .highPriorityGesture(TapGesture(count: 2).onEnded({
+//      windowState.activateGlyph(glyph)
+//    }))
+    .gesture(TapGesture().onEnded( {
       windowState.selectGlyph(glyph)
-    }
+    }))
   }
 }
 
