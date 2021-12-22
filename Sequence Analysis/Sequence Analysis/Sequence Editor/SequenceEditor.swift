@@ -18,8 +18,6 @@ struct SequenceEditor: View {
   @EnvironmentObject var appState: AppState
   @EnvironmentObject var windowState: WindowState
   @EnvironmentObject var sequenceState: SequenceState
-
-//  var sequence: Sequence
   
   @State var caseToggle: Bool = false
     
@@ -31,6 +29,7 @@ struct SequenceEditor: View {
   let symbolWeight = Font.Weight.medium
     
   var body: some View {
+        
     return VStack(alignment: .leading) {
       
       HStack {
@@ -55,21 +54,24 @@ struct SequenceEditor: View {
       SequenceEditorView(
         $sequenceState.sequence.string,
         alphabet: sequenceState.sequence.alphabet,
-        selection: $sequenceState.selection,
+        selection: $sequenceState.editorSelection,
         isEditable: true,
         fontSize: 14
       )
       .onCommit {}
       .onEditingChanged {}
       .onTextChange { text in
-        // Not sure why I need this. Bad things otherwise.
-        //sequenceState.selection = nil
+        // I need this in case a selection is deleted
+        sequenceState.editorSelection = nil
       }
       .onSelectionChange { (range: NSRange) in
                 
         // Update outside of the UI thread
         DispatchQueue.main.async {
+          
           editorHasSelection = range.length != 0
+          sequenceState.sequenceSelectionState.selection = NSRange(location: range.location + 1, length: range.length)
+
           if range.length == 0 {
             self.position = "Position: \(range.location + 1)"
           } else {
@@ -103,7 +105,7 @@ struct SequenceEditor: View {
   var translateSelectionBtn: some View {
     Button(action: {
           
-      guard let range = sequenceState.selection else { return }
+      guard let range = sequenceState.editorSelection else { return }
       
       let from = range.location
       let to  = range.location + range.length

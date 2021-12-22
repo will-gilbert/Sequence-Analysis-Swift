@@ -9,19 +9,40 @@ import SwiftUI
 
 struct CompositionView: View {
   
-  @ObservedObject var sequence: Sequence
+  var sequenceState: SequenceState
+  @ObservedObject var sequenceSelectionState: SequenceSelectionState
+
   @State var text: String = ""
+  
+  init(sequenceState: SequenceState) {
+    self.sequenceState = sequenceState
+    
+    // Observe any changes in the sequence selection; Recalculate
+    sequenceSelectionState = sequenceState.sequenceSelectionState
+  }
     
   var body: some View {
     
-    // Pass in a\ state variable, it will be displayed when 'Composition' is finished
+    // Pass in a state variable, it will be displayed when 'Composition' is finished
     DispatchQueue.main.async {
       text.removeAll()
+      
+      var sequence = sequenceState.sequence
+      
+      if let selection = sequenceSelectionState.selection, selection.length > 0 {
+          // Create a temporary sequence from the selection
+          let start = selection.location
+          let length = selection.length
+          let title = sequence.title + " (\(start)-\(start + length - 1))"
+          let strand = sequence.string.substring(from: start - 1 , length: length)
+          
+          sequence = Sequence(strand, uid: sequence.uid, title: title, type: sequence.type)
+      }
+      
       let _ = Composition(sequence, text: $text)
     }
     
     return TextView(text: $text, isEditable: false)
-
   }
   
 }
@@ -172,20 +193,25 @@ struct Composition {
         ] += 1
       }
     }
+    
+    func dinucleotide(_ dd: String, index: Int) -> Void {
+      
+      let di = dd.replacingOccurrences(of: "T", with: uT)
+      
+      buffer.append(F.f("\(di): ", width: (index % 6 == 0 ) ? 10 : di.count))
+      buffer.append((index % 6 != 0 ) ? " " : "")
+      buffer.append(F.f(d[index], width: 10, flags: F.flag.LJ))
+    }
 
     buffer.append("\n\n")
     buffer.append(F.f("*****", width: (hasN ? 82 : 62), flags: F.flag.CJ))
     buffer.append("\n\n");
 
     // *A --------
-    buffer.append(F.f("AA: ", width: 10))
-    buffer.append(F.f(d[0], width: 10, flags: F.flag.LJ))
-    buffer.append(" CA: ")
-    buffer.append(F.f(d[1], width: 10, flags: F.flag.LJ))
-    buffer.append(" GA: ")
-    buffer.append(F.f(d[2], width: 10, flags: F.flag.LJ))
-    buffer.append(" \(uT)A: ")
-    buffer.append(F.f(d[3], width: 10, flags: F.flag.LJ))
+    dinucleotide("AA", index: 0)
+    dinucleotide("CA", index: 1)
+    dinucleotide("GA", index: 2)
+    dinucleotide("TA", index: 3)
 
     if hasN {
       buffer.append(" NA: ")
@@ -194,70 +220,54 @@ struct Composition {
     buffer.append("\n");
 
     // *C --------
-
-    buffer.append(F.f("AC: ", width: 10))
-    buffer.append(F.f(d[6], width: 10, flags: F.flag.LJ));
-    buffer.append(" CC: ")
-    buffer.append(F.f(d[7], width: 10, flags: F.flag.LJ));
-    buffer.append(" GC: ")
-    buffer.append(F.f(d[8], width: 10, flags: F.flag.LJ));
-    buffer.append(" \(uT)C: ")
-    buffer.append(F.f(d[9],  width: 10, flags: F.flag.LJ));
+    dinucleotide("AC", index: 6)
+    dinucleotide("CC", index: 7)
+    dinucleotide("GC", index: 8)
+    dinucleotide("TC", index: 9)
 
     if hasN {
-        buffer.append(" NC: ")
-    buffer.append(F.f(d[10], width: 10, flags: F.flag.LJ));
+      buffer.append(" NC: ")
+      buffer.append(F.f(d[10], width: 10, flags: F.flag.LJ));
     }
 
     buffer.append("\n");
 
     // *G --------
+    
+    dinucleotide("AG", index: 12)
+    dinucleotide("CG", index: 13)
+    dinucleotide("GG", index: 14)
+    dinucleotide("TG", index: 15)
 
-    buffer.append(F.f("AG: ", width: 10))
-    buffer.append(F.f(d[12], width: 10, flags: F.flag.LJ));
-    buffer.append(" CG: ")
-    buffer.append(F.f(d[13], width: 10, flags: F.flag.LJ));
-    buffer.append(" GG: ")
-    buffer.append(F.f(d[14], width: 10, flags: F.flag.LJ));
-    buffer.append(" \(uT)G: ")
-    buffer.append(F.f(d[15], width: 10, flags: F.flag.LJ));
 
     if hasN {
-       buffer.append(" NG: ")
+      buffer.append(" NG: ")
       buffer.append(F.f(d[16], width: 10, flags: F.flag.LJ))
     }
 
     buffer.append("\n")
 
     // *T/U --------
-
-    buffer.append(F.f("A\(uT): ", width: 10))
-    buffer.append(F.f(d[18], width: 10, flags: F.flag.LJ));
-    buffer.append(" C\(uT): ")
-    buffer.append(F.f(d[19], width: 10, flags: F.flag.LJ));
-    buffer.append(" G\(uT): ")
-    buffer.append(F.f(d[20], width: 10, flags: F.flag.LJ));
-    buffer.append(" \(uT)\(uT): ")
-    buffer.append(F.f(d[21], width: 10, flags: F.flag.LJ));
+    dinucleotide("AT", index: 18)
+    dinucleotide("CT", index: 19)
+    dinucleotide("GT", index: 20)
+    dinucleotide("TT", index: 21)
 
     if (hasN) {
-        buffer.append(" NT: ")
-    buffer.append(F.f(d[22], width: 10, flags: F.flag.LJ));
+      buffer.append(" N\(uT): ")
+      buffer.append(F.f(d[22], width: 10, flags: F.flag.LJ));
     }
     buffer.append("\n");
 
     // *N -------
     if hasN {
-      buffer.append(F.f("AN: ", width: 10))
-      buffer.append(F.f(d[24], width: 10, flags: F.flag.LJ));
-      buffer.append(" CN: ")
-      buffer.append(F.f(d[25], width: 10, flags: F.flag.LJ));
-      buffer.append(" GN: ")
-      buffer.append(F.f(d[26], width: 10, flags: F.flag.LJ));
-      buffer.append(" \(uT)N: ")
-      buffer.append(F.f(d[27], width: 10, flags: F.flag.LJ));
+      
+      dinucleotide("AN", index: 24)
+      dinucleotide("CN", index: 25)
+      dinucleotide("GN", index: 26)
+      dinucleotide("TN", index: 27)
       buffer.append(" NN: ")
-      buffer.append(F.f(d[28], width: 10, flags: F.flag.LJ));
+      buffer.append(F.f(d[28], width: 10, flags: F.flag.LJ))
       buffer.append("\n");
     }
     buffer.append("\n");

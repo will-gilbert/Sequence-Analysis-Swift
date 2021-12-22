@@ -171,7 +171,7 @@ struct SequenceEditorView: NSViewRepresentable {
         }
       }
       
-      parent.onSelectionChange?(textView.selectedRange)
+       parent.onSelectionChange?(textView.selectedRange)
     }
   }
 }

@@ -36,7 +36,12 @@ class WindowState: ObservableObject {
     // Update the sequence editor selection
     DispatchQueue.main.async {
       guard let sequenceState = self.currentSequenceState else { return }
-      sequenceState.selection = NSRange(location: glyph.element.start-1, length: glyph.element.stop - glyph.element.start + 1)
+      let location = glyph.element.start - 1
+      let length = glyph.element.stop - glyph.element.start + 1
+      
+      // Update the sequence editor and sequence selection state
+      sequenceState.editorSelection = NSRange(location: location, length: length)
+      sequenceState.sequenceSelectionState.selection = NSRange(location: location + 1, length: length)
     }
   }
   

@@ -17,6 +17,8 @@ class SequenceState: ObservableObject {
   @Published var selectedORFGlyph: Glyph?
   @Published var selectedPatternGlyph: Glyph?
   @Published var selectedFeatureGlyph: Glyph?
+  
+  var sequenceSelectionState = SequenceSelectionState()
 
   var orfViewModel = ORFViewModel()
   var featuresViewModel = FeaturesViewModel()
@@ -25,8 +27,14 @@ class SequenceState: ObservableObject {
 
   var defaultAnalysis: AnalysisView.Analyses
 
-  var selection: NSRange? = NSRange(location:0, length:0)
-
+  // This needs to be here instead of within the sequence editor so that selections
+  //   are changed in all windows for this sequence
+  //
+  // Could not 'Publish" this selection as it created an infinite
+  //   loop with the 'SequenceEditorView'. Used 'sequenceSelectionState'
+  //   instead as an 'ObservableObject' for the analyses
+  var editorSelection: NSRange? = NSRange(location:0, length:0)
+  
   init(_ sequence: Sequence) {
     self.sequence = sequence
     defaultAnalysis = sequence.isNucleic ? .ORF : .COMPOSITION
@@ -48,3 +56,6 @@ extension SequenceState: Equatable, Hashable {
 
 }
 
+class SequenceSelectionState: ObservableObject {
+  @Published var selection: NSRange? = nil
+}

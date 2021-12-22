@@ -9,23 +9,31 @@ import SwiftUI
 
 struct PublishView: View {
   
-  @ObservedObject var sequence: Sequence
+  var sequenceState: SequenceState
+  @ObservedObject var sequenceSelectionState: SequenceSelectionState
+
   @State var text: String = ""
   @State var blockSize: Double = 3
   @State var lineSize: Double = 60
-//  @State var useStart: Bool = false
   @State var obeyStopCodons: Bool = false
   @State var format: String = "#-Sr_"
   
   @State var typing: Bool = false
-  
+    
   let viewModel: PublishViewModel = PublishViewModel()
 
   let maxBlockSize = 20
 
+  init(sequenceState: SequenceState) {
+    self.sequenceState = sequenceState
+    
+    // Observe any changes in the sequence selection; Recalculate
+    sequenceSelectionState = sequenceState.sequenceSelectionState
+  }
+
   var body: some View {
     
-    guard sequence.length > 0 else {  return AnyView(TextView(text: "This sequence has no content"))}
+    guard sequenceState.sequence.length > 0 else {  return AnyView(TextView(text: "This sequence has no content"))}
     
     // Pass in the state variables, it will be displayed when 'Publish' is finished
     DispatchQueue.main.async {
@@ -40,6 +48,19 @@ struct PublishView: View {
       options.obeyStopCodons = obeyStopCodons
       
       text.removeAll()
+      
+      var sequence = sequenceState.sequence
+      
+      if let selection = sequenceSelectionState.selection, selection.length > 0 {
+          // Create a temporary sequence from the selection
+          let start = selection.location
+          let length = selection.length
+          let title = sequence.title + " (\(start)-\(start + length - 1))"
+          let strand = sequence.string.substring(from: start - 1 , length: length)
+          
+          sequence = Sequence(strand, uid: sequence.uid, title: title, type: sequence.type)
+      }
+            
       let _ = Publish(sequence, text: $text, options: options)
     }
 
@@ -49,7 +70,7 @@ struct PublishView: View {
         
         // Block and Line size sliders with labels -------------------
         VStack(alignment: .leading, spacing: 5.0) {
-                    blockSizeSlider
+          blockSizeSlider
           lineSizeSlider
         }
         .frame(width:240)
@@ -95,7 +116,7 @@ struct PublishView: View {
 
       Slider(
         value: $lineSize,
-        in: 1...Double(min(sequence.length, 132))
+        in: 1...Double(min(sequenceState.sequence.length, 132))
       )
     }.frame(width:220)
   }
@@ -105,7 +126,7 @@ struct PublishView: View {
       let canTranslate: Bool = "ABCDEFabcdef123456".filter { format.contains($0) }.count != 0
 
       Toggle("Obey stop codons", isOn: $obeyStopCodons)
-        .disabled(!(canTranslate && sequence.isNucleic))
+        .disabled(!(canTranslate && sequenceState.sequence.isNucleic))
       Text(obeyStopCodons ? "true" : "false" ).hidden() // Swift 5.5  on macOS hack to refresh on toggle
     }
   }

@@ -10,19 +10,40 @@ import SwiftUI
 
 struct FormatView: View {
   
-  @EnvironmentObject var sequenceState: SequenceState
-  
+  var sequenceState: SequenceState
+  @ObservedObject var sequenceSelectionState: SequenceSelectionState
+
   @State var text: String = ""
 
-  var body: some View {
+  init(sequenceState: SequenceState) {
+    self.sequenceState = sequenceState
     
-    // Pass in the state variables, it will be displayed when 'Format' is finished
+    // Observe any changes in the sequence selection; Recalculate
+    sequenceSelectionState = sequenceState.sequenceSelectionState
+  }
+
+
+  var body: some View {
+  
     DispatchQueue.main.async {
       text.removeAll()
-      var formatFile = FormatFile(sequence: sequenceState.sequence)
+      
+      var sequence = sequenceState.sequence
+      
+      if let selection = sequenceSelectionState.selection, selection.length > 0 {
+        // Create a temporary sequence from the selection
+        let start = selection.location
+        let length = selection.length
+        let title = sequence.title + " (\(start)-\(start + length - 1))"
+        let strand = sequence.string.substring(from: start - 1 , length: length)
+        
+        sequence = Sequence(strand, uid: sequence.uid, title: title, type: sequence.type)
+      }
+      
+      var formatFile = FormatFile(sequence: sequence)
       text = formatFile.doFileFormat(sequenceState.fileFormat)
     }
-    
+        
     return VStack {
       HStack(alignment: .center) {
         Menu("File Format:") {

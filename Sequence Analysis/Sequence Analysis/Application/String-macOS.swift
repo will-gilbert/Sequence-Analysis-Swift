@@ -41,6 +41,13 @@ extension String {
       }
   }
 
+  // Borrowed from:
+  //   https://github.com/amayne/SwiftString/blob/master/Pod/Classes/StringExtensions.swift
   
+  func substring(from: Int, length: Int) -> String {
+    let start = self.index(self.startIndex, offsetBy: from)
+    let end = self.index(start, offsetBy: length)
+    return String(self[start..<end])
+  }
   
 }

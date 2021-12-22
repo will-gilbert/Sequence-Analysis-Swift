@@ -17,14 +17,34 @@ import SwiftUI
 
 struct IsoElectricView: View {
   
-  @ObservedObject var sequence: Sequence
+  var sequenceState: SequenceState
+  @ObservedObject var sequenceSelectionState: SequenceSelectionState
   @State var text: String = ""
+  
+  init(sequenceState: SequenceState) {
+    self.sequenceState = sequenceState
     
+    // Observe any changes in the sequence selection; Recalculate
+    sequenceSelectionState = sequenceState.sequenceSelectionState
+  }
+
   var body: some View {
-    
-    // Pass in sequence and bind a text string for the results
+  
     DispatchQueue.main.async {
       text.removeAll()
+      
+      var sequence = sequenceState.sequence
+      
+      if let selection = sequenceSelectionState.selection, selection.length > 0 {
+        // Create a temporary sequence from the selection
+        let start = selection.location
+        let length = selection.length
+        let title = sequence.title + " (\(start)-\(start + length - 1))"
+        let strand = sequence.string.substring(from: start - 1 , length: length)
+        
+        sequence = Sequence(strand, uid: sequence.uid, title: title, type: sequence.type)
+      }
+      
       let _ = IsoElectricReport(sequence, text: $text)
     }
     

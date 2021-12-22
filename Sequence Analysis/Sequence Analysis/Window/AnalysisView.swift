@@ -22,7 +22,7 @@ struct AnalysisView: View {
   }
     
   var body: some View {
-    
+        
     windowState.selectedAnalysis = selectedAnalysis
     
     var disallowed = Array<Analyses>()
@@ -70,13 +70,13 @@ struct AnalysisView: View {
       case .PATTERN:
         PatternView(sequenceState: sequenceState)
       case .FORMAT:
-        FormatView()
+        FormatView(sequenceState: sequenceState)
       case .PUBLISH:
-        PublishView(sequence: sequenceState.sequence)
+        PublishView(sequenceState: sequenceState)
       case .COMPOSITION:
-        CompositionView(sequence: sequenceState.sequence)
+        CompositionView(sequenceState: sequenceState)
       case .PI:
-        IsoElectricView(sequence: sequenceState.sequence)
+        IsoElectricView(sequenceState: sequenceState)
       case .GIV:
         GIVView(viewModel: sequenceState.givViewModel)
       }
