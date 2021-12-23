@@ -15,8 +15,8 @@
 import Foundation
 
 enum Alphabet: String, CaseIterable, Identifiable {
-  case DNA = "ATCG"
-  case RNA = "AUCG"
+  case DNA = "ATCGN"
+  case RNA = "AUCGN"
   case PROTEIN = "ACDEFGHIKLMNPQRSTVWY"
   
   var id: Alphabet { self }
