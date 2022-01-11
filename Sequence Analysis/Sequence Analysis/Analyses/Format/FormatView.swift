@@ -10,7 +10,7 @@ import SwiftUI
 
 struct FormatView: View {
   
-  var sequenceState: SequenceState
+  @ObservedObject var sequenceState: SequenceState
   @ObservedObject var sequenceSelectionState: SequenceSelectionState
 
   @State var text: String = ""

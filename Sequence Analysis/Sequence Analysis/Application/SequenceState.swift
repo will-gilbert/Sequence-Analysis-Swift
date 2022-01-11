@@ -13,7 +13,9 @@ class SequenceState: ObservableObject {
   @Published var sequence: Sequence
   @Published var changed: Bool = false // TODO: This hack is used to force a refresh of the sequence editor, hmmmmm
   @Published var fileFormat: FileFormat = FileFormat.FASTA
-  
+  @Published var prediction: Prediction = Prediction.ALPHA_HELIX
+  @Published var filterSelection = Filter.RUNNING_AVERAGE
+
   @Published var selectedORFGlyph: Glyph?
   @Published var selectedPatternGlyph: Glyph?
   @Published var selectedFeatureGlyph: Glyph?
@@ -22,6 +24,7 @@ class SequenceState: ObservableObject {
 
   var orfViewModel = ORFViewModel()
   var featuresViewModel = FeaturesViewModel()
+  var structureViewModel = StructureViewModel()
   var patternViewModel: PatternViewModel
   var givViewModel = GIVViewModel()
 

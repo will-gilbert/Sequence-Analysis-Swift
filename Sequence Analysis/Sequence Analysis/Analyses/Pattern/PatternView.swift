@@ -35,7 +35,6 @@ struct PatternView: View {
   var body: some View {
     
     guard sequence.length > 0 else {  return AnyView(TextView(text: "This sequence has no content"))}
-
      
     // Hopely I will learn a better way to update the View Model in the future
     if(length != sequence.length) { // Fast check on sequence change; Generaly used

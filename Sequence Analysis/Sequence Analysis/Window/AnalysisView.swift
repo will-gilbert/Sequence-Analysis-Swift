@@ -41,7 +41,7 @@ struct AnalysisView: View {
     }
     disallowed.append( contentsOf: (sequenceState.sequence.isNucleic) ?
       [.STRUCTURE, .PI] :   // Nucleic
-      [.ORF, .STRUCTURE]    // Protein
+      [.ORF]    // Protein
    )
     
     // Remove any analyses not used by this sequence type
@@ -66,7 +66,7 @@ struct AnalysisView: View {
       case .FEATURES:
         FeaturesView(sequenceState: sequenceState)
       case .STRUCTURE:
-        StructureView(sequenceState.sequence)
+        StructureView(sequenceState: sequenceState)
       case .PATTERN:
         PatternView(sequenceState: sequenceState)
       case .FORMAT:

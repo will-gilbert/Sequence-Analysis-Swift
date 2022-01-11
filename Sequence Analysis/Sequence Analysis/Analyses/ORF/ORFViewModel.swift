@@ -1,5 +1,5 @@
 //
-//  ORF+MVM.swift
+//  ORFViewModel.swift
 //  Sequence Analysis
 //
 //  Created by Will Gilbert on 10/26/21.
@@ -23,7 +23,6 @@ class ORFViewModel: ObservableObject {
   
   var sequence: Sequence?
   var options: ORFOptions?
-
   
   var xmlDocument: XMLDocument? = nil   // Start, stop and ORF as XML
   var errorMsg: String? = nil           // When things go wrong
