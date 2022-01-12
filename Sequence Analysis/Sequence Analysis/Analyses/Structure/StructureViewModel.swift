@@ -365,7 +365,8 @@ class StructureViewModel: ObservableObject {
     
     // Unwrap the optional class members
     guard let sequence = self.sequence else { return nil }
-    
+    guard let data = data else { return nil }
+
     let root = XMLElement(name: "STRUCTURE")
     root.addAttribute(XMLNode.attribute(withName: "sequence", stringValue: sequence.shortDescription) as! XMLNode)
     root.addAttribute(XMLNode.attribute(withName: "length", stringValue: String(sequence.length)) as! XMLNode)
@@ -373,24 +374,46 @@ class StructureViewModel: ObservableObject {
     let xml = XMLDocument(rootElement: root)
     
     let algorithmNode = XMLElement(name: "algorithm")
-    algorithmNode.addChild(XMLElement(name: "description", stringValue: prediction.description) as XMLNode)
-    algorithmNode.addChild(XMLElement(name: "reference", stringValue: prediction.reference) as XMLNode)
+    
+    // 'description' is a CDATA node
+    let descriptionNode = XMLNode(kind: .element, options: .nodeIsCDATA)
+    descriptionNode.name = "description"
+    descriptionNode.objectValue = prediction.description
+    algorithmNode.addChild(descriptionNode)
+    
+    // 'reference' is a CDATA node
+    let referenceNode = XMLNode(kind: .element, options: .nodeIsCDATA)
+    referenceNode.name = "reference"
+    referenceNode.objectValue = prediction.reference
+    algorithmNode.addChild(referenceNode)
+
+    // Algorithm parameters
     algorithmNode.addChild(XMLElement(name: "window", stringValue: String(prediction.window)) as XMLNode)
     algorithmNode.addChild(XMLElement(name: "filter", stringValue: filter.rawValue) as XMLNode)
-    root.addChild(algorithmNode)
+    
+    // Plot option, upper and lower; Significance cutoff level
+    let plotNode = XMLElement(name: "plot")
+    let (upper, lower, cutoff) = prediction.limits
+    plotNode.addAttribute(XMLNode.attribute(withName: "lower", stringValue: String(lower)) as! XMLNode)
+    plotNode.addAttribute(XMLNode.attribute(withName: "upper", stringValue: String(upper)) as! XMLNode)
+    plotNode.addAttribute(XMLNode.attribute(withName: "cutoff", stringValue: String(cutoff)) as! XMLNode)
 
+    // Plot data points
     let dataNode = XMLElement(name: "data")
 
-    for i in 0..<data!.count {
+    for i in 0..<min(data.count, sequence.string.count) {
       
-      if let x = data![i] {
+      if let datum:Double = data[i] {
         let valueNode = XMLElement(name: "datum")
-        valueNode.addAttribute(XMLNode.attribute(withName: "index", stringValue: String(i+1)) as! XMLNode)
-        valueNode.addAttribute(XMLNode.attribute(withName: "value", stringValue: String(x)) as! XMLNode)
+        valueNode.addAttribute(XMLNode.attribute(withName: "position", stringValue: String(i+1)) as! XMLNode)
+        valueNode.addAttribute(XMLNode.attribute(withName: "value", stringValue: F.f(datum, decimal: 2) ) as! XMLNode)
         dataNode.addChild(valueNode)
       }
     }
     
+    // Assemble the XML Doument
+    root.addChild(algorithmNode)
+    root.addChild(plotNode)
     root.addChild(dataNode)
     
     return xml
