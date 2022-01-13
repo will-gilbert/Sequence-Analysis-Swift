@@ -22,12 +22,11 @@ struct PlotData {
   let upper: Double
   let cutoff: Double
   let length: Int
-  let gradient: Gradient
+  let gradient: LinearGradient
 
   let data: [Datum]
 
 }
-
 
 struct PlotView: View {
   
@@ -68,20 +67,16 @@ struct PlotView: View {
             p.addLine(to: .init(x: positionPx + positionWidth - 1, y: reader.size.height - cutoffPx))
             p.addLine(to: .init(x: positionPx, y: reader.size.height - cutoffPx))
             
-            // p.addRect()
+            // p.addRect() // Use this instead...
             
             // Visualize the drawn lines overlay a color gradient
-          }.fill(LinearGradient(
-            gradient: plotData.gradient,
-            startPoint: .init(x: 0.0, y: 1.0),
-            endPoint: .init(x: 0.0, y: 0.0)))
+          }.fill(plotData.gradient)
         }
         
-//        Path { p in
-//          p.move(to: .init(x: 0, y: reader.size.height - cutoffPx))
-//          p.addLine(to: .init(x: length * positionWidth, y: reader.size.height - lowOffset))
-//        }.stroke()
-        
+        Path { p in
+          p.move(to: .init(x: 0, y: reader.size.height - cutoffPx))
+          p.addLine(to: .init(x: length * positionWidth, y: reader.size.height - cutoffPx))
+        }.stroke(.gray, lineWidth: 1.0)
               
       }
     }.padding()

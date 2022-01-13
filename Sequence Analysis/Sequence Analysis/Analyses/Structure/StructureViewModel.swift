@@ -89,7 +89,7 @@ enum Prediction: String, CaseIterable, Identifiable {
               "T": -0.4, "W": -3.4, "Y": -2.3, "V": -1.5, "B":  1.4, "Z":  1.4, "X": -0.4]
 
     case .HYPROPATHY:
-      return ["A":  1.8, "R": -4.5, "N":  3.5, "D": -3.5, "C":  2.5, "Q": -3.6, "E": -3.5, "G": -0.4,
+      return ["A":  1.8, "R": -4.5, "N": -3.5, "D": -3.5, "C":  2.5, "Q": -3.6, "E": -3.5, "G": -0.4,
               "H": -3.2, "I":  4.5, "L":  3.8, "K": -3.9, "M":  1.9, "F":  2.8, "P": -1.6, "S": -0.8,
               "T": -0.7, "W": -0.9, "Y": -1.3, "V":  4.2, "B": -3.5, "Z": -3.5, "X": -0.049]
 
@@ -152,6 +152,7 @@ class StructureViewModel: ObservableObject {
   var filter: Filter = Filter.RUNNING_AVERAGE
 
   var xmlDocument: XMLDocument?          // Structre Prediction data
+  var plotData: PlotData?                // Data structure for secondary structure plot
   var errorMsg: String?
   var text: String?                     // Text contents for XML & JSON panels
   
@@ -161,6 +162,7 @@ class StructureViewModel: ObservableObject {
     self.filter = filter
     
     self.xmlDocument = nil
+    self.plotData = nil
     self.errorMsg = nil
       
     guard sequence.string.count > 0 else {
@@ -200,6 +202,7 @@ class StructureViewModel: ObservableObject {
     }
     
     xmlDocument = createXML(data)
+    plotData = createPlotData(data, prediction: prediction)
   }
   
   func rawData(prediction: Prediction) -> [Double?] {
@@ -260,38 +263,49 @@ class StructureViewModel: ObservableObject {
     return data
   }
   
-  // The "Median Sieve Algorithm" is based on a paper by J. Andrew Bangham, Analytical
-  // Biochemistry, 174, 142-145 (1988)
+  // MARK: M E D I A N   S I E V E
+
+  // The "Median Sieve Algorithm" is based on a paper by
+  // J. Andrew Bangham, Analytical Biochemistry, 174, 142-145 (1988)
 
   func medianSieve(prediction: Prediction) -> [Double?]? {
 
-    // Create a working array based on the raw values; Return 'nil'
-    //  if insufficient sequence
+    // Create an array of the raw values
     var data: [Double?] = rawData(prediction: prediction)
 
     let window: Int = prediction.window
 
     // Do successive mesh sizes
-    for mesh in 2..<window {
-      data = sieve(data, mesh: mesh);
+    for mesh: Int in 2..<window {
+      sieve(&data, mesh: mesh)
     }
+    
+    let halfWindow = ((window / 2) + 1)
+    for i in 0...halfWindow {
+      data[i] = nil
+    }
+        
+    for i in (data.count - halfWindow )..<data.count {
+      data[i] = nil
+    }
+        
     return data
   }
   
-  func sieve(_ data: [Double?], mesh: Int) -> [Double?] {
+  func sieve(_  data: inout [Double?], mesh: Int) -> Void {
     
     let n: Int = data.count
     let pad: Int = mesh - 1
     let size: Int = n + (2 * pad)
     
+    // Accomodate zero padding on both ends of the sequence data
     var array = [Double](repeating: 0.00, count: size)
     
-    // Shift the data beyond pad
-    for i in (1...(n - 1)).reversed() {
-      array[pad + i] = data[i] ?? 0.00
+    // Add the sequence data beyond the left pad
+    for i in 0..<n {
+      array[pad + i + 1] = data[i] ?? 0.00
     }
-    
-
+ 
     // Sample size for the sieve
     let s = (2 * mesh) - 1
     
@@ -300,65 +314,24 @@ class StructureViewModel: ObservableObject {
 
     for i in 0..<n {
       
+      // Get a sample size copy of sequence data
       var temp: [Double] = [Double](repeating: 0.00, count: s)
-
       for j in 0..<s {
         temp[j] = array[i + j]
       }
+      
+      temp.sort(by: {$0 > $1} )
 
-      sort(&temp);
-
-      // Take the median
-      array[i] = temp[mesh - 1];
+      // Copy the median value into the current
+      //   position in the sequence data
+      data[i] = temp[mesh - 1];
     }
+    
+    
 
-    return array
+//    return array
   }
-  
-  // HeapSort algorithm by Jason Harrison
-  // v1.0 95/06/23
-
-  private func sort(_ a: inout [Double]) {
-
-    var N: Int = a.count
-
-    for k:Int in (1...(N / 2)).reversed() {
-      downheap(&a, k, N);
-    }
-
-    repeat {
-        let T: Double = a[0]
-        a[0] = a[N - 1]
-        a[N - 1] = T
-        N = N - 1
-        downheap(&a, 1, N);
-      } while (N > 1);
-  }
-  
-  private func downheap(_ a: inout [Double], _ k: Int, _ N: Int) {
-
-    let T: Double = a[k - 1]
-    var kk: Int = k
-
-      while (kk <= (N / 2)) {
-
-        var j: Int = kk + kk
-
-          if ((j < N) && (a[j - 1] < a[j])) {
-              j += 1
-          }
-
-          if (T >= a[j - 1]) {
-              break;
-          } else {
-              a[kk - 1] = a[j - 1];
-              kk = j;
-          }
-      }
-
-      a[kk - 1] = T;
-  }
-  
+    
   
   // MARK: C R E A T E  X M L
   func createXML(_ data: [Double?]?) -> XMLDocument?  {
@@ -401,7 +374,7 @@ class StructureViewModel: ObservableObject {
     // Plot data points
     let dataNode = XMLElement(name: "data")
 
-    for i in 0..<min(data.count, sequence.string.count) {
+    for i in 0..<data.count {
       
       if let datum:Double = data[i] {
         let valueNode = XMLElement(name: "datum")
@@ -419,7 +392,7 @@ class StructureViewModel: ObservableObject {
     return xml
   }
   
-  // MARK: X M L  P A N E L
+  // MARK: X M L P A N E L
   func xmlPanel() {
     
     guard self.errorMsg == nil else {
@@ -437,7 +410,7 @@ class StructureViewModel: ObservableObject {
     }
   }
 
-  // MARK: J S O N  P A N E L
+  // MARK: J S O N P A N E L
   func jsonPanel() {
     
     guard self.errorMsg == nil else {
@@ -484,5 +457,45 @@ class StructureViewModel: ObservableObject {
       }
   }
 
+  // MARK: P L O T   D A T A
+  
+  func createPlotData(_ data: [Double?]? ,prediction: Prediction) -> PlotData? {
+    
+    guard let sequence = sequence else { return nil }
+    guard let data = data else { return nil }
+
+    var values = [Datum]()
+    for i in 0..<min(data.count, sequence.string.count) {
+      if let value:Double = data[i] {
+        values.append(Datum(i, value))
+      }
+    }
+    
+    let (upper, lower, cutoff) = prediction.limits
+    let cutoffStop = (cutoff - lower) / (upper - lower)
+    var stops: [Gradient.Stop]
+    
+    switch prediction {
+    case .ALOM, .ALPHA_HELIX, .BETA_SHEET, .BETA_TURN,
+         .ANTIGENIC_SITES, .HYPROPHILIC, .HYPROPATHY:
+      stops = [Gradient.Stop(color: .red, location: 0.0),
+               Gradient.Stop(color: .gray, location: cutoffStop),
+               Gradient.Stop(color: .green, location: 1.0)]
+
+    case .FRACTION_BURIED, .FREE_ENERGY:
+      stops = [Gradient.Stop(color: .blue, location: 0.0),
+               Gradient.Stop(color: .blue, location: 1.0)]
+    }
+  
+    let gradient = LinearGradient(stops: stops,
+                                  startPoint: UnitPoint(x: 0.50, y: 1.00),
+                                  endPoint: UnitPoint(x: 0.50, y: 0.0))
+
+    let plotData = PlotData(
+      lower: lower,upper: upper,cutoff: cutoff, length: data.count, gradient: gradient, data: values)
+
+    return plotData
+  }
+  
 
 }

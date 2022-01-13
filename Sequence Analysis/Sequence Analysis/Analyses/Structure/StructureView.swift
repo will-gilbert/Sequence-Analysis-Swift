@@ -66,27 +66,8 @@ struct StructureView: View {
       
       switch viewModel.panel {
       case .GRAPH:
-        if let xmlDocument = viewModel.xmlDocument { // Next step: Get PlotData from ViewModel, parse XMLDocument
-          
-          let data = [
-            Datum(1, 1.0),
-            Datum(20, 1.1),
-            Datum(30, 0.9),
-            Datum(31, 0.9),
-            Datum(32, 0.9),
-            Datum(33, 0.9),
-            Datum(40, 0.70),
-            Datum(50, 1.45),
-            Datum(120, 0.9)
-          ]
-          
-          let gradient = Gradient(colors: [
-            .red, .gray, .green
-          ])
-
-          let plotData = PlotData(lower: 0.70, upper: 1.45, cutoff: 1.07, length: 120, gradient: gradient, data: data)
+        if let plotData = viewModel.plotData {
           PlotView(plotData: plotData)
-          
         } else {
           TextView(text: "ALOM - No plot yet")
         }
