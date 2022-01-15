@@ -110,7 +110,7 @@ enum Prediction: String, CaseIterable, Identifiable {
     case .ALPHA_HELIX: return 6
     case .BETA_SHEET: return 6
     case .BETA_TURN: return 7
-    case .ALOM: return 0
+    case .ALOM: return 17
     case .ANTIGENIC_SITES: return 6
     case .HYPROPHILIC: return 6
     case .HYPROPATHY: return 9
@@ -124,7 +124,7 @@ enum Prediction: String, CaseIterable, Identifiable {
     case .ALPHA_HELIX: return (upper: 1.45, lower: 0.70, cutoff: 1.07)
     case .BETA_SHEET: return (upper: 1.50, lower: 0.50, cutoff: 1.00)
     case .BETA_TURN: return (upper: 1.50, lower: 0.50, cutoff: 1.00)
-    case .ALOM: return (upper: 1.45, lower: 0.70, cutoff: 1.07)
+    case .ALOM: return (upper: 4.20, lower: 0.00, cutoff: 0.00)
     case .ANTIGENIC_SITES: return (upper: 3.00, lower: -3.50, cutoff: 0.00)
     case .HYPROPHILIC: return (upper: 3.00, lower: -3.50, cutoff: 0.00)
     case .HYPROPATHY: return (upper: 4.50, lower: -4.50, cutoff: 0.00)
@@ -170,12 +170,7 @@ class StructureViewModel: ObservableObject {
       return
     }
     
-    switch prediction {
-    case .ALOM:
-      self.text = "ALOM, Transmembrane Prediction, has not been implemented"
-    case .ALPHA_HELIX, .BETA_SHEET, .BETA_TURN, .ANTIGENIC_SITES,
-         .HYPROPHILIC, .HYPROPATHY, .FRACTION_BURIED, .FREE_ENERGY: doPrediction()
-    }
+    doPrediction()
     
     // Create the text for XML, JSON and GIV panels from the XML
     switch panel {
@@ -188,12 +183,25 @@ class StructureViewModel: ObservableObject {
   }
 
   func doPrediction() -> Void {
-
+    
     var data: [Double?]?
-    switch filter {
-    case .RAW_DATA: data = rawData(prediction: prediction)
-    case .RUNNING_AVERAGE: data = runningAverage(prediction: prediction)
-    case .MEDIAN_SIEVE: data = medianSieve(prediction: prediction)
+
+    switch prediction {
+    case .ALOM:
+      if let sequence = sequence {
+        data = ALOM(sequence: sequence).analyze()
+      } else {
+        data = nil
+      }
+
+    case .ALPHA_HELIX, .BETA_SHEET, .BETA_TURN, .ANTIGENIC_SITES,
+         .HYPROPHILIC, .HYPROPATHY, .FRACTION_BURIED, .FREE_ENERGY:
+      switch filter {
+      case .RAW_DATA: data = rawData(prediction: prediction)
+      case .RUNNING_AVERAGE: data = runningAverage(prediction: prediction)
+      case .MEDIAN_SIEVE: data = medianSieve(prediction: prediction)
+      }
+
     }
     
     guard data != nil else {
@@ -476,14 +484,14 @@ class StructureViewModel: ObservableObject {
     var stops: [Gradient.Stop]
     
     switch prediction {
-    case .ALOM, .ALPHA_HELIX, .BETA_SHEET, .BETA_TURN,
-         .ANTIGENIC_SITES, .HYPROPHILIC, .HYPROPATHY:
+    case .ALPHA_HELIX, .BETA_SHEET, .BETA_TURN,
+         .ANTIGENIC_SITES, .HYPROPHILIC, .HYPROPATHY, .FREE_ENERGY:
       stops = [Gradient.Stop(color: .red, location: 0.0),
                Gradient.Stop(color: .gray, location: cutoffStop),
                Gradient.Stop(color: .green, location: 1.0)]
 
-    case .FRACTION_BURIED, .FREE_ENERGY:
-      stops = [Gradient.Stop(color: .blue, location: 0.0),
+    case .ALOM, .FRACTION_BURIED:
+      stops = [Gradient.Stop(color: .gray, location: 0.0),
                Gradient.Stop(color: .blue, location: 1.0)]
     }
   

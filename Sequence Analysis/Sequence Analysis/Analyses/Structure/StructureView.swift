@@ -69,7 +69,7 @@ struct StructureView: View {
         if let plotData = viewModel.plotData {
           PlotView(plotData: plotData)
         } else {
-          TextView(text: "ALOM - No plot yet")
+          TextView(text: "No PlotData created")
         }
       case .XML, .JSON:
         if let text = viewModel.text {
