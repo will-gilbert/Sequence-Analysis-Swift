@@ -51,6 +51,8 @@ struct StructureView: View {
           }
           .pickerStyle(.radioGroup)
           .horizontalRadioGroupLayout()
+          .disabled(sequenceState.prediction == Prediction.ALOM)
+          
           Spacer()
         }
         Text(sequenceState.prediction.rawValue).font(.title)

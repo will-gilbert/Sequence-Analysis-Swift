@@ -30,7 +30,7 @@ class AppState: NSObject, ObservableObject {
     let sequenceState = SequenceState(sequence)
     
     // Set default analysis
-    sequenceState.defaultAnalysis =  (sequence.isNucleic) ? .ORF : .COMPOSITION
+    sequenceState.defaultAnalysis =  (sequence.isNucleic) ? .ORF : .STRUCTURE
     self.sequenceStates.append(sequenceState)
     self.newSequenceState = sequenceState
     return sequenceState

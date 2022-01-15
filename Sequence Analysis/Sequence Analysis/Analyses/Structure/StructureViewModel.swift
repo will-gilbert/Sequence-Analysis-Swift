@@ -124,7 +124,7 @@ enum Prediction: String, CaseIterable, Identifiable {
     case .ALPHA_HELIX: return (upper: 1.45, lower: 0.70, cutoff: 1.07)
     case .BETA_SHEET: return (upper: 1.50, lower: 0.50, cutoff: 1.00)
     case .BETA_TURN: return (upper: 1.50, lower: 0.50, cutoff: 1.00)
-    case .ALOM: return (upper: 4.20, lower: 0.00, cutoff: 0.00)
+    case .ALOM: return (upper: 6.00, lower: 0.00, cutoff: 0.00)
     case .ANTIGENIC_SITES: return (upper: 3.00, lower: -3.50, cutoff: 0.00)
     case .HYPROPHILIC: return (upper: 3.00, lower: -3.50, cutoff: 0.00)
     case .HYPROPATHY: return (upper: 4.50, lower: -4.50, cutoff: 0.00)

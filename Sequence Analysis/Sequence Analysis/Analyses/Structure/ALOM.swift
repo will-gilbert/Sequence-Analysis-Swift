@@ -31,63 +31,66 @@
 //             classification of membrane spanning proteins.
 //             Biochim. Biophys. Acta 815, 468-476 (1985)
 //
+//  https://www.sciencedirect.com/science/article/abs/pii/000527368590375X?via%3Dihub
+//  https://www.researchgate.net/publication/11892511_Evaluation_of_Methods_for_the_Prediction_of_Membrane_Spanning_Regions
+//
 // ***************************************************************************
-// Test routine using Protein database entry RAHSB Bacteriorhodopsin.
+// Test routine using NCBI Protein database entry:
+//   1493897702 bacteriorhodopsin [Halorubrum sp. RHB-C]
+//
 // Should produce 7 "peaks":
 //
-// 25-41   2.39    147-170 3.77
-// 56-76   1.12    189-205 0.32
-// 97-115  2.18    217-236 3.03
-// 119-137 3.24
+// 20-40   4.19    147-169 2.87
+// 54-75   1.54    185-205 3.19
+// 98-115  2.34    217-236 2.39
+// 119-140 5.47
 //
-// MLELLPTAVEGVSQAQITGRPEWIWLALGTALM
-// GLGTLYFLVKGMGVSDPDAKKFYAITTLVPAIAF
-// TMYLSMLLGYGLTMVPFGGEQNPIYWARYADWLF
-// TTPLLLLDLALLVDADQGTILALVGADGIMIGTG
-// LVGALTKVYSYRFVWWAISTAAMLYILYVLFFGF
-// TSKAESMRPEVASTFKVLRNVTVVLWSAYPVVWL
-// IGSEGAGIVPLNIETLLFMVLDVSAKVGFGLILL
-// RSRAIFGEAEAPEPSAGDGAAATSD
-
+/*
+MDPIALQAGYDLLGDGRPETLWLGIGTLLMIIGTFYFIARGWGVTDKEAREYYAITILVP
+GIASAAYLSMFFGIGLTEVELVGGEVLDIYYARYADWLFTTPLLLLDLCLLAKVDRVTTG
+TLIGVDALMIVTGLIGALSHTPLARYTWWLFSTIAFLFVLYYLLTSLRSAARERSEDVQS
+TFNTLTALVAVLWTAYPILWIIGTEGAGVVGLGVETLAFMVLDVTAKVGFGFVLLRSRAI
+LGDTEAPEPSAGAEASAAD
+*/
 
 import Foundation
 
 
 class ALOM {
-    
-  private static let a0: Double = 1.582
-  private static let a1: Double = -1.0
+  
+  // ALOM constants
+  private static let A0: Double = 1.582
+  private static let A1: Double = -1.0
+  private static let maxHCoeff: Double = -9.02
+  private static let maxHOffset: Double = 14.27
+  private static let maxHLimit: Double = 80.0
 
-  private var MaxH: Double = 0.0
-  private var Index: Int = 0;
-  private var Left: Int = 0, Right: Int = 0
+  private var maxH: Double = 0.0
+//  private var index: Int = 0;
+  private var left: Int = 0, right: Int = 0
   
   private let predicton: Prediction = Prediction.ALOM
-  private var Seq: [Character]
-  private let Len: Int
-  private let Window: Int
+  private let length: Int
+  private let window: Int
+
+  // 'strand' is modified by the algorithm
+  private var strand: [Character]
 
 
   init(sequence: Sequence) {
-    self.Len = sequence.string.count
-    self.Window = predicton.window
-    self.Seq = Array(sequence.string.uppercased())
+    self.length = sequence.string.count
+    self.window = predicton.window
+    self.strand = Array(sequence.string.uppercased())
   }
   
   func analyze() -> [Double?]? {
      
-    guard Len > (Window * 2) else { return nil }
+    guard length > (window * 2) else { return nil }
     
-    
-    let xlim: Double = 80.0
-    var x: Double = 0.0
-    var x0: Double = 0.0
-    var xodds: Double = 0.0
-    
-    var IsHydrophobic: Bool = false
+    var isHydrophobic: Bool = false
     
     // The return data
-    var data = [Double?](repeating: 0.00, count: Len)
+    var data = [Double?](repeating: 0.00, count: length)
 
     // Go thru the entire sequence, find the largest region of hydropilicty,
     //   extend that region, write it to the value array, set the region to
@@ -95,43 +98,44 @@ class ALOM {
     
     while ( true ) {
       
-      YMax()
+      let (at, maxH) = findMaxHRegion()
       
-      x = (ALOM.a1 * MaxH) + ALOM.a0;
-      x0 = (-9.02 * MaxH) + 14.27;
-      xodds = exp(x0)
+      // Discriminant Analysis: Core of the ALOM algorithm
+      let x = (ALOM.A1 * maxH) + ALOM.A0
+      let x0 = (ALOM.maxHCoeff * maxH) + ALOM.maxHOffset
+      let odds = exp(x0)
       
-      // if 'x' less than zero, it's definitly hydrophobic, extend the
-      // region to see how far it goes. Otherwise, test to see if it's
-      // marginal or simply peripheral.
+      // If 'x' less than zero, it's definitly hydrophobic, extend the
+      //   region to see how far it goes. Otherwise, test to see if it's
+      //   marginal or simply peripheral.
 
       if (x < 0.0) {
 
-        IsHydrophobic = true;
-        Extend();
+        isHydrophobic = true;
+        extendHRegion(from: at);
 
         // Fill the value array
 
-        for i in  Left..<Right {
+        for i in  left..<right {
           data[i] = -x0
         }
 
       } else {
 
-          if ((IsHydrophobic == false) || (xodds > xlim)) {
+        if ((isHydrophobic == false) || (odds > ALOM.maxHLimit)) {
               return data   // we're done
           } else {
-            for i in  Index..<(Index + Window) {
+            for i in  at..<(at + window) {
               data[i] = -x0;
             }
           }
       }
       
-      // Set the current region to all Arginine to essentially eliminate
-      // this region from further calculations.
+      // Set the current region to all Arginine, 'R',  to essentially
+      //   eliminate this region from further calculations.
 
-      for i in Index..<(Index + Window) {
-          Seq[i] =  "R"
+      for i in at..<(at + window) {
+        strand[i] =  "R"
       }
 
     }
@@ -139,149 +143,146 @@ class ALOM {
     return data
   }
   
-  // * Ymax  ********************************************************************
+  // * findMaxHRegion  **********************************************************
   //
   // Find the region of maximum hydrophibicity for the entire sequence.  Return
   // the value and the range of this segment.
   //
   // ****************************************************************************
 
-  func YMax() {
+  func findMaxHRegion() -> (at: Int, maxH: Double) {
     
-    var Pos: Int = 0
-    var SumH: Double = 0.0
-    var AveH: Double = 0.0
+    var pos: Int = 0
+    var sumH: Double = 0.0
+    var aveH: Double = 0.0
     
-    
-    // Array of Kyte & Doolittle hydrophobic values
-     var SeqH = [Double](repeating: -0.5, count: Len)
+    // Array of Kyte & Doolittle hydrophobic values; -0.5 for missing values
+     var seqH = [Double](repeating: -0.5, count: length)
 
-    // Load up the SeqH array with the corresponding K&D values,
-
+    // Load up the 'seqH' array with the corresponding K&D values,
     let values = predicton.values
-    for i in 0..<Seq.count {
-      if let value: Double = values[Seq[i]] {
-        SeqH[i] = value
+    for i in 0..<strand.count {
+      if let value: Double = values[strand[i]] {
+        seqH[i] = value
       }
     }
 
     // Initialize some variables and get the value for the first window
-    Pos = 0
-    Index = 0
-    SumH = 0.0
+    var at: Int = 0
 
-    for i: Int in 0..<Window {
-        SumH += SeqH[i];
+    // Calculate the average hydrophocity for the starting window
+    for i: Int in 0..<window {
+      sumH += seqH[i];
     }
 
-    AveH = SumH / Double( Window)
-    MaxH = AveH
+    aveH = sumH / Double( window)
+    maxH = aveH
 
     // Move the window along, adding values on the right, removing values
     // on the left, saving the largest hydrophilicity value and it's location.
 
-    while ((Pos + Window) < Len) {
-        SumH -= SeqH[Pos];
-        SumH += SeqH[Pos + Window];
-        AveH = SumH / Double(Window)
-        Pos += 1
+    while ((pos + window) < length) {
+      sumH -= seqH[pos];
+      sumH += seqH[pos + window];
+      aveH = sumH / Double(window)
+      pos += 1
 
-        if (AveH > MaxH) {
-            MaxH = AveH;
-            Index = Pos;
-        }
+      // Largest hydrophobicity region so far
+      if (aveH > maxH) {
+        maxH = aveH;
+        at = pos;
+      }
     }
 
     // When we get to here we have determined the location and value of the
-    //   largest hydrophilicity in Index and MaxH, respectively.
+    //   largest hydrophilicity in 'at' and 'maxH', respectively.
+    
+    return (at, maxH)
     
   }
 
-  // *  Extend  ***********************************************************
+  // *  extendHRegion  ***********************************************************
   //
-  // Given a maximum hydrophobic region at "Index" extend in both left and
-  // right directions.  Return this extended region in "Left" and "Right"
+  // Given a maximum hydrophobic region at "index" extend in both left and
+  // right directions.  Return this extended region in "left" and "right"
   //
   // ***********************************************************************
 
-  func Extend() {
+  func extendHRegion(from: Int) {
     
     var y: Double = 0.0
     var avh: Double = 0.0
 
-
     // Move the window to the left, stop when the hydrophobicity
     // drops off.  Check to make sure you don't go beyond 0.
 
-    Left = Index - 1
+    left = from - 1
 
-    while Left >= 0 {
+    while left >= 0 {
       
-      avh = Limit(17, Left)
-      y = (ALOM.a1 * avh) + ALOM.a0
+      avh = averageHWindow(from: left, size: window)
+      y = (ALOM.A1 * avh) + ALOM.A0
 
       if (y >= 0.0) {
             break
       }
 
-      Left -= 1
+      left -= 1
     }
 
-    Left += 1
+    left += 1
     
     // Move the window to the right, stop when the hydrophobicity
     //   drops off.  Check to make sure you don't go off the end.
 
-    Right = Index + Window
+    right = from + window
 
-    while Right < Len {
-      avh = Limit(Window, Right - Window)
-      y = (ALOM.a1 * avh) + ALOM.a0
+    while right < length {
+      avh = averageHWindow(from: right - window, size: window)
+      y = (ALOM.A1 * avh) + ALOM.A0
 
       if (y >= 0.0) {
             break
       }
 
-        Right += 1
+      right += 1
     }
 
-    Right = (Right < Len) ? Right : (Len - 1)
+    right = (right < length) ? right : (length - 1)
     
   }
   
-  // *  Limit  ******************************************************************
+  // *  averageHWindow  *********************************************************
   //
   // Returns the average hydophobicity for the sequence segment starting
-  // at "Left" and "Window" in length.  The calling routine, "Extend" will
-  // make sure that Left+Window does not run off the end of the sequence.
+  // at "from" and "size" in length.  The calling routine, "extendHRegion" will
+  // make sure that 'from + size' does not run off the end of the sequence.
   //
   // ****************************************************************************
-
   
-  func Limit(_ inWindow: Int, _ Left: Int) -> Double {
+  func averageHWindow(from: Int, size: Int) -> Double {
     
-    var avh: Double = 0.0;
+    var avh: Double = 0.0
 
     // Get some memory to hold the values for this segment.
-    var SeqH: [Double] = [Double](repeating: 0.0, count: inWindow)
-
+    var seqH: [Double] = [Double](repeating: 0.0, count: size)
     
-    // Fill 'SeqH' with K&D values for this segment
+    // Fill 'seqH' with K&D values for this segment
     let values = predicton.values
-    for i in 0..<inWindow {
-      if let value: Double = values[Seq[Left + i]] {
-        SeqH[i] = value
+    for i in 0..<size {
+      if let value: Double = values[strand[from + i]] {
+        seqH[i] = value
       }
     }
     
     // Calculate the average K&D value for this segment
     avh = 0.0;
 
-    for i in 0..<inWindow {
-        avh += SeqH[i]
+    for i in 0..<size {
+        avh += seqH[i]
     }
 
-    avh = avh / Double(inWindow)
+    avh = avh / Double(size)
     return avh
   }
   
