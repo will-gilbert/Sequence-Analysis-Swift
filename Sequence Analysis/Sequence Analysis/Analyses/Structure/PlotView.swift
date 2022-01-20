@@ -51,8 +51,9 @@ struct PlotView: View {
 
         // Draw each datum measurement
         ForEach(plotData.data, id: \.self) { datum in
-          // 2
-          Path { p in
+         
+          // Draw the value as a rectangle
+          Path { path in
 
             // Calculate the horizontal position for this datum
             let positionPx = datum.position * positionWidth
@@ -61,18 +62,15 @@ struct PlotView: View {
             let valuePx = (datum.value  - lower) * dataRange
             
             // Draw this datum as a rectangle from the cutoff to its value
-            p.move(to: .init(x: positionPx, y: reader.size.height - cutoffPx))
-            p.addLine(to: .init(x: positionPx, y: reader.size.height - valuePx))
-            p.addLine(to: .init(x: positionPx + positionWidth - 1, y: reader.size.height - valuePx))
-            p.addLine(to: .init(x: positionPx + positionWidth - 1, y: reader.size.height - cutoffPx))
-            p.addLine(to: .init(x: positionPx, y: reader.size.height - cutoffPx))
+            let origin = CGPoint(x: positionPx, y: reader.size.height - cutoffPx)
+            let size = CGSize(width: positionWidth, height: cutoffPx - valuePx)
+            path.addRect(CGRect(origin: origin, size: size))
             
-            // p.addRect() // Use this instead...
-            
-            // Visualize the drawn lines overlay a color gradient
+            // Visualize the drawn rectanges overlayed with a color gradient
           }.fill(plotData.gradient)
         }
         
+        // Draw the reference cutoff line in gray; Should blend into the data
         Path { p in
           p.move(to: .init(x: 0, y: reader.size.height - cutoffPx))
           p.addLine(to: .init(x: length * positionWidth, y: reader.size.height - cutoffPx))

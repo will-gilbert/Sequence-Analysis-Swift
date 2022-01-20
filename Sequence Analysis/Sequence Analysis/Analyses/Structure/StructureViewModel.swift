@@ -368,9 +368,11 @@ class StructureViewModel: ObservableObject {
     referenceNode.objectValue = prediction.reference
     algorithmNode.addChild(referenceNode)
 
-    // Algorithm parameters
-    algorithmNode.addChild(XMLElement(name: "window", stringValue: String(prediction.window)) as XMLNode)
-    algorithmNode.addChild(XMLElement(name: "filter", stringValue: filter.rawValue) as XMLNode)
+    // Algorithm parameters; ALOM does not use a filter; window is builtin
+    if prediction.id != Prediction.ALOM {
+      algorithmNode.addChild(XMLElement(name: "window", stringValue: String(prediction.window)) as XMLNode)
+      algorithmNode.addChild(XMLElement(name: "filter", stringValue: filter.rawValue) as XMLNode)
+    }
     
     // Plot option, upper and lower; Significance cutoff level
     let plotNode = XMLElement(name: "plot")
@@ -384,9 +386,12 @@ class StructureViewModel: ObservableObject {
 
     for i in 0..<data.count {
       
+      let strand = Array(sequence.string.uppercased())
+      
       if let datum:Double = data[i] {
         let valueNode = XMLElement(name: "datum")
         valueNode.addAttribute(XMLNode.attribute(withName: "position", stringValue: String(i+1)) as! XMLNode)
+        valueNode.addAttribute(XMLNode.attribute(withName: "aa", stringValue:  String(strand[i])) as! XMLNode)
         valueNode.addAttribute(XMLNode.attribute(withName: "value", stringValue: F.f(datum, decimal: 2) ) as! XMLNode)
         dataNode.addChild(valueNode)
       }
