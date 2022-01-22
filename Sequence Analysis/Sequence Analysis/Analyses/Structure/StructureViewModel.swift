@@ -100,7 +100,7 @@ enum Prediction: String, CaseIterable, Identifiable {
 
     case .FREE_ENERGY:
       return ["A":   1.94, "R": -19.94, "N": -9.68, "D": -10.95, "C":  -1.24, "Q": -9.38, "E": -10.20, "G":  2.39,
-              "H": -10.27, "I":   0.47, "L":  2.15, "K":  -9.52, "M":  -1.48, "F": -0.76, "P":  -7.13, "S": -5.06,
+              "H": -10.27, "I":   2.15, "L":  2.28, "K":  -9.52, "M":  -1.48, "F": -0.76, "P":  -7.13, "S": -5.06,
               "T":  -4.88, "W":  -5.88, "Y": -6.11, "V":   1.99, "B": -10.32, "Z": -9.79, "X":  -5.09]
     }
   }
@@ -278,47 +278,44 @@ class StructureViewModel: ObservableObject {
 
   func medianSieve(prediction: Prediction) -> [Double?]? {
 
-    // Create an array of the raw values
-    var data: [Double?] = rawData(prediction: prediction)
-
+    // Create an array of the raw values; Save window and length
+    let data: [Double?] = rawData(prediction: prediction)
     let window: Int = prediction.window
-
-    // Do successive mesh sizes
-    for mesh: Int in 2..<window {
-      sieve(&data, mesh: mesh)
+    let length: Int = data.count
+    
+    // Copy raw data into a working array; Use zero for nil values
+    var array: [Double] = [Double](repeating: 0.0, count: length)
+    for i: Int in 0..<length {
+      array[i] = data[i] ?? 0.0
     }
     
-    let halfWindow = ((window / 2) + 1)
-    for i in 0...halfWindow {
-      data[i] = nil
+    // Filter with successive mesh sizes
+    for mesh: Int in 2...window {
+      array = sieve(array, mesh: mesh)
     }
-        
-    for i in (data.count - halfWindow )..<data.count {
-      data[i] = nil
-    }
-        
-    return data
+                
+    // Return median sieve data; Loop off the trailing padding
+    return Array(array.prefix(length)) as [Double?]?
   }
   
-  func sieve(_  data: inout [Double?], mesh: Int) -> Void {
+  func sieve(_  inArray: [Double], mesh: Int) -> [Double] {
     
-    let n: Int = data.count
+    let n: Int = inArray.count
     let pad: Int = mesh - 1
     let size: Int = n + (2 * pad)
     
-    // Accomodate zero padding on both ends of the sequence data
-    var array = [Double](repeating: 0.00, count: size)
+    // Accomodate padding on both ends of the sequence data
+    var array = [Double](repeating: 0.0, count: size)
     
-    // Add the sequence data beyond the left pad
+    // Add the sequence data between the pads
     for i in 0..<n {
-      array[pad + i + 1] = data[i] ?? 0.00
+      array[pad + i] = inArray[i]
     }
  
     // Sample size for the sieve
     let s = (2 * mesh) - 1
     
-    // Move a shifting window thru data
-    // Load sort array and sort
+    // Move a shifting window thru data, sort, take the median value
 
     for i in 0..<n {
       
@@ -330,14 +327,11 @@ class StructureViewModel: ObservableObject {
       
       temp.sort(by: {$0 > $1} )
 
-      // Copy the median value into the current
-      //   position in the sequence data
-      data[i] = temp[mesh - 1];
+      // Save the median value from the sorted window
+      array[i] = temp[mesh - 1];
     }
     
-    
-
-//    return array
+    return array
   }
     
   
@@ -372,6 +366,21 @@ class StructureViewModel: ObservableObject {
     if prediction.id != Prediction.ALOM {
       algorithmNode.addChild(XMLElement(name: "window", stringValue: String(prediction.window)) as XMLNode)
       algorithmNode.addChild(XMLElement(name: "filter", stringValue: filter.rawValue) as XMLNode)
+    
+      if filter == Filter.MEDIAN_SIEVE {
+        let node = XMLNode(kind: .element, options: .nodeIsCDATA)
+        node.name = "filter-reference"
+        node.objectValue = "J. Andrew Bangham, Analytical Biochemistry, 174, 142-145 (1988)"
+        algorithmNode.addChild(node)
+      }
+  
+      if filter == Filter.RUNNING_AVERAGE {
+        let node = XMLNode(kind: .element, options: .nodeIsCDATA)
+        node.name = "filter-reference"
+        node.objectValue = "https://en.wikipedia.org/wiki/Moving_average"
+        algorithmNode.addChild(node)
+      }
+
     }
     
     // Plot option, upper and lower; Significance cutoff level
