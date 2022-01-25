@@ -322,8 +322,8 @@ struct Composition {
   mutating func doProtein(_ strand: [Character]) {
     
     // Create dictionary of amino acide usage
-    var a = [ "A":0, "C":0, "D":0, "E":0, "F":0, "G":0, "H":0, "I":0, "K":0, "L":0,
-              "M":0, "N":0, "P":0, "Q":0, "R":0, "S":0, "T":0, "V":0, "W":0, "Y":0]
+    var a: [String:Int] = [ "A":0, "C":0, "D":0, "E":0, "F":0, "G":0, "H":0, "I":0, "K":0, "L":0,
+              "M":0, "N":0, "P":0, "Q":0, "R":0, "S":0, "T":0, "V":0, "W":0, "Y":0, "B":0, "Z":0]
     
     for aa in strand {
       let key = String(aa)
@@ -351,6 +351,8 @@ struct Composition {
     }
     buffer.append("\n")
     
+    buffer.append("               GRAVY: \(F.f(gravy(strand), decimal: 3))\n\n")
+
     buffer.append(" Amino Acid Composition\n")
     buffer.append(" ----------------------\n")
     buffer.append("\n")
@@ -392,38 +394,55 @@ struct Composition {
     buffer.append("\n")
     
     
-    let basic: Int = a["K"]! + a["R"]!
-    let acidic = a["D"]! + a["E"]!
+    let basic: Int = a["K"]! + a["R"]! + a["H"]!
+    let acidic = a["B"]! + a["D"]! + a["E"]! + a["N"]! + a["Q"]! + a["Z"]!
     let hydrophobic = a["A"]! + a["I"]! + a["L"]! + a["F"]! + a["W"]! + a["V"]!
     let polar = a["N"]! + a["C"]! + a["Q"]! + a["S"]! + a["T"]! + a["Y"]!
+    let aliphatic = a["G"]! + a["A"]! + a["V"]! + a["L"]! + a["I"]!
+    let aromatic = a["F"]! + a["W"]! + a["Y"]!
+    let sulphur = a["C"]! + a["M"]!
+    let alphilicOH = a["S"]! + a["T"]!
 
+    
     let length = strand.count
-    var percent: Double = length > 0 ? Double(basic * 100) / Double(length) : 0.0
-    buffer.append(F.f(basic, width: 8))
-    buffer.append("  ")
-    buffer.append(F.f(percent, decimal: 1))
-    buffer.append("%")
-    buffer.append(" Basic(+) amino acids, (K,R)\n")
+    printStat(&buffer, length: length, count: basic,       label: "Basic(+)    K,R,H")
+    printStat(&buffer, length: length, count: acidic,      label: "Acidic(-)   B,E,D,N,Q,Z")
+    printStat(&buffer, length: length, count: hydrophobic, label: "Hydrophobic A,I,L,F,W,V")
+    printStat(&buffer, length: length, count: polar,       label: "Hydrophilic N,C,Q,S,T,Y")
+    printStat(&buffer, length: length, count: aliphatic,   label: "Aliphatic   G,A,V,L,I")
+    printStat(&buffer, length: length, count: alphilicOH,  label: "Hydroxyl    S,T")
+    printStat(&buffer, length: length, count: aromatic,    label: "Aromatic    F,W,Y")
+    printStat(&buffer, length: length, count: sulphur,     label: "Sulphur     C,M")
+    
+    buffer.append("\n\n")
+    buffer.append("GRAVY - 'Grand Average of Hydropathy'\n")
+    buffer.append("Sum of Kyte & Doolittle values divided by the sequence length")
+  }
+  
+  
+  func printStat(_ buffer: inout String, length: Int, count: Int, label: String) {
 
-    percent = length > 0 ? Double(acidic * 100) / Double(length) : 0.0
-    buffer.append(F.f(acidic, width: 8))
+    let percent: Double = length > 0 ? Double(count * 100) / Double(length) : 0.0
+    buffer.append(F.f(count, width: 8))
     buffer.append("  ")
-    buffer.append(F.f(percent, decimal: 1))
+    buffer.append(F.f(percent, decimal: 1, width: 5))
     buffer.append("%")
-    buffer.append(" Acidic(-) amino acids, (D,E)\n")
+    buffer.append(" \(label)\n")
 
-    percent = length > 0 ? Double(hydrophobic * 100) / Double(length) : 0.0
-    buffer.append(F.f(hydrophobic, width: 8))
-    buffer.append("  ")
-    buffer.append(F.f(percent,  decimal: 1))
-    buffer.append("%")
-    buffer.append(" Hydrophobic amino acids, (A,I,L,F,W,V)\n")
-
-    percent = length > 0 ? Double(polar * 100) / Double(length) : 0.0
-    buffer.append(F.f(polar, width: 8))
-    buffer.append("  ")
-    buffer.append(F.f(percent, decimal: 1))
-    buffer.append("%")
-    buffer.append(" Hydrophilic amino acids, (N,C,Q,S,T,Y)\n")
+  }
+  
+  func gravy(_ strand: [Character]) -> Double {
+    
+    let strand = Array(sequence.string.uppercased())
+    let values = Prediction.HYPROPATHY.values
+    
+    var total: Double = 0.0
+    for i in 0..<strand.count {
+      if let value: Double = values[strand[i]] {
+        total += value
+      }
+    }
+    
+    return total / Double(strand.count)
   }
 }
