@@ -17,7 +17,6 @@ struct FullDemo: View {
   
   var height: CGFloat = 0.0
   var width: CGFloat = 0.0
-
   
   init(extent: Int) {
 
@@ -62,19 +61,17 @@ struct FullDemo: View {
         //   TODO: Revisit in the future.
 
         // SCROLLVIEW ----------------------------------------------------------
-        GeometryReader { g in
           ScrollView( [.vertical, .horizontal], showsIndicators: true) {
             VStack(spacing: 0) {
               MapPanelView(mapPanel, scale: scale)
             }.frame(width: fitToWidth, height: height) // Scale the map container
             
             // Create a bottom 'Spacer' as needed when the map does not fill the ScrollView
-            if g.size.height > height {
+            if geometry.size.height > height {
               Spacer()
-              .frame(height: g.size.height - height)
+              .frame(height: geometry.size.height - height)
             }
           }.background(mapPanel.color)
-        }
         // SCROLLVIEW ----------------------------------------------------------
 
       }.onAppear {

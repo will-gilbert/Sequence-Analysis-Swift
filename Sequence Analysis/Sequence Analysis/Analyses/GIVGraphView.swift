@@ -58,7 +58,6 @@ struct GIVGraphView: View {
         //   TODO: Revisit in the future.
         
         // SCROLLVIEW ----------------------------------------------------------
-        GeometryReader { g in
           ScrollView( [.vertical, .horizontal], showsIndicators: true) {
            
             VStack(spacing: 0) {
@@ -66,13 +65,12 @@ struct GIVGraphView: View {
             }.frame(width: scrollViewWidth, height: height)
 
             // Create a bottom 'Spacer' as needed when the GIV panels do not fill the ScrollView
-            if g.size.height > height {
+            if geometry.size.height > height {
               Spacer()
-              .frame(height: g.size.height - height)
+              .frame(height: geometry.size.height - height)
             }
           }
           .background(Colors.get(color: "AGA 01").base)
-        }
         // SCROLLVIEW ----------------------------------------------------------
         
         if let glyphReporter = glyphReporter {
